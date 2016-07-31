@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['facelandmarkdetector',['FaceLandmarkDetector',['../class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#a22dd1f313078d3ceb5ccc0395dec444f',1,'DlibFaceLandmarkDetector.FaceLandmarkDetector.FaceLandmarkDetector(string shapePredictorFilename)'],['../class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#a40d789e9976b5d24c0ba8fc5986da252',1,'DlibFaceLandmarkDetector.FaceLandmarkDetector.FaceLandmarkDetector(string objectDetectorFilename, string shapePredictorFilename)']]]
+  ['facelandmarkdetector',['FaceLandmarkDetector',['../class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#aef0e090ff04d7eb7a72ec94aa8cd2cba',1,'DlibFaceLandmarkDetector.FaceLandmarkDetector.FaceLandmarkDetector(string shapePredictorFilePath)'],['../class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#af719ebca6f440b5c3d091095aa3adae3',1,'DlibFaceLandmarkDetector.FaceLandmarkDetector.FaceLandmarkDetector(string objectDetectorFilePath, string shapePredictorFilePath)']]]
 ];

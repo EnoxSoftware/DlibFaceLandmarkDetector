@@ -1,11 +1,12 @@
 var indexSectionsWithContent =
 {
-  0: "dfgistu",
-  1: "dfu",
+  0: "dfgirstuw",
+  1: "dfru",
   2: "d",
   3: "dfu",
-  4: "dfgist",
-  5: "i"
+  4: "dfgirst",
+  5: "drw",
+  6: "i"
 };
 
 var indexSectionNames =
@@ -15,7 +16,8 @@ var indexSectionNames =
   2: "namespaces",
   3: "files",
   4: "functions",
-  5: "properties"
+  5: "variables",
+  6: "properties"
 };
 
 var indexSectionLabels =
@@ -25,6 +27,7 @@ var indexSectionLabels =
   2: "Namespaces",
   3: "Files",
   4: "Functions",
-  5: "Properties"
+  5: "Variables",
+  6: "Properties"
 };
 

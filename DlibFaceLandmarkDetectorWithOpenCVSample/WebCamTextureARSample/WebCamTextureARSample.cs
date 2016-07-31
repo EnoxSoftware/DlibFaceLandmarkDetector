@@ -69,20 +69,6 @@ namespace DlibFaceLandmarkDetectorSample
 		ParticleSystem[] mouthParticleSystem;
 		
 		/// <summary>
-		/// The rvec noise filter range.
-		/// </summary>
-		[Range(0, 50)]
-		public float
-			rvecNoiseFilterRange = 8;
-		
-		/// <summary>
-		/// The tvec noise filter range.
-		/// </summary>
-		[Range(0, 360)]
-		public float
-			tvecNoiseFilterRange = 90;
-		
-		/// <summary>
 		/// The colors.
 		/// </summary>
 		Color32[] colors;
@@ -180,10 +166,10 @@ namespace DlibFaceLandmarkDetectorSample
 				new Point3 (-31, 72, 86),//l eye
 				new Point3 (31, 72, 86),//r eye
 				new Point3 (0, 40, 114),//nose
-				new Point3 (-23, 19, 76),//l mouse
-				new Point3 (23, 19, 76),//r mouse
-				new Point3 (-70, 60, -9),//l ear
-				new Point3 (70, 60, -9)//r ear
+				new Point3 (-20, 15, 90),//l mouse
+				new Point3 (20, 15, 90),//r mouse
+				new Point3 (-69, 76, -2),//l ear
+				new Point3 (69, 76, -2)//r ear
 			);
 			imagePoints = new MatOfPoint2f ();
 			rvec = new Mat ();
@@ -318,10 +304,12 @@ namespace DlibFaceLandmarkDetectorSample
 
 				OpenCVForUnityUtils.SetImage (faceLandmarkDetector, rgbaMat);
 
+				//detect face rects
 				List<UnityEngine.Rect> detectResult = faceLandmarkDetector.Detect ();
 
 				if (detectResult.Count > 0) {
 
+					//detect landmark points
 					List<Vector2> points = faceLandmarkDetector.DetectLandmark (detectResult [0]);
 
 					if (points.Count > 0) {

@@ -231,20 +231,26 @@ namespace DlibFaceLandmarkDetectorSample
 				webCamTexture.GetPixels32 (colors);
 				faceLandmarkDetector.SetImage<Color32> (colors, webCamTexture.width, webCamTexture.height, 4, flip);
 		
+				//detect face rects
 				List<Rect> detectResult = faceLandmarkDetector.Detect ();
 		
 				foreach (var rect in detectResult) {
 //			Debug.Log ("face : " + rect);
-					faceLandmarkDetector.DrawDetectResult<Color32> (colors, webCamTexture.width, webCamTexture.height, 4, flip, 255, 0, 0, 255, 2);
 			
+					//detect landmark points
 					List<Vector2> points = faceLandmarkDetector.DetectLandmark (rect);
 
 			
 //			Debug.Log ("face point : " + points.Count);
 					if (points.Count > 0) {
 //				Debug.Log ("face points : x " + point.x + " y " + point.y);
+
+						//draw landmark points
 						faceLandmarkDetector.DrawDetectLandmarkResult<Color32> (colors, webCamTexture.width, webCamTexture.height, 4, flip, 0, 255, 0, 255);
 					}
+
+					//draw face rect
+					faceLandmarkDetector.DrawDetectResult<Color32> (colors, webCamTexture.width, webCamTexture.height, 4, flip, 255, 0, 0, 255, 2);
 				}
 
 				texture2D.SetPixels32 (colors);

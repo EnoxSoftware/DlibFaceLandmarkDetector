@@ -119,19 +119,21 @@ namespace DlibFaceLandmarkDetectorSample
 
 				OpenCVForUnityUtils.SetImage (faceLandmarkDetector, rgbMat);
 				
-				
+				//detect face rects
 				List<UnityEngine.Rect> detectResult = faceLandmarkDetector.Detect ();
 				
 				foreach (var rect in detectResult) {
-					
-					OpenCVForUnityUtils.DrawFaceRect (rgbMat, rect, new Scalar (255, 0, 0), 2);
-					
-					
+
+					//detect landmark points
 					List<Vector2> points = faceLandmarkDetector.DetectLandmark (rect);
 					
 					if (points.Count > 0) {
+						//draw landmark points
 						OpenCVForUnityUtils.DrawFaceLandmark (rgbMat, points, new Scalar (0, 255, 0), 2);
 					}
+
+					//draw face rect
+					OpenCVForUnityUtils.DrawFaceRect (rgbMat, rect, new Scalar (255, 0, 0), 2);
 				}
 				
 				Imgproc.putText (rgbMat, "W:" + rgbMat.width () + " H:" + rgbMat.height () + " SO:" + Screen.orientation, new Point (5, rgbMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255), 1, Imgproc.LINE_AA, false);

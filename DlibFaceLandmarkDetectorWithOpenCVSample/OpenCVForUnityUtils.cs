@@ -21,6 +21,9 @@ namespace DlibFaceLandmarkDetector
 		/// <param name="imgMat">Image mat.</param>
 		public static void SetImage (FaceLandmarkDetector faceLandmarkDetector, Mat imgMat)
 		{
+			if(!imgMat.isContinuous()){
+				throw new ArgumentException("imgMat.isContinuous() must be true.");
+			}
 			faceLandmarkDetector.SetImage ((IntPtr)imgMat.dataAddr (), imgMat.width (), imgMat.height (), (int)imgMat.elemSize ());
 		}
 

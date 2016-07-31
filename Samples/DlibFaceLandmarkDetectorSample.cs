@@ -105,6 +105,15 @@ namespace DlibFaceLandmarkDetectorSample
 			Application.LoadLevel ("VideoCaptureARSample");
 			#endif
 		}
+
+		public void OnOptimizationSample ()
+		{
+			#if UNITY_5_3 || UNITY_5_3_OR_NEWER
+			SceneManager.LoadScene ("OptimizationSample");
+			#else
+			Application.LoadLevel ("OptimizationSample");
+			#endif
+		}
 	}
 }
 		

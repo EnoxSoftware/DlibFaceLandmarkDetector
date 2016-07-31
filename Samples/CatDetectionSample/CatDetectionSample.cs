@@ -42,13 +42,13 @@ namespace DlibFaceLandmarkDetectorSample
 			FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (Utils.getFilePath ("frontal_cat_face.svm"), Utils.getFilePath ("shape_predictor_68_cat_face_landmarks.dat"));
 			faceLandmarkDetector.SetImage (texture2D);
 
-
+			//detect face rects
 			List<Rect> detectResult = faceLandmarkDetector.Detect ();
 
 			foreach (var rect in detectResult) {
 				Debug.Log ("face : " + rect);
-				faceLandmarkDetector.DrawDetectResult (texture2D, 255, 0, 0, 255, 3);
 
+				//detect landmark points
 				List<Vector2> points = faceLandmarkDetector.DetectLandmark (rect);
 				
 				Debug.Log ("face points count : " + points.Count);
@@ -56,9 +56,13 @@ namespace DlibFaceLandmarkDetectorSample
 					foreach (var point in points) {
 						Debug.Log ("face point : x " + point.x + " y " + point.y);
 					}
-					
+
+					//draw landmark points
 					faceLandmarkDetector.DrawDetectLandmarkResult (texture2D, 0, 255, 0, 255);
 				}
+
+				//draw face rects
+				faceLandmarkDetector.DrawDetectResult (texture2D, 255, 0, 0, 255, 3);
 			}
 
 			faceLandmarkDetector.Dispose ();

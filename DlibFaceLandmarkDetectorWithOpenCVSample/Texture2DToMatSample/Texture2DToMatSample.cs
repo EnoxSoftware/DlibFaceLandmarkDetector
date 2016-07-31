@@ -51,22 +51,32 @@ namespace DlibFaceLandmarkDetectorSample
 
 			OpenCVForUnityUtils.SetImage (faceLandmarkDetector, imgMat);
 
+		
+			//detect face rectdetecton
+			List<FaceLandmarkDetector.RectDetection> detectResult = faceLandmarkDetector.DetectRectDetection ();
+						
+			foreach (var result in detectResult) {
+				Debug.Log ("rect : " + result.rect);
+				Debug.Log ("detection_confidence : " + result.detection_confidence);
+				Debug.Log ("weight_index : " + result.weight_index);
 			
-			List<UnityEngine.Rect> detectResult = faceLandmarkDetector.Detect ();
-			
-			foreach (var rect in detectResult) {
-				Debug.Log ("face : " + rect);
+				//				Debug.Log ("face : " + rect);
 
-				OpenCVForUnityUtils.DrawFaceRect (imgMat, rect, new Scalar (255, 0, 0, 255), 2);
+				Imgproc.putText (imgMat, "" + result.detection_confidence, new Point (result.rect.xMin, result.rect.yMin-20), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255, 255), 1, Imgproc.LINE_AA, false);
+				Imgproc.putText (imgMat, "" + result.weight_index, new Point (result.rect.xMin, result.rect.yMin-5), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255, 255), 1, Imgproc.LINE_AA, false);
 
-
-				List<Vector2> points = faceLandmarkDetector.DetectLandmark (rect);
-								
+				//detect landmark points
+				List<Vector2> points = faceLandmarkDetector.DetectLandmark (result.rect);
+												
 				Debug.Log ("face points count : " + points.Count);
 				if (points.Count > 0) {
+					//draw landmark points
 					OpenCVForUnityUtils.DrawFaceLandmark (imgMat, points, new Scalar (0, 255, 0, 255), 2);
-
+				
 				}
+
+				//draw face rect
+				OpenCVForUnityUtils.DrawFaceRect (imgMat, result.rect, new Scalar (255, 0, 0, 255), 2);
 			}
 
 			

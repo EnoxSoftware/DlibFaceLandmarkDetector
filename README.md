@@ -3,7 +3,7 @@ Dlib FaceLandmark Detector
 
 Overview
 -----
-<http://u3d.as/uKr>  
+<https://www.assetstore.unity3d.com/#!/content/64314>  
 
 Setup Tutorial & Demo Video
 -----

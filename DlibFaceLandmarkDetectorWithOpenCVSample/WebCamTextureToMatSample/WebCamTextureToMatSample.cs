@@ -34,10 +34,28 @@ namespace DlibFaceLandmarkDetectorSample
         /// </summary>
         FaceLandmarkDetector faceLandmarkDetector;
 
+        /// <summary>
+        /// The shape_predictor_68_face_landmarks_dat_filepath.
+        /// </summary>
+        private string shape_predictor_68_face_landmarks_dat_filepath;
+
         // Use this for initialization
         void Start ()
         {
-            faceLandmarkDetector = new FaceLandmarkDetector (DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat"));
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            StartCoroutine(DlibFaceLandmarkDetector.Utils.getFilePathAsync("shape_predictor_68_face_landmarks.dat", (result) => {
+                shape_predictor_68_face_landmarks_dat_filepath = result;
+                Run ();
+            }));
+            #else
+            shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
+            Run ();
+            #endif
+        }
+
+        private void Run ()
+        {
+            faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
 
             webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper> ();
             webCamTextureToMatHelper.Init ();
@@ -119,9 +137,9 @@ namespace DlibFaceLandmarkDetectorSample
         /// </summary>
         void OnDisable ()
         {
-            webCamTextureToMatHelper.Dispose ();
+            if(webCamTextureToMatHelper != null)webCamTextureToMatHelper.Dispose ();
 
-            faceLandmarkDetector.Dispose ();
+            if(faceLandmarkDetector != null)faceLandmarkDetector.Dispose ();
         }
 
         /// <summary>

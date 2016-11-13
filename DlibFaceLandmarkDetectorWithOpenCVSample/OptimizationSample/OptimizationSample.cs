@@ -60,10 +60,28 @@ namespace DlibFaceLandmarkDetectorSample
         /// </summary>
         List<UnityEngine.Rect> detectResult;
 
+        /// <summary>
+        /// The shape_predictor_68_face_landmarks_dat_filepath.
+        /// </summary>
+        private string shape_predictor_68_face_landmarks_dat_filepath;
+
         // Use this for initialization
         void Start ()
         {
-            faceLandmarkDetector = new FaceLandmarkDetector (DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat"));
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            StartCoroutine(DlibFaceLandmarkDetector.Utils.getFilePathAsync("shape_predictor_68_face_landmarks.dat", (result) => {
+                shape_predictor_68_face_landmarks_dat_filepath = result;
+                Run ();
+            }));
+            #else
+            shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
+            Run ();
+            #endif
+        }
+
+        private void Run ()
+        {
+            faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
 
             webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper> ();
             webCamTextureToMatHelper.Init ();
@@ -85,8 +103,8 @@ namespace DlibFaceLandmarkDetectorSample
             gameObject.transform.localScale = new Vector3 (webCamTextureMat.cols (), webCamTextureMat.rows (), 1);
             Debug.Log ("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
                                     
-            float width = webCamTextureMat.width();
-            float height = webCamTextureMat.height();
+            float width = webCamTextureMat.width ();
+            float height = webCamTextureMat.height ();
                                     
             float widthScale = (float)Screen.width / width;
             float heightScale = (float)Screen.height / height;
@@ -154,7 +172,7 @@ namespace DlibFaceLandmarkDetectorSample
 
                 Imgproc.putText (rgbaMat, "Original: (" + rgbaMat.width () + "," + rgbaMat.height () + ") DownScale; (" + rgbaMat_downscale.width () + "," + rgbaMat_downscale.height () + ") SkipFrames: " + SKIP_FRAMES, new Point (5, rgbaMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar (255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
 
-                OpenCVForUnity.Utils.matToTexture2D (rgbaMat, texture, webCamTextureToMatHelper.GetBufferColors());
+                OpenCVForUnity.Utils.matToTexture2D (rgbaMat, texture, webCamTextureToMatHelper.GetBufferColors ());
 
                 count++;
             }
@@ -166,9 +184,11 @@ namespace DlibFaceLandmarkDetectorSample
         /// </summary>
         void OnDisable ()
         {
-            webCamTextureToMatHelper.Dispose ();
+            if (webCamTextureToMatHelper != null)
+                webCamTextureToMatHelper.Dispose ();
 
-            faceLandmarkDetector.Dispose ();
+            if (faceLandmarkDetector != null)
+                faceLandmarkDetector.Dispose ();
         }
 
         /// <summary>

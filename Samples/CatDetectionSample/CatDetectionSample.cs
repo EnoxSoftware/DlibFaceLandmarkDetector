@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -20,8 +20,44 @@ namespace DlibFaceLandmarkDetectorSample
         /// </summary>
         public Texture2D texture2D;
 
+        /// <summary>
+        /// The frontal_cat_face_svm_filepath.
+        /// </summary>
+        private string frontal_cat_face_svm_filepath;
+
+        /// <summary>
+        /// The shape_predictor_68_cat_face_landmarks_dat_filepath.
+        /// </summary>
+        private string shape_predictor_68_cat_face_landmarks_dat_filepath;
+
         // Use this for initialization
         void Start ()
+        {
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            StartCoroutine(getFilePathCoroutine());
+            #else
+            frontal_cat_face_svm_filepath = Utils.getFilePath ("frontal_cat_face.svm");
+            shape_predictor_68_cat_face_landmarks_dat_filepath = Utils.getFilePath ("shape_predictor_68_cat_face_landmarks.dat");
+            Run ();
+            #endif
+        }
+
+        private IEnumerator getFilePathCoroutine ()
+        {
+            var getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine = StartCoroutine (Utils.getFilePathAsync ("frontal_cat_face.svm", (result) => {
+                frontal_cat_face_svm_filepath = result;
+            }));
+            var getFilePathAsync_shape_predictor_68_cat_face_landmarks_dat_filepath_Coroutine = StartCoroutine (Utils.getFilePathAsync ("shape_predictor_68_cat_face_landmarks.dat", (result) => {
+                shape_predictor_68_cat_face_landmarks_dat_filepath = result;
+            }));
+            
+            yield return getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine;
+            yield return getFilePathAsync_shape_predictor_68_cat_face_landmarks_dat_filepath_Coroutine;
+            
+            Run ();
+        }
+
+        private void Run ()
         {
 
             gameObject.transform.localScale = new Vector3 (texture2D.width, texture2D.height, 1);
@@ -39,7 +75,7 @@ namespace DlibFaceLandmarkDetectorSample
             }
 
 
-            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (Utils.getFilePath ("frontal_cat_face.svm"), Utils.getFilePath ("shape_predictor_68_cat_face_landmarks.dat"));
+            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (frontal_cat_face_svm_filepath, shape_predictor_68_cat_face_landmarks_dat_filepath);
             faceLandmarkDetector.SetImage (texture2D);
 
             //detect face rects

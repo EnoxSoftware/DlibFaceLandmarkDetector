@@ -49,6 +49,13 @@ namespace DlibFaceLandmarkDetector
         /// <param name="thickness">Thickness.</param>
         public static void DrawFaceLandmark (Mat imgMat, List<Vector2> points, Scalar color, int thickness)
         {
+//            //Draw the index number of facelandmark points.
+//            for (int i = 0; i < points.Count; i++) {
+//                                                                     
+//                Imgproc.putText (imgMat, "" + i, new Point (points [i].x, points [i].y), Core.FONT_HERSHEY_SIMPLEX, 0.4, new Scalar (0, 0, 255, 255), 1, Core.LINE_AA, false);
+//                                                                      
+//            }
+
             if (points.Count == 68) {
                 
                 for (int i = 1; i <= 16; ++i)

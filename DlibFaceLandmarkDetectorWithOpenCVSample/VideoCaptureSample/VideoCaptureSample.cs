@@ -17,16 +17,6 @@ namespace DlibFaceLandmarkDetectorSample
     {
 
         /// <summary>
-        /// The width of the frame.
-        /// </summary>
-        private double frameWidth = 320;
-
-        /// <summary>
-        /// The height of the frame.
-        /// </summary>
-        private double frameHeight = 240;
-
-        /// <summary>
         /// The capture.
         /// </summary>
         VideoCapture capture;
@@ -50,16 +40,52 @@ namespace DlibFaceLandmarkDetectorSample
         /// The face landmark detector.
         /// </summary>
         FaceLandmarkDetector faceLandmarkDetector;
-        
+
+        /// <summary>
+        /// The shape_predictor_68_face_landmarks_dat_filepath.
+        /// </summary>
+        private string shape_predictor_68_face_landmarks_dat_filepath;
+
+        /// <summary>
+        /// The couple_avi_filepath.
+        /// </summary>
+        private string couple_avi_filepath;
+
         // Use this for initialization
         void Start ()
         {
-            faceLandmarkDetector = new FaceLandmarkDetector (DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat"));
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            StartCoroutine(getFilePathCoroutine());
+            #else
+            shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
+            couple_avi_filepath = OpenCVForUnity.Utils.getFilePath ("couple.avi");
+            Run ();
+            #endif
+        }
+
+        private IEnumerator getFilePathCoroutine ()
+        {
+            var getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine = StartCoroutine (DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
+                shape_predictor_68_face_landmarks_dat_filepath = result;
+            }));
+            var getFilePathAsync_couple_avi_filepath_Coroutine = StartCoroutine (OpenCVForUnity.Utils.getFilePathAsync ("couple.avi", (result) => {
+                couple_avi_filepath = result;
+            }));
+            
+            yield return getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine;
+            yield return getFilePathAsync_couple_avi_filepath_Coroutine;
+            
+            Run ();
+        }
+        
+        private void Run ()
+        {
+            faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
             
             rgbMat = new Mat ();
             
             capture = new VideoCapture ();
-            capture.open (OpenCVForUnity.Utils.getFilePath ("couple.avi"));
+            capture.open (couple_avi_filepath);
             
             if (capture.isOpened ()) {
                 Debug.Log ("capture.isOpened() true");
@@ -78,23 +104,12 @@ namespace DlibFaceLandmarkDetectorSample
             Debug.Log ("CAP_PROP_FRAME_WIDTH: " + capture.get (Videoio.CAP_PROP_FRAME_WIDTH));
             Debug.Log ("CAP_PROP_FRAME_HEIGHT: " + capture.get (Videoio.CAP_PROP_FRAME_HEIGHT));
 
-
-            colors = new Color32[(int)(frameWidth * frameHeight)];
-            texture = new Texture2D ((int)(frameWidth), (int)(frameHeight), TextureFormat.RGBA32, false);
-//          gameObject.GetComponent<Renderer> ().material.mainTexture = texture;
-//          
-//          #if (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP_8_1) && !UNITY_EDITOR
-//          gameObject.transform.eulerAngles = new Vector3 (0, 0, -90);
-//          #endif
-//          
-//          gameObject.transform.localScale = new Vector3 ((float)frameWidth, (float)frameHeight, 1);
-//          
-//          
-//          #if (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP_8_1) && !UNITY_EDITOR
-//          Camera.main.orthographicSize = (float)frameWidth / 2;
-//          #else
-//          Camera.main.orthographicSize = (float)frameHeight / 2;
-//          #endif
+            capture.grab ();
+            capture.retrieve (rgbMat, 0);
+            int frameWidth = rgbMat.cols ();
+            int frameHeight = rgbMat.rows ();
+            colors = new Color32[frameWidth * frameHeight];
+            texture = new Texture2D (frameWidth, frameHeight, TextureFormat.RGBA32, false);
             gameObject.transform.localScale = new Vector3 ((float)frameWidth, (float)frameHeight, 1);
             float widthScale = (float)Screen.width / (float)frameWidth;
             float heightScale = (float)Screen.height / (float)frameHeight;
@@ -103,6 +118,8 @@ namespace DlibFaceLandmarkDetectorSample
             } else {
                 Camera.main.orthographicSize = (float)frameHeight / 2;
             }
+            capture.set (Videoio.CAP_PROP_POS_FRAMES, 0);
+
             
             gameObject.GetComponent<Renderer> ().material.mainTexture = texture;
         }
@@ -110,6 +127,9 @@ namespace DlibFaceLandmarkDetectorSample
         // Update is called once per frame
         void Update ()
         {
+            if (capture == null)
+                return;
+
             //Loop play
             if (capture.get (Videoio.CAP_PROP_POS_FRAMES) >= capture.get (Videoio.CAP_PROP_FRAME_COUNT))
                 capture.set (Videoio.CAP_PROP_POS_FRAMES, 0);
@@ -151,12 +171,14 @@ namespace DlibFaceLandmarkDetectorSample
         
         void OnDestroy ()
         {
-            capture.release ();
+            if (capture != null)
+                capture.release ();
 
             if (rgbMat != null)
                 rgbMat.Dispose ();
 
-            faceLandmarkDetector.Dispose ();
+            if (faceLandmarkDetector != null)
+                faceLandmarkDetector.Dispose ();
         }
         
         public void OnBackButton ()

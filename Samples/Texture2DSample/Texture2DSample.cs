@@ -17,8 +17,26 @@ namespace DlibFaceLandmarkDetectorSample
         /// </summary>
         public Texture2D texture2D;
 
+        /// <summary>
+        /// The shape_predictor_68_face_landmarks_dat_filepath.
+        /// </summary>
+        private string shape_predictor_68_face_landmarks_dat_filepath;
+
         // Use this for initialization
         void Start ()
+        {
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            StartCoroutine(Utils.getFilePathAsync("shape_predictor_68_face_landmarks.dat", (result) => {
+                shape_predictor_68_face_landmarks_dat_filepath = result;
+                Run ();
+            }));
+            #else
+            shape_predictor_68_face_landmarks_dat_filepath = Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
+            Run ();
+            #endif
+        }
+
+        private void Run ()
         {
 
             gameObject.transform.localScale = new Vector3 (texture2D.width, texture2D.height, 1);
@@ -36,7 +54,7 @@ namespace DlibFaceLandmarkDetectorSample
             }
 
 
-            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (Utils.getFilePath ("shape_predictor_68_face_landmarks.dat"));
+            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
             faceLandmarkDetector.SetImage (texture2D);
 
             //detect face rects

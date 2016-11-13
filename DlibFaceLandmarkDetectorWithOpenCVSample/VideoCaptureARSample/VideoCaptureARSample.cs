@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 #if UNITY_5_3 || UNITY_5_3_OR_NEWER
 using UnityEngine.SceneManagement;
@@ -18,24 +19,44 @@ namespace DlibFaceLandmarkDetectorSample
     public class VideoCaptureARSample : MonoBehaviour
     {
         /// <summary>
-        /// The should draw face points.
+        /// The is showing face points.
         /// </summary>
-        public bool shouldDrawFacePoints;
+        public bool isShowingFacePoints;
 
         /// <summary>
-        /// The should draw axes.
+        /// The is showing face points toggle.
         /// </summary>
-        public bool shouldDrawAxes;
+        public Toggle isShowingFacePointsToggle;
 
         /// <summary>
-        /// The should draw head.
+        /// The is showing axes.
         /// </summary>
-        public bool shouldDrawHead;
+        public bool isShowingAxes;
 
         /// <summary>
-        /// The should draw effects.
+        /// The is showing axes toggle.
         /// </summary>
-        public bool shouldDrawEffects;
+        public Toggle isShowingAxesToggle;
+
+        /// <summary>
+        /// The is showing head.
+        /// </summary>
+        public bool isShowingHead;
+
+        /// <summary>
+        /// The is showing head toggle.
+        /// </summary>
+        public Toggle isShowingHeadToggle;
+
+        /// <summary>
+        /// The is showing effects.
+        /// </summary>
+        public bool isShowingEffects;
+
+        /// <summary>
+        /// The is showing effects toggle.
+        /// </summary>
+        public Toggle isShowingEffectsToggle;
         
         /// <summary>
         /// The axes.
@@ -141,16 +162,6 @@ namespace DlibFaceLandmarkDetectorSample
         /// The rot m.
         /// </summary>
         Mat rotM;
-
-        /// <summary>
-        /// The width of the frame.
-        /// </summary>
-        private double frameWidth = 320;
-        
-        /// <summary>
-        /// The height of the frame.
-        /// </summary>
-        private double frameHeight = 240;
         
         /// <summary>
         /// The capture.
@@ -171,9 +182,51 @@ namespace DlibFaceLandmarkDetectorSample
         /// The face landmark detector.
         /// </summary>
         FaceLandmarkDetector faceLandmarkDetector;
-        
+
+        /// <summary>
+        /// The shape_predictor_68_face_landmarks_dat_filepath.
+        /// </summary>
+        private string shape_predictor_68_face_landmarks_dat_filepath;
+
+        /// <summary>
+        /// The dance_avi_filepath.
+        /// </summary>
+        private string dance_avi_filepath;
+
         // Use this for initialization
         void Start ()
+        {
+            isShowingFacePointsToggle.isOn = isShowingFacePoints;
+            isShowingAxesToggle.isOn = isShowingAxes;
+            isShowingHeadToggle.isOn = isShowingHead;
+            isShowingEffectsToggle.isOn = isShowingEffects;
+
+
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            StartCoroutine(getFilePathCoroutine());
+            #else
+            shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
+            dance_avi_filepath = OpenCVForUnity.Utils.getFilePath ("dance.avi");
+            Run ();
+            #endif
+        }
+
+        private IEnumerator getFilePathCoroutine ()
+        {
+            var getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine = StartCoroutine (DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
+                shape_predictor_68_face_landmarks_dat_filepath = result;
+            }));
+            var getFilePathAsync_dance_avi_filepath_Coroutine = StartCoroutine (OpenCVForUnity.Utils.getFilePathAsync ("dance.avi", (result) => {
+                dance_avi_filepath = result;
+            }));
+            
+            yield return getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine;
+            yield return getFilePathAsync_dance_avi_filepath_Coroutine;
+            
+            Run ();
+        }
+        
+        private void Run ()
         {
             //set 3d face object points.
             objectPoints = new MatOfPoint3f (
@@ -190,12 +243,12 @@ namespace DlibFaceLandmarkDetectorSample
             tvec = new Mat ();
             rotM = new Mat (3, 3, CvType.CV_64FC1);
 
-            faceLandmarkDetector = new FaceLandmarkDetector (DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat"));
+            faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
 
             rgbMat = new Mat ();
             
             capture = new VideoCapture ();
-            capture.open (OpenCVForUnity.Utils.getFilePath ("dance.avi"));
+            capture.open (dance_avi_filepath);
             
             if (capture.isOpened ()) {
                 Debug.Log ("capture.isOpened() true");
@@ -213,13 +266,17 @@ namespace DlibFaceLandmarkDetectorSample
             Debug.Log ("CAP_PROP_FPS: " + capture.get (Videoio.CAP_PROP_FPS));
             Debug.Log ("CAP_PROP_FRAME_WIDTH: " + capture.get (Videoio.CAP_PROP_FRAME_WIDTH));
             Debug.Log ("CAP_PROP_FRAME_HEIGHT: " + capture.get (Videoio.CAP_PROP_FRAME_HEIGHT));
-            
-            colors = new Color32[(int)(frameWidth) * (int)(frameHeight)];
-            texture = new Texture2D ((int)(frameWidth), (int)(frameHeight), TextureFormat.RGBA32, false);
 
-            gameObject.GetComponent<Renderer> ().material.mainTexture = texture;
-
+            capture.grab ();
+            capture.retrieve (rgbMat, 0);
+            int frameWidth = rgbMat.cols ();
+            int frameHeight = rgbMat.rows ();
+            colors = new Color32[frameWidth * frameHeight];
+            texture = new Texture2D (frameWidth, frameHeight, TextureFormat.RGBA32, false);
             gameObject.transform.localScale = new Vector3 ((float)frameWidth, (float)frameHeight, 1);
+            capture.set (Videoio.CAP_PROP_POS_FRAMES, 0);
+            
+            gameObject.GetComponent<Renderer> ().material.mainTexture = texture;
             
             Debug.Log ("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
 
@@ -321,6 +378,8 @@ namespace DlibFaceLandmarkDetectorSample
         // Update is called once per frame
         void Update ()
         {
+            if (capture == null)
+                return;
 
             //Loop play
             if (capture.get (Videoio.CAP_PROP_POS_FRAMES) >= capture.get (Videoio.CAP_PROP_FRAME_COUNT))
@@ -345,7 +404,7 @@ namespace DlibFaceLandmarkDetectorSample
                     List<Vector2> points = faceLandmarkDetector.DetectLandmark (detectResult [0]);
 
                     if (points.Count > 0) {
-                        if (shouldDrawFacePoints)
+                        if (isShowingFacePoints)
                             OpenCVForUnityUtils.DrawFaceLandmark (rgbMat, points, new Scalar (0, 255, 0), 2);
 
                         imagePoints.fromArray (
@@ -366,17 +425,17 @@ namespace DlibFaceLandmarkDetectorSample
                         if (tvec.get (2, 0) [0] > 0) {
 
                             if (Mathf.Abs ((float)(points [43].y - points [46].y)) > Mathf.Abs ((float)(points [42].x - points [45].x)) / 6.0) {
-                                if (shouldDrawEffects)
+                                if (isShowingEffects)
                                     rightEye.SetActive (true);
                             }
 
                             if (Mathf.Abs ((float)(points [38].y - points [41].y)) > Mathf.Abs ((float)(points [39].x - points [36].x)) / 6.0) {
-                                if (shouldDrawEffects)
+                                if (isShowingEffects)
                                     leftEye.SetActive (true);
                             }
-                            if (shouldDrawHead)
+                            if (isShowingHead)
                                 head.SetActive (true);
-                            if (shouldDrawAxes)
+                            if (isShowingAxes)
                                 axes.SetActive (true);
                                                     
                                                     
@@ -384,7 +443,7 @@ namespace DlibFaceLandmarkDetectorSample
                             float noseDistance = Mathf.Abs ((float)(points [27].y - points [33].y));
                             float mouseDistance = Mathf.Abs ((float)(points [62].y - points [66].y));
                             if (mouseDistance > noseDistance / 5.0) {
-                                if (shouldDrawEffects) {
+                                if (isShowingEffects) {
                                     mouth.SetActive (true);
                                     foreach (ParticleSystem ps in mouthParticleSystem) {
                                         ps.enableEmission = true;
@@ -392,7 +451,7 @@ namespace DlibFaceLandmarkDetectorSample
                                     }
                                 }
                             } else {
-                                if (shouldDrawEffects) {
+                                if (isShowingEffects) {
                                     foreach (ParticleSystem ps in mouthParticleSystem) {
                                         ps.enableEmission = false;
                                     }
@@ -445,10 +504,13 @@ namespace DlibFaceLandmarkDetectorSample
         /// </summary>
         void OnDisable ()
         {
-            camMatrix.Dispose ();
-            distCoeffs.Dispose ();
+            if (camMatrix != null)
+                camMatrix.Dispose ();
+            if (distCoeffs != null)
+                distCoeffs.Dispose ();
 
-            faceLandmarkDetector.Dispose ();
+            if (faceLandmarkDetector != null)
+                faceLandmarkDetector.Dispose ();
         }
         
         /// <summary>
@@ -463,44 +525,56 @@ namespace DlibFaceLandmarkDetectorSample
             #endif
         }
                 
-        public void OnDrawFacePointsButton ()
+        /// <summary>
+        /// Raises the is showing face points toggle event.
+        /// </summary>
+        public void OnIsShowingFacePointsToggle ()
         {
-            if (shouldDrawFacePoints) {
-                shouldDrawFacePoints = false;
+            if (isShowingFacePointsToggle.isOn) {
+                isShowingFacePoints = true;
             } else {
-                shouldDrawFacePoints = true;
+                isShowingFacePoints = false;
             }
         }
                 
-        public void OnDrawAxesButton ()
+        /// <summary>
+        /// Raises the is showing axes toggle event.
+        /// </summary>
+        public void OnIsShowingAxesToggle ()
         {
-            if (shouldDrawAxes) {
-                shouldDrawAxes = false;
+            if (isShowingAxesToggle.isOn) {
+                isShowingAxes = true;
+            } else {
+                isShowingAxes = false;
                 axes.SetActive (false);
-            } else {
-                shouldDrawAxes = true;
             }
         }
                 
-        public void OnDrawHeadButton ()
+        /// <summary>
+        /// Raises the is showing head toggle event.
+        /// </summary>
+        public void OnIsShowingHeadToggle ()
         {
-            if (shouldDrawHead) {
-                shouldDrawHead = false;
-                head.SetActive (false);
+            if (isShowingHeadToggle.isOn) {
+                isShowingHead = true;
             } else {
-                shouldDrawHead = true;
+                isShowingHead = false;
+                head.SetActive (false);
             }
         }
 
-        public void OnDrawEffectsButton ()
+        /// <summary>
+        /// Raises the is showin effects toggle event.
+        /// </summary>
+        public void OnIsShowinEffectsToggle ()
         {
-            if (shouldDrawEffects) {
-                shouldDrawEffects = false;
+            if (isShowingEffectsToggle.isOn) {
+                isShowingEffects = true;
+            } else {
+                isShowingEffects = false;
                 rightEye.SetActive (false);
                 leftEye.SetActive (false);
                 mouth.SetActive (false);
-            } else {
-                shouldDrawEffects = true;
             }
         }
 

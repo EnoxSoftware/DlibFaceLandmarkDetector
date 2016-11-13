@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 400000}
   - 198: {fileID: 19800000}
   - 199: {fileID: 19900000}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: heart2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,7 +27,7 @@ GameObject:
   - 4: {fileID: 400004}
   - 198: {fileID: 19800004}
   - 199: {fileID: 19900004}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: heart3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400006}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Eff_Laser_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   - 4: {fileID: 400008}
   - 198: {fileID: 19800006}
   - 199: {fileID: 19900006}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: heart1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,8 +96,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: .707106829, z: 0, w: .707106709}
+  m_LocalPosition: {x: 0, y: 8, z: -100}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400008}
@@ -157,7 +157,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 3
     startSpeed:
-      scalar: 4
+      scalar: 40
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -274,7 +274,7 @@ ParticleSystem:
         rgba: 4294928375
       minMaxState: 2
     startSize:
-      scalar: 1.5
+      scalar: 15
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1267,7 +1267,7 @@ ParticleSystem:
         rgba: 4293951999
       minMaxState: 0
     startSize:
-      scalar: 3
+      scalar: 30
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2148,7 +2148,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 3
     startSpeed:
-      scalar: 5
+      scalar: 50
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2265,7 +2265,7 @@ ParticleSystem:
         rgba: 4294935550
       minMaxState: 0
     startSize:
-      scalar: 3
+      scalar: 20
       maxCurve:
         serializedVersion: 2
         m_Curve:

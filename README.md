@@ -10,8 +10,13 @@ Setup Tutorial & Demo Video
 [![](http://img.youtube.com/vi/xUw3LillWrs/0.jpg)](https://www.youtube.com/watch?v=xUw3LillWrs)
 [![](http://img.youtube.com/vi/pwm66AC7lFk/0.jpg)](https://www.youtube.com/watch?v=pwm66AC7lFk)
 
-Demo Application
+Demo
 -----
+- WebGL
+<https://enoxsoftware.github.io/DlibFaceLandmarkDetector/webgl_sample/index.html>
+- WebGL(using shape_predictor_68_face_landmarks_for_mobile.dat)
+<https://enoxsoftware.github.io/DlibFaceLandmarkDetector/webgl_sample_for_mobile/index.html>
+- Android
 <https://play.google.com/store/apps/details?id=com.enoxsoftware.dlibfacelandmarkdetectorsample>
 
 Manual
@@ -20,7 +25,7 @@ Manual
 
 API Reference
 -----
-<http://enoxsoftware.github.io/DlibFaceLandmarkDetector/doc/html/index.html>
+<https://enoxsoftware.github.io/DlibFaceLandmarkDetector/doc/html/index.html>
 
 Official Site
 -----

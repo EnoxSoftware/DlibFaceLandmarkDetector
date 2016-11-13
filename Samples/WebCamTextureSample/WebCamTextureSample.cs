@@ -69,11 +69,29 @@ namespace DlibFaceLandmarkDetectorSample
         /// </summary>
         bool flip;
 
+        /// <summary>
+        /// The shape_predictor_68_face_landmarks_dat_filepath.
+        /// </summary>
+        private string shape_predictor_68_face_landmarks_dat_filepath;
+
         // Use this for initialization
         void Start ()
         {
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            StartCoroutine(Utils.getFilePathAsync("shape_predictor_68_face_landmarks.dat", (result) => {
+                shape_predictor_68_face_landmarks_dat_filepath = result;
+                Run ();
+            }));
+            #else
+            shape_predictor_68_face_landmarks_dat_filepath = Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
+            Run ();
+            #endif
+        }
 
-            faceLandmarkDetector = new FaceLandmarkDetector (Utils.getFilePath ("shape_predictor_68_face_landmarks.dat"));
+        private void Run ()
+        {
+
+            faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
     
             StartCoroutine (init ());
 
@@ -262,8 +280,8 @@ namespace DlibFaceLandmarkDetectorSample
         void OnDisable ()
         {
 
-            webCamTexture.Stop ();
-            faceLandmarkDetector.Dispose ();
+            if(webCamTexture != null)webCamTexture.Stop ();
+            if(faceLandmarkDetector != null)faceLandmarkDetector.Dispose ();
         }
 
         public void OnBackButton ()

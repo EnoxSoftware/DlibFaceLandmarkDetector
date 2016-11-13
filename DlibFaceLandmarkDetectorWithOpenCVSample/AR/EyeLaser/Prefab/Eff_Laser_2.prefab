@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 400000}
   - 198: {fileID: 19800000}
   - 199: {fileID: 19900000}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: par3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,7 +27,7 @@ GameObject:
   - 4: {fileID: 400002}
   - 198: {fileID: 19800002}
   - 199: {fileID: 19900002}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: par2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400004}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Eff_Laser_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   - 4: {fileID: 400006}
   - 198: {fileID: 19800004}
   - 199: {fileID: 19900004}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: laser1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -76,7 +76,7 @@ GameObject:
   - 4: {fileID: 400008}
   - 198: {fileID: 19800006}
   - 199: {fileID: 19900006}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: par1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,8 +113,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: .707106829, z: 0, w: .707106709}
+  m_LocalPosition: {x: 30, y: 74, z: -90}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400008}
@@ -187,7 +187,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 3
     startSpeed:
-      scalar: 40
+      scalar: 400
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -304,7 +304,7 @@ ParticleSystem:
         rgba: 4294961489
       minMaxState: 0
     startSize:
-      scalar: 3
+      scalar: 30
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1180,7 +1180,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 3
     startSpeed:
-      scalar: .100000001
+      scalar: 1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1297,7 +1297,7 @@ ParticleSystem:
         rgba: 4294967295
       minMaxState: 0
     startSize:
-      scalar: 5
+      scalar: 50
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2173,7 +2173,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 5
+      scalar: 50
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2290,7 +2290,7 @@ ParticleSystem:
         rgba: 4294956342
       minMaxState: 0
     startSize:
-      scalar: .5
+      scalar: 5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3171,12 +3171,12 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 3
     startSpeed:
-      scalar: 10.6099997
+      scalar: 106.100006
       maxCurve:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: -.496701241
+          value: -.496701211
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3288,7 +3288,7 @@ ParticleSystem:
         rgba: 4294967295
       minMaxState: 0
     startSize:
-      scalar: 1
+      scalar: 10
       maxCurve:
         serializedVersion: 2
         m_Curve:

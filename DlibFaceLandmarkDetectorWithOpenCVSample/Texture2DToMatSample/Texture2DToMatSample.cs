@@ -22,8 +22,26 @@ namespace DlibFaceLandmarkDetectorSample
         /// </summary>
         public Texture2D imgTexture;
 
+        /// <summary>
+        /// The shape_predictor_68_face_landmarks_dat_filepath.
+        /// </summary>
+        private string shape_predictor_68_face_landmarks_dat_filepath;
+
         // Use this for initialization
         void Start ()
+        {
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            StartCoroutine(DlibFaceLandmarkDetector.Utils.getFilePathAsync("shape_predictor_68_face_landmarks.dat", (result) => {
+                shape_predictor_68_face_landmarks_dat_filepath = result;
+                Run ();
+            }));
+            #else
+            shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
+            Run ();
+            #endif
+        }
+
+        private void Run ()
         {
             Mat imgMat = new Mat (imgTexture.height, imgTexture.width, CvType.CV_8UC4);
             
@@ -45,10 +63,7 @@ namespace DlibFaceLandmarkDetectorSample
             }
 
 
-
-
-
-            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat"));
+            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
 
             OpenCVForUnityUtils.SetImage (faceLandmarkDetector, imgMat);
 

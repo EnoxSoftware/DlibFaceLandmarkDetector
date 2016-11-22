@@ -211,6 +211,7 @@ namespace DlibFaceLandmarkDetectorSample
             #endif
         }
 
+        #if UNITY_WEBGL && !UNITY_EDITOR
         private IEnumerator getFilePathCoroutine ()
         {
             var getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine = StartCoroutine (DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
@@ -225,6 +226,7 @@ namespace DlibFaceLandmarkDetectorSample
             
             Run ();
         }
+        #endif
         
         private void Run ()
         {

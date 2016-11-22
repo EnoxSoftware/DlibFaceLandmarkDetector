@@ -42,6 +42,7 @@ namespace DlibFaceLandmarkDetectorSample
             #endif
         }
 
+        #if UNITY_WEBGL && !UNITY_EDITOR
         private IEnumerator getFilePathCoroutine ()
         {
             var getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine = StartCoroutine (Utils.getFilePathAsync ("frontal_cat_face.svm", (result) => {
@@ -56,6 +57,7 @@ namespace DlibFaceLandmarkDetectorSample
             
             Run ();
         }
+        #endif
 
         private void Run ()
         {

@@ -21,7 +21,7 @@ Demo
 
 Manual
 -----
-[ReadMe.pdf](ReadMe.pdf)
+[ReadMe.pdf](/DlibFaceLandmarkDetector/ReadMe.pdf)
 
 API Reference
 -----

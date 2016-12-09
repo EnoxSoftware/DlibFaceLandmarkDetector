@@ -1538,6 +1538,7 @@ MonoBehaviour:
   requestIsFrontFacing: 0
   flipVertical: 0
   flipHorizontal: 0
+  timeoutFrameCount: 300
   OnInitedEvent:
     m_PersistentCalls:
       m_Calls:
@@ -1572,6 +1573,23 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  OnErrorOccurredEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1709852087}
+        m_MethodName: OnWebCamTextureToMatHelperErrorOccurred
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: DlibFaceLandmarkDetectorSample.WebCamTextureToMatHelper+ErrorUnityEvent,
+      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!114 &1709852087
 MonoBehaviour:
   m_ObjectHideFlags: 0

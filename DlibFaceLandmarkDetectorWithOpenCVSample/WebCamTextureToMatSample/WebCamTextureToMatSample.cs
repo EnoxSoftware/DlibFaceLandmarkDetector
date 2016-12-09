@@ -98,6 +98,14 @@ namespace DlibFaceLandmarkDetectorSample
 
         }
 
+        /// <summary>
+        /// Raises the web cam texture to mat helper error occurred event.
+        /// </summary>
+        /// <param name="errorCode">Error code.</param>
+        public void OnWebCamTextureToMatHelperErrorOccurred(WebCamTextureToMatHelper.ErrorCode errorCode){
+            Debug.Log ("OnWebCamTextureToMatHelperErrorOccurred " + errorCode);
+        }
+
         // Update is called once per frame
         void Update ()
         {

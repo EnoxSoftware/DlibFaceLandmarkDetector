@@ -87,6 +87,10 @@ namespace DlibFaceLandmarkDetector
                 for (int i = 61; i <= 67; ++i)
                     Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), new Scalar (0, 255, 0, 255), thickness);
                 Imgproc.line (imgMat, new Point (points [60].x, points [60].y), new Point (points [67].x, points [67].y), new Scalar (0, 255, 0, 255), thickness);
+            } else {
+                for (int i = 0; i < points.Count; i++) {
+                    Imgproc.circle (imgMat, new Point (points [i].x, points [i].y), 2, new Scalar (0, 255, 0, 255), -1);
+                }
             }
         }
     }

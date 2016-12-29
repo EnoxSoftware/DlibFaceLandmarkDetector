@@ -1529,7 +1529,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1709852081}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 783d415b5f351b441a93a6b95641439a, type: 3}
+  m_Script: {fileID: 11500000, guid: 40195cce70bac6d488f69e01128cca64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   requestDeviceName: 
@@ -1590,6 +1590,8 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: DlibFaceLandmarkDetectorSample.WebCamTextureToMatHelper+ErrorUnityEvent,
       Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  DOWNSCALE_RATIO: 2
+  SKIP_FRAMES: 2
 --- !u!114 &1709852087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1601,5 +1603,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b8d3fb701d2275469fc7dcc5b0a6b25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FACE_DOWNSAMPLE_RATIO: 4
-  SKIP_FRAMES: 2

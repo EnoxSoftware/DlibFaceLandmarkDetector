@@ -16,7 +16,7 @@ namespace DlibFaceLandmarkDetectorSample
     /// OptimizationSample (Resize Frame+Skip frame)
     /// http://www.learnopencv.com/speeding-up-dlib-facial-landmark-detector/
     /// </summary>
-    [RequireComponent(typeof(WebCamTextureToMatHelper))]
+    [RequireComponent(typeof(OptimizationWebCamTextureToMatHelper))]
     public class OptimizationSample : MonoBehaviour
     {
 
@@ -28,32 +28,12 @@ namespace DlibFaceLandmarkDetectorSample
         /// <summary>
         /// The web cam texture to mat helper.
         /// </summary>
-        WebCamTextureToMatHelper webCamTextureToMatHelper;
+        OptimizationWebCamTextureToMatHelper webCamTextureToMatHelper;
 
         /// <summary>
         /// The face landmark detector.
         /// </summary>
         FaceLandmarkDetector faceLandmarkDetector;
-
-        /// <summary>
-        /// The FAC e_ DOWNSAMPL e_ RATI.
-        /// </summary>
-        public int FACE_DOWNSAMPLE_RATIO = 2;
-
-        /// <summary>
-        /// The SKI p_ FRAME.
-        /// </summary>
-        public int SKIP_FRAMES = 2;
-
-        /// <summary>
-        /// The count.
-        /// </summary>
-        int count;
-
-        /// <summary>
-        /// The rgba mat_downscale.
-        /// </summary>
-        Mat rgbaMat_downscale;
 
         /// <summary>
         /// The detect result.
@@ -83,7 +63,7 @@ namespace DlibFaceLandmarkDetectorSample
         {
             faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
 
-            webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper> ();
+            webCamTextureToMatHelper = gameObject.GetComponent<OptimizationWebCamTextureToMatHelper> ();
             webCamTextureToMatHelper.Init ();
         }
 
@@ -114,10 +94,7 @@ namespace DlibFaceLandmarkDetectorSample
                 Camera.main.orthographicSize = height / 2;
             }
 
-
-            rgbaMat_downscale = new Mat ();
             detectResult = new List<UnityEngine.Rect> ();
-            count = 0;
         }
 
         /// <summary>
@@ -141,22 +118,21 @@ namespace DlibFaceLandmarkDetectorSample
         void Update ()
         {
 
-            if (webCamTextureToMatHelper.isPlaying () && webCamTextureToMatHelper.didUpdateThisFrame ()) {
+            if (webCamTextureToMatHelper.IsPlaying () && webCamTextureToMatHelper.DidUpdateThisFrame ()) {
 
                 Mat rgbaMat = webCamTextureToMatHelper.GetMat ();
 
-                // Resize image for face detection
-                Imgproc.resize (rgbaMat, rgbaMat_downscale, new Size (), 1.0 / FACE_DOWNSAMPLE_RATIO, 1.0 / FACE_DOWNSAMPLE_RATIO, Imgproc.INTER_LINEAR);
+                Mat downScaleRgbaMat = webCamTextureToMatHelper.GetDownScaleMat(rgbaMat);
 
-
-                OpenCVForUnityUtils.SetImage (faceLandmarkDetector, rgbaMat_downscale);
-
+                OpenCVForUnityUtils.SetImage (faceLandmarkDetector, downScaleRgbaMat);
 
                 // Detect faces on resize image
-                if (count % SKIP_FRAMES == 0) {
+                if (!webCamTextureToMatHelper.IsSkipFrame()) {
                     //detect face rects
                     detectResult = faceLandmarkDetector.Detect ();
                 }
+
+                int DOWNSCALE_RATIO = webCamTextureToMatHelper.DOWNSCALE_RATIO;
                 
                 foreach (var rect in detectResult) {
 
@@ -166,23 +142,22 @@ namespace DlibFaceLandmarkDetectorSample
                     if (points.Count > 0) {
                         List<Vector2> originalPoints = new List<Vector2> (points.Count);
                         foreach (var point in points) {
-                            originalPoints.Add (new Vector2 (point.x * FACE_DOWNSAMPLE_RATIO, point.y * FACE_DOWNSAMPLE_RATIO));
+                            originalPoints.Add (new Vector2 (point.x * DOWNSCALE_RATIO, point.y * DOWNSCALE_RATIO));
                         }
 
                         //draw landmark points
                         OpenCVForUnityUtils.DrawFaceLandmark (rgbaMat, originalPoints, new Scalar (0, 255, 0, 255), 2);
                     }
 
-                    UnityEngine.Rect originalRect = new UnityEngine.Rect (rect.x * FACE_DOWNSAMPLE_RATIO, rect.y * FACE_DOWNSAMPLE_RATIO, rect.width * FACE_DOWNSAMPLE_RATIO, rect.height * FACE_DOWNSAMPLE_RATIO);
+                    UnityEngine.Rect originalRect = new UnityEngine.Rect (rect.x * DOWNSCALE_RATIO, rect.y * DOWNSCALE_RATIO, rect.width * DOWNSCALE_RATIO, rect.height * DOWNSCALE_RATIO);
                     //draw face rect
                     OpenCVForUnityUtils.DrawFaceRect (rgbaMat, originalRect, new Scalar (255, 0, 0, 255), 2);
                 }
 
-                Imgproc.putText (rgbaMat, "Original: (" + rgbaMat.width () + "," + rgbaMat.height () + ") DownScale; (" + rgbaMat_downscale.width () + "," + rgbaMat_downscale.height () + ") SkipFrames: " + SKIP_FRAMES, new Point (5, rgbaMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar (255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
+                Imgproc.putText (rgbaMat, "Original: (" + rgbaMat.width () + "," + rgbaMat.height () + ") DownScale; (" + downScaleRgbaMat.width () + "," + downScaleRgbaMat.height () + ") SkipFrames: " + webCamTextureToMatHelper.SKIP_FRAMES, new Point (5, rgbaMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar (255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
 
                 OpenCVForUnity.Utils.matToTexture2D (rgbaMat, texture, webCamTextureToMatHelper.GetBufferColors ());
 
-                count++;
             }
 
         }

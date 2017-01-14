@@ -122,7 +122,6 @@ namespace DlibFaceLandmarkDetectorSample
             }
             capture.set (Videoio.CAP_PROP_POS_FRAMES, 0);
 
-            
             gameObject.GetComponent<Renderer> ().material.mainTexture = texture;
         }
         
@@ -154,11 +153,9 @@ namespace DlibFaceLandmarkDetectorSample
 
                     //detect landmark points
                     List<Vector2> points = faceLandmarkDetector.DetectLandmark (rect);
-                    
-                    if (points.Count > 0) {
-                        //draw landmark points
-                        OpenCVForUnityUtils.DrawFaceLandmark (rgbMat, points, new Scalar (0, 255, 0), 2);
-                    }
+
+                    //draw landmark points
+                    OpenCVForUnityUtils.DrawFaceLandmark (rgbMat, points, new Scalar (0, 255, 0), 2);
 
                     //draw face rect
                     OpenCVForUnityUtils.DrawFaceRect (rgbMat, rect, new Scalar (255, 0, 0), 2);
@@ -167,7 +164,6 @@ namespace DlibFaceLandmarkDetectorSample
                 Imgproc.putText (rgbMat, "W:" + rgbMat.width () + " H:" + rgbMat.height () + " SO:" + Screen.orientation, new Point (5, rgbMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255), 1, Imgproc.LINE_AA, false);
 
                 OpenCVForUnity.Utils.matToTexture2D (rgbMat, texture, colors);
-                
             }
         }
         
@@ -192,5 +188,4 @@ namespace DlibFaceLandmarkDetectorSample
             #endif
         }
     }
-    
 }

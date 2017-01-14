@@ -18,11 +18,11 @@ namespace DlibFaceLandmarkDetectorSample
             GameObject.Find("VideoCaptureARSample").gameObject.SetActive(false);
             #endif
         }
-    
+
         // Update is called once per frame
         void Update ()
         {
-    
+
         }
 
         public void OnShowLicenseButton ()
@@ -42,7 +42,7 @@ namespace DlibFaceLandmarkDetectorSample
             Application.LoadLevel ("Texture2DSample");
             #endif
         }
-        
+
         public void OnWebCamTextureSample ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
@@ -69,7 +69,7 @@ namespace DlibFaceLandmarkDetectorSample
             Application.LoadLevel ("Texture2DToMatSample");
             #endif
         }
-                
+
         public void OnWebCamTextureToMatSample ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
@@ -78,7 +78,7 @@ namespace DlibFaceLandmarkDetectorSample
             Application.LoadLevel ("WebCamTextureToMatSample");
             #endif
         }
-                
+
         public void OnWebCamTextureARSample ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
@@ -96,7 +96,7 @@ namespace DlibFaceLandmarkDetectorSample
             Application.LoadLevel ("VideoCaptureSample");
             #endif
         }
-        
+
         public void OnVideoCaptureARSample ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
@@ -105,7 +105,7 @@ namespace DlibFaceLandmarkDetectorSample
             Application.LoadLevel ("VideoCaptureARSample");
             #endif
         }
-
+        
         public void OnOptimizationSample ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
@@ -116,4 +116,3 @@ namespace DlibFaceLandmarkDetectorSample
         }
     }
 }
-        

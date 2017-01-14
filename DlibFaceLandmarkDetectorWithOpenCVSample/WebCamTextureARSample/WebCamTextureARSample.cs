@@ -311,9 +311,8 @@ namespace DlibFaceLandmarkDetectorSample
             } else {
                 ARCamera.fieldOfView = (float)(fovy [0] * fovYScale);
             }
-                                    
-                                    
-                                    
+
+
             invertYM = Matrix4x4.TRS (Vector3.zero, Quaternion.identity, new Vector3 (1, -1, 1));
             Debug.Log ("invertYM " + invertYM.ToString ());
             
@@ -327,9 +326,7 @@ namespace DlibFaceLandmarkDetectorSample
             leftEye.SetActive (false);
             mouth.SetActive (false);
 
-
             mouthParticleSystem = mouth.GetComponentsInChildren<ParticleSystem> (true);
-
         }
         
         /// <summary>
@@ -354,7 +351,6 @@ namespace DlibFaceLandmarkDetectorSample
         // Update is called once per frame
         void Update ()
         {
-
             if (webCamTextureToMatHelper.IsPlaying () && webCamTextureToMatHelper.DidUpdateThisFrame ()) {
                 
                 Mat rgbaMat = webCamTextureToMatHelper.GetMat ();
@@ -370,96 +366,90 @@ namespace DlibFaceLandmarkDetectorSample
                     //detect landmark points
                     List<Vector2> points = faceLandmarkDetector.DetectLandmark (detectResult [0]);
 
-                    if (points.Count > 0) {
-                        if (isShowingFacePoints)
-                            OpenCVForUnityUtils.DrawFaceLandmark (rgbaMat, points, new Scalar (0, 255, 0, 255), 2);
+                    if (isShowingFacePoints)
+                        OpenCVForUnityUtils.DrawFaceLandmark (rgbaMat, points, new Scalar (0, 255, 0, 255), 2);
 
-                        imagePoints.fromArray (
-                            new Point ((points [38].x + points [41].x) / 2, (points [38].y + points [41].y) / 2),//l eye
-                            new Point ((points [43].x + points [46].x) / 2, (points [43].y + points [46].y) / 2),//r eye
-                            new Point (points [33].x, points [33].y),//nose
-                            new Point (points [48].x, points [48].y),//l mouth
-                            new Point (points [54].x, points [54].y) //r mouth
-                                                        ,
-                            new Point (points [0].x, points [0].y),//l ear
-                            new Point (points [16].x, points [16].y)//r ear
+                    imagePoints.fromArray (
+                        new Point ((points [38].x + points [41].x) / 2, (points [38].y + points [41].y) / 2),//l eye
+                        new Point ((points [43].x + points [46].x) / 2, (points [43].y + points [46].y) / 2),//r eye
+                        new Point (points [33].x, points [33].y),//nose
+                        new Point (points [48].x, points [48].y),//l mouth
+                        new Point (points [54].x, points [54].y) //r mouth
+                        ,
+                        new Point (points [0].x, points [0].y),//l ear
+                        new Point (points [16].x, points [16].y)//r ear
                         );
-                                                                        
-                                                                        
-                        Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec);
 
 
-                        if (tvec.get (2, 0) [0] > 0) {
+                    Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec);
 
-                            if (Mathf.Abs ((float)(points [43].y - points [46].y)) > Mathf.Abs ((float)(points [42].x - points [45].x)) / 6.0) {
-                                if (isShowingEffects)
-                                    rightEye.SetActive (true);
-                            }
 
-                            if (Mathf.Abs ((float)(points [38].y - points [41].y)) > Mathf.Abs ((float)(points [39].x - points [36].x)) / 6.0) {
-                                if (isShowingEffects)
-                                    leftEye.SetActive (true);
-                            }
-                            if (isShowingHead)
-                                head.SetActive (true);
-                            if (isShowingAxes)
-                                axes.SetActive (true);
-                                                    
-                                                    
-                            float noseDistance = Mathf.Abs ((float)(points [27].y - points [33].y));
-                            float mouseDistance = Mathf.Abs ((float)(points [62].y - points [66].y));
-                            if (mouseDistance > noseDistance / 5.0) {
-                                if (isShowingEffects) {
-                                    mouth.SetActive (true);
-                                    foreach (ParticleSystem ps in mouthParticleSystem) {
-                                        ps.enableEmission = true;
-                                        ps.startSize = 40 * (mouseDistance / noseDistance);
-                                    }
-                                }
-                            } else {
-                                if (isShowingEffects) {
-                                    foreach (ParticleSystem ps in mouthParticleSystem) {
-                                        ps.enableEmission = false;
-                                    }
+                    if (tvec.get (2, 0) [0] > 0) {
+
+                        if (Mathf.Abs ((float)(points [43].y - points [46].y)) > Mathf.Abs ((float)(points [42].x - points [45].x)) / 6.0) {
+                            if (isShowingEffects)
+                                rightEye.SetActive (true);
+                        }
+
+                        if (Mathf.Abs ((float)(points [38].y - points [41].y)) > Mathf.Abs ((float)(points [39].x - points [36].x)) / 6.0) {
+                            if (isShowingEffects)
+                                leftEye.SetActive (true);
+                        }
+                        if (isShowingHead)
+                            head.SetActive (true);
+                        if (isShowingAxes)
+                            axes.SetActive (true);
+
+
+                        float noseDistance = Mathf.Abs ((float)(points [27].y - points [33].y));
+                        float mouseDistance = Mathf.Abs ((float)(points [62].y - points [66].y));
+                        if (mouseDistance > noseDistance / 5.0) {
+                            if (isShowingEffects) {
+                                mouth.SetActive (true);
+                                foreach (ParticleSystem ps in mouthParticleSystem) {
+                                    ps.enableEmission = true;
+                                    ps.startSize = 40 * (mouseDistance / noseDistance);
                                 }
                             }
-
-                                                    
-                            Calib3d.Rodrigues (rvec, rotM);
-                                                    
-                            transformationM .SetRow (0, new Vector4 ((float)rotM.get (0, 0) [0], (float)rotM.get (0, 1) [0], (float)rotM.get (0, 2) [0], (float)tvec.get (0, 0) [0]));
-                            transformationM.SetRow (1, new Vector4 ((float)rotM.get (1, 0) [0], (float)rotM.get (1, 1) [0], (float)rotM.get (1, 2) [0], (float)tvec.get (1, 0) [0]));
-                            transformationM.SetRow (2, new Vector4 ((float)rotM.get (2, 0) [0], (float)rotM.get (2, 1) [0], (float)rotM.get (2, 2) [0], (float)tvec.get (2, 0) [0]));
-                            transformationM.SetRow (3, new Vector4 (0, 0, 0, 1));
-                                                    
-                            if (shouldMoveARCamera) {
-
-                                if (ARGameObject != null) {
-                                    ARM = ARGameObject.transform.localToWorldMatrix * invertZM * transformationM.inverse * invertYM;
-                                    ARUtils.SetTransformFromMatrix (ARCamera.transform, ref ARM);
-                                    ARGameObject.SetActive (true);
-                                }
-                            } else {
-                                ARM = ARCamera.transform.localToWorldMatrix * invertYM * transformationM * invertZM;
-
-                                if (ARGameObject != null) {
-                                    ARUtils.SetTransformFromMatrix (ARGameObject.transform, ref ARM);
-                                    ARGameObject.SetActive (true);
+                        } else {
+                            if (isShowingEffects) {
+                                foreach (ParticleSystem ps in mouthParticleSystem) {
+                                    ps.enableEmission = false;
                                 }
                             }
+                        }
 
+                        Calib3d.Rodrigues (rvec, rotM);
+                                                    
+                        transformationM .SetRow (0, new Vector4 ((float)rotM.get (0, 0) [0], (float)rotM.get (0, 1) [0], (float)rotM.get (0, 2) [0], (float)tvec.get (0, 0) [0]));
+                        transformationM.SetRow (1, new Vector4 ((float)rotM.get (1, 0) [0], (float)rotM.get (1, 1) [0], (float)rotM.get (1, 2) [0], (float)tvec.get (1, 0) [0]));
+                        transformationM.SetRow (2, new Vector4 ((float)rotM.get (2, 0) [0], (float)rotM.get (2, 1) [0], (float)rotM.get (2, 2) [0], (float)tvec.get (2, 0) [0]));
+                        transformationM.SetRow (3, new Vector4 (0, 0, 0, 1));
+                                                    
+                        if (shouldMoveARCamera) {
+
+                            if (ARGameObject != null) {
+                                ARM = ARGameObject.transform.localToWorldMatrix * invertZM * transformationM.inverse * invertYM;
+                                ARUtils.SetTransformFromMatrix (ARCamera.transform, ref ARM);
+                                ARGameObject.SetActive (true);
+                            }
+                        } else {
+                            ARM = ARCamera.transform.localToWorldMatrix * invertYM * transformationM * invertZM;
+
+                            if (ARGameObject != null) {
+                                ARUtils.SetTransformFromMatrix (ARGameObject.transform, ref ARM);
+                                ARGameObject.SetActive (true);
+                            }
                         }
                     }
                 }
-                                        
+
                 Imgproc.putText (rgbaMat, "W:" + rgbaMat.width () + " H:" + rgbaMat.height () + " SO:" + Screen.orientation, new Point (5, rgbaMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255, 255), 1, Imgproc.LINE_AA, false);
-                                        
+
                 OpenCVForUnity.Utils.matToTexture2D (rgbaMat, texture, webCamTextureToMatHelper.GetBufferColors ());
-                                        
             }
-                    
         }
-                
+
         /// <summary>
         /// Raises the disable event.
         /// </summary>
@@ -471,7 +461,7 @@ namespace DlibFaceLandmarkDetectorSample
             if (faceLandmarkDetector != null)
                 faceLandmarkDetector.Dispose ();
         }
-        
+
         /// <summary>
         /// Raises the back button event.
         /// </summary>
@@ -483,7 +473,7 @@ namespace DlibFaceLandmarkDetectorSample
             Application.LoadLevel ("DlibFaceLandmarkDetectorSample");
             #endif
         }
-        
+
         /// <summary>
         /// Raises the play button event.
         /// </summary>
@@ -491,7 +481,7 @@ namespace DlibFaceLandmarkDetectorSample
         {
             webCamTextureToMatHelper.Play ();
         }
-        
+
         /// <summary>
         /// Raises the pause button event.
         /// </summary>
@@ -499,7 +489,7 @@ namespace DlibFaceLandmarkDetectorSample
         {
             webCamTextureToMatHelper.Pause ();
         }
-        
+
         /// <summary>
         /// Raises the stop button event.
         /// </summary>
@@ -507,7 +497,7 @@ namespace DlibFaceLandmarkDetectorSample
         {
             webCamTextureToMatHelper.Stop ();
         }
-        
+
         /// <summary>
         /// Raises the change camera button event.
         /// </summary>
@@ -515,7 +505,7 @@ namespace DlibFaceLandmarkDetectorSample
         {
             webCamTextureToMatHelper.Init (null, webCamTextureToMatHelper.requestWidth, webCamTextureToMatHelper.requestHeight, !webCamTextureToMatHelper.requestIsFrontFacing);
         }
-                
+
         /// <summary>
         /// Raises the is showing face points toggle event.
         /// </summary>
@@ -527,7 +517,7 @@ namespace DlibFaceLandmarkDetectorSample
                 isShowingFacePoints = false;
             }
         }
-        
+
         /// <summary>
         /// Raises the is showing axes toggle event.
         /// </summary>
@@ -540,7 +530,7 @@ namespace DlibFaceLandmarkDetectorSample
                 axes.SetActive (false);
             }
         }
-        
+
         /// <summary>
         /// Raises the is showing head toggle event.
         /// </summary>
@@ -553,7 +543,7 @@ namespace DlibFaceLandmarkDetectorSample
                 head.SetActive (false);
             }
         }
-        
+
         /// <summary>
         /// Raises the is showin effects toggle event.
         /// </summary>
@@ -568,6 +558,5 @@ namespace DlibFaceLandmarkDetectorSample
                 mouth.SetActive (false);
             }
         }
-
     }
 }

@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
 using System;
 
 #if UNITY_5_3 || UNITY_5_3_OR_NEWER
@@ -85,28 +84,22 @@ namespace DlibFaceLandmarkDetectorSample
                 List<Vector2> points = faceLandmarkDetector.DetectLandmark (result.rect);
                                                 
                 Debug.Log ("face points count : " + points.Count);
-                if (points.Count > 0) {
-                    //draw landmark points
-                    OpenCVForUnityUtils.DrawFaceLandmark (imgMat, points, new Scalar (0, 255, 0, 255), 2);
-                
-                }
+                //draw landmark points
+                OpenCVForUnityUtils.DrawFaceLandmark (imgMat, points, new Scalar (0, 255, 0, 255), 2);
 
                 //draw face rect
                 OpenCVForUnityUtils.DrawFaceRect (imgMat, result.rect, new Scalar (255, 0, 0, 255), 2);
             }
 
-            
             faceLandmarkDetector.Dispose ();
-
 
             Texture2D texture = new Texture2D (imgMat.cols (), imgMat.rows (), TextureFormat.RGBA32, false);
 
             OpenCVForUnity.Utils.matToTexture2D (imgMat, texture);
 
             gameObject.GetComponent<Renderer> ().material.mainTexture = texture;
-
         }
-    
+
         // Update is called once per frame
         void Update ()
         {

@@ -76,7 +76,6 @@ namespace DlibFaceLandmarkDetectorSample
                 Camera.main.orthographicSize = height / 2;
             }
 
-
             FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (frontal_cat_face_svm_filepath, shape_predictor_68_cat_face_landmarks_dat_filepath);
             faceLandmarkDetector.SetImage (texture2D);
 
@@ -90,14 +89,12 @@ namespace DlibFaceLandmarkDetectorSample
                 List<Vector2> points = faceLandmarkDetector.DetectLandmark (rect);
                 
                 Debug.Log ("face points count : " + points.Count);
-                if (points.Count > 0) {
-                    foreach (var point in points) {
-                        Debug.Log ("face point : x " + point.x + " y " + point.y);
-                    }
-
-                    //draw landmark points
-                    faceLandmarkDetector.DrawDetectLandmarkResult (texture2D, 0, 255, 0, 255);
+                foreach (var point in points) {
+                    Debug.Log ("face point : x " + point.x + " y " + point.y);
                 }
+
+                //draw landmark points
+                faceLandmarkDetector.DrawDetectLandmarkResult (texture2D, 0, 255, 0, 255);
 
                 //draw face rects
                 faceLandmarkDetector.DrawDetectResult (texture2D, 255, 0, 0, 255, 3);
@@ -106,13 +103,12 @@ namespace DlibFaceLandmarkDetectorSample
             faceLandmarkDetector.Dispose ();
 
             gameObject.GetComponent<Renderer> ().material.mainTexture = texture2D;
-
         }
-    
+
         // Update is called once per frame
         void Update ()
         {
-    
+
         }
 
         public void OnBackButton ()

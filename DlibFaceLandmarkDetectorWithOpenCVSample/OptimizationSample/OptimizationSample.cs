@@ -117,7 +117,6 @@ namespace DlibFaceLandmarkDetectorSample
         // Update is called once per frame
         void Update ()
         {
-
             if (webCamTextureToMatHelper.IsPlaying () && webCamTextureToMatHelper.DidUpdateThisFrame ()) {
 
                 Mat rgbaMat = webCamTextureToMatHelper.GetMat ();
@@ -139,15 +138,13 @@ namespace DlibFaceLandmarkDetectorSample
                     //detect landmark points
                     List<Vector2> points = faceLandmarkDetector.DetectLandmark (rect);
 
-                    if (points.Count > 0) {
-                        List<Vector2> originalPoints = new List<Vector2> (points.Count);
-                        foreach (var point in points) {
-                            originalPoints.Add (new Vector2 (point.x * DOWNSCALE_RATIO, point.y * DOWNSCALE_RATIO));
-                        }
-
-                        //draw landmark points
-                        OpenCVForUnityUtils.DrawFaceLandmark (rgbaMat, originalPoints, new Scalar (0, 255, 0, 255), 2);
+                    List<Vector2> originalPoints = new List<Vector2> (points.Count);
+                    foreach (var point in points) {
+                        originalPoints.Add (new Vector2 (point.x * DOWNSCALE_RATIO, point.y * DOWNSCALE_RATIO));
                     }
+
+                    //draw landmark points
+                    OpenCVForUnityUtils.DrawFaceLandmark (rgbaMat, originalPoints, new Scalar (0, 255, 0, 255), 2);
 
                     UnityEngine.Rect originalRect = new UnityEngine.Rect (rect.x * DOWNSCALE_RATIO, rect.y * DOWNSCALE_RATIO, rect.width * DOWNSCALE_RATIO, rect.height * DOWNSCALE_RATIO);
                     //draw face rect
@@ -157,9 +154,7 @@ namespace DlibFaceLandmarkDetectorSample
                 Imgproc.putText (rgbaMat, "Original: (" + rgbaMat.width () + "," + rgbaMat.height () + ") DownScale; (" + downScaleRgbaMat.width () + "," + downScaleRgbaMat.height () + ") SkipFrames: " + webCamTextureToMatHelper.SKIP_FRAMES, new Point (5, rgbaMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar (255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
 
                 OpenCVForUnity.Utils.matToTexture2D (rgbaMat, texture, webCamTextureToMatHelper.GetBufferColors ());
-
             }
-
         }
     
         /// <summary>
@@ -217,6 +212,5 @@ namespace DlibFaceLandmarkDetectorSample
         {
             webCamTextureToMatHelper.Init (null, webCamTextureToMatHelper.requestWidth, webCamTextureToMatHelper.requestHeight, !webCamTextureToMatHelper.requestIsFrontFacing);
         }
-        
     }
 }

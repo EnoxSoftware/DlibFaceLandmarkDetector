@@ -94,7 +94,6 @@ namespace DlibFaceLandmarkDetectorSample
             faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
     
             StartCoroutine (init ());
-
         }
 
         private IEnumerator init ()
@@ -107,9 +106,7 @@ namespace DlibFaceLandmarkDetectorSample
             // Checks how many and which cameras are available on the device
             for (int cameraIndex = 0; cameraIndex < WebCamTexture.devices.Length; cameraIndex++) {
                 
-                
                 if (WebCamTexture.devices [cameraIndex].isFrontFacing == shouldUseFrontFacing) {
-                    
                     
                     Debug.Log (cameraIndex + " name " + WebCamTexture.devices [cameraIndex].name + " isFrontFacing " + WebCamTexture.devices [cameraIndex].isFrontFacing);
                     
@@ -119,8 +116,6 @@ namespace DlibFaceLandmarkDetectorSample
                     
                     break;
                 }
-                
-                
             }
             
             if (webCamTexture == null) {
@@ -134,13 +129,10 @@ namespace DlibFaceLandmarkDetectorSample
             }
             
             Debug.Log ("width " + webCamTexture.width + " height " + webCamTexture.height + " fps " + webCamTexture.requestedFPS);
-            
-            
-            
+
             // Starts the camera
             webCamTexture.Play ();
-            
-            
+
             while (true) {
                 //If you want to use webcamTexture.width and webcamTexture.height on iOS, you have to wait until webcamTexture.didUpdateThisFrame == 1, otherwise these two values will be equal to 16. (http://forum.unity3d.com/threads/webcamtexture-and-error-0x0502.123922/)
                 #if UNITY_IOS && !UNITY_EDITOR && (UNITY_4_6_3 || UNITY_4_6_4 || UNITY_5_0_0 || UNITY_5_0_1)
@@ -148,12 +140,12 @@ namespace DlibFaceLandmarkDetectorSample
                 #else
                 if (webCamTexture.didUpdateThisFrame) {
                     #if UNITY_IOS && !UNITY_EDITOR && UNITY_5_2                                    
-                        while (webCamTexture.width <= 16) {
-                            webCamTexture.GetPixels32 ();
-                            yield return new WaitForEndOfFrame ();
-                        } 
+                    while (webCamTexture.width <= 16) {
+                        webCamTexture.GetPixels32 ();
+                        yield return new WaitForEndOfFrame ();
+                    } 
                     #endif
-                    #endif
+                #endif
                         
                     Debug.Log ("width " + webCamTexture.width + " height " + webCamTexture.height + " fps " + webCamTexture.requestedFPS);
                     Debug.Log ("videoRotationAngle " + webCamTexture.videoRotationAngle + " videoVerticallyMirrored " + webCamTexture.videoVerticallyMirrored + " isFrongFacing " + webCamDevice.isFrontFacing);
@@ -174,9 +166,8 @@ namespace DlibFaceLandmarkDetectorSample
                     yield return 0;
                 }
             }
-                
         }
-            
+
         private void updateLayout ()
         {
             gameObject.transform.localRotation = new Quaternion (0, 0, 0, 0);
@@ -185,7 +176,6 @@ namespace DlibFaceLandmarkDetectorSample
             if (webCamTexture.videoRotationAngle == 90 || webCamTexture.videoRotationAngle == 270) {
                 gameObject.transform.eulerAngles = new Vector3 (0, 0, -90);
             }
-                
                 
             float width = 0;
             float height = 0;
@@ -204,7 +194,6 @@ namespace DlibFaceLandmarkDetectorSample
             } else {
                 Camera.main.orthographicSize = height / 2;
             }
-
 
             flip = true;
             if (webCamDevice.isFrontFacing) {
@@ -238,14 +227,13 @@ namespace DlibFaceLandmarkDetectorSample
                 screenOrientation = Screen.orientation;
                 updateLayout ();
             }
-                
+
             #if UNITY_IOS && !UNITY_EDITOR && (UNITY_4_6_3 || UNITY_4_6_4 || UNITY_5_0_0 || UNITY_5_0_1)
-                if (webCamTexture.width > 16 && webCamTexture.height > 16) {
+            if (webCamTexture.width > 16 && webCamTexture.height > 16) {
             #else
             if (webCamTexture.didUpdateThisFrame) {
-                #endif
+            #endif
 
-                        
                 webCamTexture.GetPixels32 (colors);
                 faceLandmarkDetector.SetImage<Color32> (colors, webCamTexture.width, webCamTexture.height, 4, flip);
         
@@ -253,19 +241,17 @@ namespace DlibFaceLandmarkDetectorSample
                 List<Rect> detectResult = faceLandmarkDetector.Detect ();
         
                 foreach (var rect in detectResult) {
-//          Debug.Log ("face : " + rect);
+                //Debug.Log ("face : " + rect);
             
                     //detect landmark points
                     List<Vector2> points = faceLandmarkDetector.DetectLandmark (rect);
 
-            
-//          Debug.Log ("face point : " + points.Count);
-                    if (points.Count > 0) {
-//              Debug.Log ("face points : x " + point.x + " y " + point.y);
 
-                        //draw landmark points
-                        faceLandmarkDetector.DrawDetectLandmarkResult<Color32> (colors, webCamTexture.width, webCamTexture.height, 4, flip, 0, 255, 0, 255);
-                    }
+                    //Debug.Log ("face point : " + points.Count);
+
+                    //draw landmark points
+                    faceLandmarkDetector.DrawDetectLandmarkResult<Color32> (colors, webCamTexture.width, webCamTexture.height, 4, flip, 0, 255, 0, 255);
+
 
                     //draw face rect
                     faceLandmarkDetector.DrawDetectResult<Color32> (colors, webCamTexture.width, webCamTexture.height, 4, flip, 255, 0, 0, 255, 2);
@@ -274,12 +260,10 @@ namespace DlibFaceLandmarkDetectorSample
                 texture2D.SetPixels32 (colors);
                 texture2D.Apply ();
             }
-
         }
 
         void OnDisable ()
         {
-
             if(webCamTexture != null)webCamTexture.Stop ();
             if(faceLandmarkDetector != null)faceLandmarkDetector.Dispose ();
         }
@@ -287,7 +271,7 @@ namespace DlibFaceLandmarkDetectorSample
         public void OnBackButton ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
-                    SceneManager.LoadScene ("DlibFaceLandmarkDetectorSample");
+            SceneManager.LoadScene ("DlibFaceLandmarkDetectorSample");
             #else
             Application.LoadLevel ("DlibFaceLandmarkDetectorSample");
             #endif

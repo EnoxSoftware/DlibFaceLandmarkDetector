@@ -6,7 +6,6 @@ namespace DlibFaceLandmarkDetectorSample
 {
     public class TouchController : MonoBehaviour
     {
-    
 
         public GameObject Cube;
         public float Speed = 0.1f;
@@ -14,30 +13,29 @@ namespace DlibFaceLandmarkDetectorSample
         void Update ()
         {
 
-
             #if ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR)
-
-        //Touch
-        int touchCount = Input.touchCount;
-        
-        if (touchCount == 1)
-        {
-
-            Touch t = Input.GetTouch(0);
-            switch (t.phase)
-            {
-            case TouchPhase.Moved:
-
-                float xAngle = t.deltaPosition.y * Speed;
-                float yAngle = -t.deltaPosition.x * Speed;
-                float zAngle = 0;
-
-                Cube.transform.Rotate(xAngle, yAngle, zAngle, Space.World);
-                
-                break;
-            }
             
-        }
+            //Touch
+            int touchCount = Input.touchCount;
+            
+            if (touchCount == 1)
+            {
+                
+                Touch t = Input.GetTouch(0);
+                switch (t.phase)
+                {
+                case TouchPhase.Moved:
+                    
+                    float xAngle = t.deltaPosition.y * Speed;
+                    float yAngle = -t.deltaPosition.x * Speed;
+                    float zAngle = 0;
+                    
+                    Cube.transform.Rotate(xAngle, yAngle, zAngle, Space.World);
+                    
+                    break;
+                }
+                
+            }
 
             #else
             //Mouse
@@ -51,6 +49,5 @@ namespace DlibFaceLandmarkDetectorSample
             }
             #endif
         }
-
     }
 }

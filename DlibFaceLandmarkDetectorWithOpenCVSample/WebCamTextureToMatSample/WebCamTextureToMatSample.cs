@@ -86,7 +86,6 @@ namespace DlibFaceLandmarkDetectorSample
             } else {
                 Camera.main.orthographicSize = height / 2;
             }
-
         }
 
         /// <summary>
@@ -95,21 +94,20 @@ namespace DlibFaceLandmarkDetectorSample
         public void OnWebCamTextureToMatHelperDisposed ()
         {
             Debug.Log ("OnWebCamTextureToMatHelperDisposed");
-
         }
 
         /// <summary>
         /// Raises the web cam texture to mat helper error occurred event.
         /// </summary>
         /// <param name="errorCode">Error code.</param>
-        public void OnWebCamTextureToMatHelperErrorOccurred(WebCamTextureToMatHelper.ErrorCode errorCode){
+        public void OnWebCamTextureToMatHelperErrorOccurred (WebCamTextureToMatHelper.ErrorCode errorCode)
+        {
             Debug.Log ("OnWebCamTextureToMatHelperErrorOccurred " + errorCode);
         }
 
         // Update is called once per frame
         void Update ()
         {
-
             if (webCamTextureToMatHelper.IsPlaying () && webCamTextureToMatHelper.DidUpdateThisFrame ()) {
 
                 Mat rgbaMat = webCamTextureToMatHelper.GetMat ();
@@ -124,10 +122,8 @@ namespace DlibFaceLandmarkDetectorSample
                     //detect landmark points
                     List<Vector2> points = faceLandmarkDetector.DetectLandmark (rect);
 
-                    if (points.Count > 0) {
-                        //draw landmark points
-                        OpenCVForUnityUtils.DrawFaceLandmark (rgbaMat, points, new Scalar (0, 255, 0, 255), 2);
-                    }
+                    //draw landmark points
+                    OpenCVForUnityUtils.DrawFaceLandmark (rgbaMat, points, new Scalar (0, 255, 0, 255), 2);
 
                     //draw face rect
                     OpenCVForUnityUtils.DrawFaceRect (rgbaMat, rect, new Scalar (255, 0, 0, 255), 2);
@@ -137,17 +133,18 @@ namespace DlibFaceLandmarkDetectorSample
 
                 OpenCVForUnity.Utils.matToTexture2D (rgbaMat, texture, webCamTextureToMatHelper.GetBufferColors ());
             }
-
         }
-    
+
         /// <summary>
         /// Raises the disable event.
         /// </summary>
         void OnDisable ()
         {
-            if(webCamTextureToMatHelper != null)webCamTextureToMatHelper.Dispose ();
+            if (webCamTextureToMatHelper != null)
+                webCamTextureToMatHelper.Dispose ();
 
-            if(faceLandmarkDetector != null)faceLandmarkDetector.Dispose ();
+            if (faceLandmarkDetector != null)
+                faceLandmarkDetector.Dispose ();
         }
 
         /// <summary>

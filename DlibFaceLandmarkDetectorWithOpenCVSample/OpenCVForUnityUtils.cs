@@ -59,37 +59,37 @@ namespace DlibFaceLandmarkDetector
             if (points.Count == 68) {
                 
                 for (int i = 1; i <= 16; ++i)
-                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), new Scalar (0, 255, 0, 255), thickness);
+                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), color, thickness);
                 
                 for (int i = 28; i <= 30; ++i)
-                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), new Scalar (0, 255, 0, 255), thickness);
+                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), color, thickness);
                 
                 for (int i = 18; i <= 21; ++i)
-                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), new Scalar (0, 255, 0, 255), thickness);
+                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), color, thickness);
                 for (int i = 23; i <= 26; ++i)
-                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), new Scalar (0, 255, 0, 255), thickness);
+                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), color, thickness);
                 for (int i = 31; i <= 35; ++i)
-                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), new Scalar (0, 255, 0, 255), thickness);
-                Imgproc.line (imgMat, new Point (points [30].x, points [30].y), new Point (points [35].x, points [35].y), new Scalar (0, 255, 0, 255), thickness);
+                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), color, thickness);
+                Imgproc.line (imgMat, new Point (points [30].x, points [30].y), new Point (points [35].x, points [35].y), color, thickness);
                 
                 for (int i = 37; i <= 41; ++i)
-                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), new Scalar (0, 255, 0, 255), thickness);
-                Imgproc.line (imgMat, new Point (points [36].x, points [36].y), new Point (points [41].x, points [41].y), new Scalar (0, 255, 0, 255), thickness);
+                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), color, thickness);
+                Imgproc.line (imgMat, new Point (points [36].x, points [36].y), new Point (points [41].x, points [41].y), color, thickness);
                 
                 for (int i = 43; i <= 47; ++i)
-                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), new Scalar (0, 255, 0, 255), thickness);
-                Imgproc.line (imgMat, new Point (points [42].x, points [42].y), new Point (points [47].x, points [47].y), new Scalar (0, 255, 0, 255), thickness);
+                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), color, thickness);
+                Imgproc.line (imgMat, new Point (points [42].x, points [42].y), new Point (points [47].x, points [47].y), color, thickness);
                 
                 for (int i = 49; i <= 59; ++i)
-                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), new Scalar (0, 255, 0, 255), thickness);
-                Imgproc.line (imgMat, new Point (points [48].x, points [48].y), new Point (points [59].x, points [59].y), new Scalar (0, 255, 0, 255), thickness);
+                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), color, thickness);
+                Imgproc.line (imgMat, new Point (points [48].x, points [48].y), new Point (points [59].x, points [59].y), color, thickness);
                 
                 for (int i = 61; i <= 67; ++i)
-                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), new Scalar (0, 255, 0, 255), thickness);
-                Imgproc.line (imgMat, new Point (points [60].x, points [60].y), new Point (points [67].x, points [67].y), new Scalar (0, 255, 0, 255), thickness);
+                    Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), color, thickness);
+                Imgproc.line (imgMat, new Point (points [60].x, points [60].y), new Point (points [67].x, points [67].y), color, thickness);
             } else {
                 for (int i = 0; i < points.Count; i++) {
-                    Imgproc.circle (imgMat, new Point (points [i].x, points [i].y), 2, new Scalar (0, 255, 0, 255), -1);
+                    Imgproc.circle (imgMat, new Point (points [i].x, points [i].y), 2, color, -1);
                 }
             }
         }

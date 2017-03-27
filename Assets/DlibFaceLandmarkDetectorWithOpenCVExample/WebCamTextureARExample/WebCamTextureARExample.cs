@@ -113,6 +113,11 @@ namespace DlibFaceLandmarkDetectorExample
         /// The dist coeffs.
         /// </summary>
         MatOfDouble distCoeffs;
+
+        /// <summary>
+        /// The invert Y.
+        /// </summary>
+        Matrix4x4 invertYM;
         
         /// <summary>
         /// The transformation m.
@@ -123,11 +128,21 @@ namespace DlibFaceLandmarkDetectorExample
         /// The invert Z.
         /// </summary>
         Matrix4x4 invertZM;
+
+        /// <summary>
+        /// The ar m.
+        /// </summary>
+        Matrix4x4 ARM;
         
         /// <summary>
         /// The ar game object.
         /// </summary>
         public GameObject ARGameObject;
+
+        /// <summary>
+        /// The should move AR camera.
+        /// </summary>
+        public bool shouldMoveARCamera;
         
         /// <summary>
         /// The 3d face object points.
@@ -297,7 +312,10 @@ namespace DlibFaceLandmarkDetectorExample
                 ARCamera.fieldOfView = (float)(fovy [0] * fovYScale);
             }
             
-            
+
+            invertYM = Matrix4x4.TRS (Vector3.zero, Quaternion.identity, new Vector3 (1, -1, 1));
+            Debug.Log ("invertYM " + invertYM.ToString ());
+
             invertZM = Matrix4x4.TRS (Vector3.zero, Quaternion.identity, new Vector3 (1, 1, -1));
             Debug.Log ("invertZM " + invertZM.ToString ());
             
@@ -400,32 +418,34 @@ namespace DlibFaceLandmarkDetectorExample
                                 }
                             }
                         }
-                        
-                        
-                        // position
-                        Vector4 pos =  new Vector4((float)tvec.get (0, 0) [0], (float)tvec.get (1, 0) [0], (float)tvec.get (2, 0) [0], 0); // from OpenCV
-                        // right-handed coordinates system (OpenCV) to left-handed one (Unity)
-                        ARGameObject.transform.localPosition = new Vector3(pos.x, -pos.y, pos.z);
-                        
-                        
-                        // rotation
+
                         Calib3d.Rodrigues (rvec, rotMat);
                         
-                        Vector3 forward = new Vector3((float)rotMat.get (0, 2) [0],(float)rotMat.get (1, 2) [0],(float)rotMat.get (2, 2) [0]); // from OpenCV
-                        Vector3 up = new Vector3((float)rotMat.get (0, 1) [0],(float)rotMat.get (1, 1) [0],(float)rotMat.get (2, 1) [0]); // from OpenCV
-                        // right-handed coordinates system (OpenCV) to left-handed one (Unity)
-                        Quaternion rot = Quaternion.LookRotation(new Vector3(forward.x, -forward.y, forward.z), new Vector3(up.x, -up.y, up.z));
-                        ARGameObject.transform.localRotation = rot;
+                        transformationM.SetRow (0, new Vector4 ((float)rotMat.get (0, 0) [0], (float)rotMat.get (0, 1) [0], (float)rotMat.get (0, 2) [0], (float)tvec.get (0, 0) [0]));
+                        transformationM.SetRow (1, new Vector4 ((float)rotMat.get (1, 0) [0], (float)rotMat.get (1, 1) [0], (float)rotMat.get (1, 2) [0], (float)tvec.get (1, 0) [0]));
+                        transformationM.SetRow (2, new Vector4 ((float)rotMat.get (2, 0) [0], (float)rotMat.get (2, 1) [0], (float)rotMat.get (2, 2) [0], (float)tvec.get (2, 0) [0]));
+                        transformationM.SetRow (3, new Vector4 (0, 0, 0, 1));
                         
+                        // right-handed coordinates system (OpenCV) to left-handed one (Unity)
+                        ARM = invertYM * transformationM;
                         
                         // Apply Z axis inverted matrix.
-                        invertZM = Matrix4x4.TRS (Vector3.zero, Quaternion.identity, new Vector3 (1, 1, -1));
-                        transformationM = ARGameObject.transform.localToWorldMatrix * invertZM;
+                        ARM = ARM * invertZM;
                         
-                        // Apply camera transform matrix.
-                        transformationM = ARCamera.transform.localToWorldMatrix * transformationM ;
-                        
-                        ARUtils.SetTransformFromMatrix (ARGameObject.transform, ref transformationM);
+                        if (shouldMoveARCamera) {
+                            
+                            // Apply ARObject transform matrix.
+                            ARM = ARGameObject.transform.localToWorldMatrix * ARM.inverse;
+                            
+                            ARUtils.SetTransformFromMatrix (ARCamera.transform, ref ARM);
+                            
+                        } else {
+                            
+                            // Apply camera transform matrix.
+                            ARM = ARCamera.transform.localToWorldMatrix * ARM;
+                            
+                            ARUtils.SetTransformFromMatrix (ARGameObject.transform, ref ARM);
+                        }
                     }
                 }
                 

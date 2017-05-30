@@ -26,14 +26,22 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         private string shape_predictor_68_face_landmarks_dat_filepath;
 
+        #if UNITY_WEBGL && !UNITY_EDITOR
+        private Stack<IEnumerator> coroutineStack = new Stack<IEnumerator> ();
+        #endif
+
         // Use this for initialization
         void Start ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            StartCoroutine(DlibFaceLandmarkDetector.Utils.getFilePathAsync("shape_predictor_68_face_landmarks.dat", (result) => {
+            var filepath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
+                coroutineStack.Clear ();
+
                 shape_predictor_68_face_landmarks_dat_filepath = result;
                 Run ();
-            }));
+            });
+            coroutineStack.Push (filepath_Coroutine);
+            StartCoroutine (filepath_Coroutine);
             #else
             shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
             Run ();
@@ -104,6 +112,19 @@ namespace DlibFaceLandmarkDetectorExample
         void Update ()
         {
     
+        }
+
+        /// <summary>
+        /// Raises the disable event.
+        /// </summary>
+        void OnDisable ()
+        {
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            foreach (var coroutine in coroutineStack) {
+                StopCoroutine (coroutine);
+                ((IDisposable)coroutine).Dispose ();
+            }
+            #endif
         }
 
         public void OnBackButton ()

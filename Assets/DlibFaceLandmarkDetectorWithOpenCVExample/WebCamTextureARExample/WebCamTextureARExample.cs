@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine.UI;
 
 #if UNITY_5_3 || UNITY_5_3_OR_NEWER
@@ -178,6 +179,10 @@ namespace DlibFaceLandmarkDetectorExample
         /// The shape_predictor_68_face_landmarks_dat_filepath.
         /// </summary>
         private string shape_predictor_68_face_landmarks_dat_filepath;
+
+        #if UNITY_WEBGL && !UNITY_EDITOR
+        private Stack<IEnumerator> coroutineStack = new Stack<IEnumerator> ();
+        #endif
         
         // Use this for initialization
         void Start ()
@@ -188,10 +193,14 @@ namespace DlibFaceLandmarkDetectorExample
             isShowingEffectsToggle.isOn = isShowingEffects;
             
             #if UNITY_WEBGL && !UNITY_EDITOR
-            StartCoroutine(DlibFaceLandmarkDetector.Utils.getFilePathAsync("shape_predictor_68_face_landmarks.dat", (result) => {
+            var filepath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
+                coroutineStack.Clear ();
+
                 shape_predictor_68_face_landmarks_dat_filepath = result;
                 Run ();
-            }));
+            });
+            coroutineStack.Push (filepath_Coroutine);
+            StartCoroutine (filepath_Coroutine);
             #else
             shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
             Run ();
@@ -465,6 +474,13 @@ namespace DlibFaceLandmarkDetectorExample
             
             if (faceLandmarkDetector != null)
                 faceLandmarkDetector.Dispose ();
+
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            foreach (var coroutine in coroutineStack) {
+                StopCoroutine (coroutine);
+                ((IDisposable)coroutine).Dispose ();
+            }
+            #endif
         }
         
         /// <summary>

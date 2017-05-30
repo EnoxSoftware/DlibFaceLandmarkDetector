@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 #if UNITY_5_3 || UNITY_5_3_OR_NEWER
 using UnityEngine.SceneManagement;
@@ -22,14 +23,22 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         private string shape_predictor_68_face_landmarks_dat_filepath;
 
+        #if UNITY_WEBGL && !UNITY_EDITOR
+        private Stack<IEnumerator> coroutineStack = new Stack<IEnumerator> ();
+        #endif
+
         // Use this for initialization
         void Start ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            StartCoroutine(Utils.getFilePathAsync("shape_predictor_68_face_landmarks.dat", (result) => {
+            var filepath_Coroutine = Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
+                coroutineStack.Clear ();
+
                 shape_predictor_68_face_landmarks_dat_filepath = result;
                 Run ();
-            }));
+            });
+            coroutineStack.Push (filepath_Coroutine);
+            StartCoroutine (filepath_Coroutine);
             #else
             shape_predictor_68_face_landmarks_dat_filepath = Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
             Run ();
@@ -38,6 +47,9 @@ namespace DlibFaceLandmarkDetectorExample
 
         private void Run ()
         {
+            //if true, The error log of the Native side Dlib will be displayed on the Unity Editor Console.
+            Utils.setDebugMode (true);
+
 
             gameObject.transform.localScale = new Vector3 (texture2D.width, texture2D.height, 1);
             Debug.Log ("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
@@ -80,12 +92,28 @@ namespace DlibFaceLandmarkDetectorExample
             faceLandmarkDetector.Dispose ();
 
             gameObject.GetComponent<Renderer> ().material.mainTexture = texture2D;
+
+
+            Utils.setDebugMode (false);
         }
 
         // Update is called once per frame
         void Update ()
         {
 
+        }
+
+        /// <summary>
+        /// Raises the disable event.
+        /// </summary>
+        void OnDisable ()
+        {
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            foreach (var coroutine in coroutineStack) {
+                StopCoroutine (coroutine);
+                ((IDisposable)coroutine).Dispose ();
+            }
+            #endif
         }
 
         public void OnBackButton ()

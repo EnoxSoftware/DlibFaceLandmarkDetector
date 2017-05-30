@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 #if UNITY_5_3 || UNITY_5_3_OR_NEWER
 using UnityEngine.SceneManagement;
@@ -30,11 +31,17 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         private string shape_predictor_68_cat_face_landmarks_dat_filepath;
 
+        #if UNITY_WEBGL && !UNITY_EDITOR
+        private Stack<IEnumerator> coroutineStack = new Stack<IEnumerator> ();
+        #endif
+
         // Use this for initialization
         void Start ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            StartCoroutine(getFilePathCoroutine());
+            var filepath_coroutine = getFilePathCoroutine ();
+            coroutineStack.Push (filepath_coroutine);
+            StartCoroutine (filepath_coroutine);
             #else
             frontal_cat_face_svm_filepath = Utils.getFilePath ("frontal_cat_face.svm");
             shape_predictor_68_cat_face_landmarks_dat_filepath = Utils.getFilePath ("shape_predictor_68_cat_face_landmarks.dat");
@@ -45,16 +52,20 @@ namespace DlibFaceLandmarkDetectorExample
         #if UNITY_WEBGL && !UNITY_EDITOR
         private IEnumerator getFilePathCoroutine ()
         {
-            var getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine = StartCoroutine (Utils.getFilePathAsync ("frontal_cat_face.svm", (result) => {
+            var getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine = Utils.getFilePathAsync ("frontal_cat_face.svm", (result) => {
                 frontal_cat_face_svm_filepath = result;
-            }));
-            var getFilePathAsync_shape_predictor_68_cat_face_landmarks_dat_filepath_Coroutine = StartCoroutine (Utils.getFilePathAsync ("shape_predictor_68_cat_face_landmarks.dat", (result) => {
+            });
+            coroutineStack.Push (getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine);
+            yield return StartCoroutine (getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine);
+
+            var getFilePathAsync_shape_predictor_68_cat_face_landmarks_dat_filepath_Coroutine = Utils.getFilePathAsync ("shape_predictor_68_cat_face_landmarks.dat", (result) => {
                 shape_predictor_68_cat_face_landmarks_dat_filepath = result;
-            }));
-            
-            yield return getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine;
-            yield return getFilePathAsync_shape_predictor_68_cat_face_landmarks_dat_filepath_Coroutine;
-            
+            });
+            coroutineStack.Push (getFilePathAsync_shape_predictor_68_cat_face_landmarks_dat_filepath_Coroutine);
+            yield return StartCoroutine (getFilePathAsync_shape_predictor_68_cat_face_landmarks_dat_filepath_Coroutine);
+
+            coroutineStack.Clear ();
+
             Run ();
         }
         #endif
@@ -109,6 +120,19 @@ namespace DlibFaceLandmarkDetectorExample
         void Update ()
         {
 
+        }
+
+        /// <summary>
+        /// Raises the disable event.
+        /// </summary>
+        void OnDisable ()
+        {
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            foreach (var coroutine in coroutineStack) {
+                StopCoroutine (coroutine);
+                ((IDisposable)coroutine).Dispose ();
+            }
+            #endif
         }
 
         public void OnBackButton ()

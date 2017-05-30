@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine.UI;
 
 #if UNITY_5_3 || UNITY_5_3_OR_NEWER
@@ -192,6 +193,10 @@ namespace DlibFaceLandmarkDetectorExample
         /// The dance_avi_filepath.
         /// </summary>
         private string dance_avi_filepath;
+
+        #if UNITY_WEBGL && !UNITY_EDITOR
+        private Stack<IEnumerator> coroutineStack = new Stack<IEnumerator> ();
+        #endif
         
         // Use this for initialization
         void Start ()
@@ -203,7 +208,9 @@ namespace DlibFaceLandmarkDetectorExample
             
             
             #if UNITY_WEBGL && !UNITY_EDITOR
-            StartCoroutine(getFilePathCoroutine());
+            var filepath_coroutine = getFilePathCoroutine ();
+            coroutineStack.Push (filepath_coroutine);
+            StartCoroutine (filepath_coroutine);
             #else
             shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
             dance_avi_filepath = OpenCVForUnity.Utils.getFilePath ("dance.avi");
@@ -214,15 +221,19 @@ namespace DlibFaceLandmarkDetectorExample
         #if UNITY_WEBGL && !UNITY_EDITOR
         private IEnumerator getFilePathCoroutine ()
         {
-            var getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine = StartCoroutine (DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
+            var getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
                 shape_predictor_68_face_landmarks_dat_filepath = result;
-            }));
-            var getFilePathAsync_dance_avi_filepath_Coroutine = StartCoroutine (OpenCVForUnity.Utils.getFilePathAsync ("dance.avi", (result) => {
+            });
+            coroutineStack.Push (getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine);
+            yield return StartCoroutine (getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine);
+
+            var getFilePathAsync_dance_avi_filepath_Coroutine = OpenCVForUnity.Utils.getFilePathAsync ("dance.avi", (result) => {
                 dance_avi_filepath = result;
-            }));
-            
-            yield return getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine;
-            yield return getFilePathAsync_dance_avi_filepath_Coroutine;
+            });
+            coroutineStack.Push (getFilePathAsync_dance_avi_filepath_Coroutine);
+            yield return StartCoroutine (getFilePathAsync_dance_avi_filepath_Coroutine);
+
+            coroutineStack.Clear ();
             
             Run ();
         }
@@ -510,6 +521,13 @@ namespace DlibFaceLandmarkDetectorExample
             
             if (faceLandmarkDetector != null)
                 faceLandmarkDetector.Dispose ();
+
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            foreach (var coroutine in coroutineStack) {
+                StopCoroutine (coroutine);
+                ((IDisposable)coroutine).Dispose ();
+            }
+            #endif
         }
         
         /// <summary>

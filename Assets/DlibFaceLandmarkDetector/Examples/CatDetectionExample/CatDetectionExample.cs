@@ -15,33 +15,32 @@ namespace DlibFaceLandmarkDetectorExample
     /// </summary>
     public class CatDetectionExample : MonoBehaviour
     {
-
         /// <summary>
-        /// The texture2 d.
+        /// The texture2D.
         /// </summary>
         public Texture2D texture2D;
 
         /// <summary>
         /// The frontal_cat_face_svm_filepath.
         /// </summary>
-        private string frontal_cat_face_svm_filepath;
+        string frontal_cat_face_svm_filepath;
 
         /// <summary>
         /// The shape_predictor_68_cat_face_landmarks_dat_filepath.
         /// </summary>
-        private string shape_predictor_68_cat_face_landmarks_dat_filepath;
+        string shape_predictor_68_cat_face_landmarks_dat_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        private Stack<IEnumerator> coroutineStack = new Stack<IEnumerator> ();
+        Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
         #endif
 
         // Use this for initialization
         void Start ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var filepath_coroutine = getFilePathCoroutine ();
-            coroutineStack.Push (filepath_coroutine);
-            StartCoroutine (filepath_coroutine);
+            var getFilePath_Coroutine = GetFilePath ();
+            coroutines.Push (getFilePath_Coroutine);
+            StartCoroutine (getFilePath_Coroutine);
             #else
             frontal_cat_face_svm_filepath = Utils.getFilePath ("frontal_cat_face.svm");
             shape_predictor_68_cat_face_landmarks_dat_filepath = Utils.getFilePath ("shape_predictor_68_cat_face_landmarks.dat");
@@ -50,21 +49,21 @@ namespace DlibFaceLandmarkDetectorExample
         }
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        private IEnumerator getFilePathCoroutine ()
+        private IEnumerator GetFilePath ()
         {
             var getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine = Utils.getFilePathAsync ("frontal_cat_face.svm", (result) => {
                 frontal_cat_face_svm_filepath = result;
             });
-            coroutineStack.Push (getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine);
+            coroutines.Push (getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine);
             yield return StartCoroutine (getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine);
 
             var getFilePathAsync_shape_predictor_68_cat_face_landmarks_dat_filepath_Coroutine = Utils.getFilePathAsync ("shape_predictor_68_cat_face_landmarks.dat", (result) => {
                 shape_predictor_68_cat_face_landmarks_dat_filepath = result;
             });
-            coroutineStack.Push (getFilePathAsync_shape_predictor_68_cat_face_landmarks_dat_filepath_Coroutine);
+            coroutines.Push (getFilePathAsync_shape_predictor_68_cat_face_landmarks_dat_filepath_Coroutine);
             yield return StartCoroutine (getFilePathAsync_shape_predictor_68_cat_face_landmarks_dat_filepath_Coroutine);
 
-            coroutineStack.Clear ();
+            coroutines.Clear ();
 
             Run ();
         }
@@ -72,7 +71,6 @@ namespace DlibFaceLandmarkDetectorExample
 
         private void Run ()
         {
-
             gameObject.transform.localScale = new Vector3 (texture2D.width, texture2D.height, 1);
             Debug.Log ("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
             
@@ -128,14 +126,17 @@ namespace DlibFaceLandmarkDetectorExample
         void OnDisable ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            foreach (var coroutine in coroutineStack) {
+            foreach (var coroutine in coroutines) {
                 StopCoroutine (coroutine);
                 ((IDisposable)coroutine).Dispose ();
             }
             #endif
         }
 
-        public void OnBackButton ()
+        /// <summary>
+        /// Raises the back button click event.
+        /// </summary>
+        public void OnBackButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");

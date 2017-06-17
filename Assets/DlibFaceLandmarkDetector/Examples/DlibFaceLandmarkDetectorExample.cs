@@ -9,7 +9,6 @@ namespace DlibFaceLandmarkDetectorExample
 {
     public class DlibFaceLandmarkDetectorExample : MonoBehaviour
     {
-
         // Use this for initialization
         void Start ()
         {
@@ -25,7 +24,7 @@ namespace DlibFaceLandmarkDetectorExample
 
         }
 
-        public void OnShowLicenseButton ()
+        public void OnShowLicenseButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("ShowLicense");
@@ -34,7 +33,7 @@ namespace DlibFaceLandmarkDetectorExample
             #endif
         }
 
-        public void OnTexture2DExample ()
+        public void OnTexture2DExampleButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("Texture2DExample");
@@ -43,7 +42,7 @@ namespace DlibFaceLandmarkDetectorExample
             #endif
         }
 
-        public void OnWebCamTextureExample ()
+        public void OnWebCamTextureExampleButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("WebCamTextureExample");
@@ -52,7 +51,7 @@ namespace DlibFaceLandmarkDetectorExample
             #endif
         }
 
-        public void OnCatDetectionExample ()
+        public void OnCatDetectionExampleButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("CatDetectionExample");
@@ -61,7 +60,7 @@ namespace DlibFaceLandmarkDetectorExample
             #endif
         }
 
-        public void OnTexture2DToMatExample ()
+        public void OnTexture2DToMatExampleButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("Texture2DToMatExample");
@@ -70,25 +69,25 @@ namespace DlibFaceLandmarkDetectorExample
             #endif
         }
 
-        public void OnWebCamTextureToMatExample ()
+        public void OnWebCamTextureToMatHelperExampleButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
-            SceneManager.LoadScene ("WebCamTextureToMatExample");
+            SceneManager.LoadScene ("WebCamTextureToMatHelperExample");
             #else
-            Application.LoadLevel ("WebCamTextureToMatExample");
+            Application.LoadLevel ("WebCamTextureToMatHelperExample");
             #endif
         }
 
-        public void OnWebCamTextureARExample ()
+        public void OnARHeadExampleButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
-            SceneManager.LoadScene ("WebCamTextureARExample");
+            SceneManager.LoadScene ("ARHeadExample");
             #else
-            Application.LoadLevel ("WebCamTextureARExample");
+            Application.LoadLevel ("ARHeadExample");
             #endif
         }
 
-        public void OnVideoCaptureExample ()
+        public void OnVideoCaptureExampleButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("VideoCaptureExample");
@@ -97,21 +96,21 @@ namespace DlibFaceLandmarkDetectorExample
             #endif
         }
 
-        public void OnVideoCaptureARExample ()
+        public void OnVideoCaptureARHeadExampleButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
-            SceneManager.LoadScene ("VideoCaptureARExample");
+            SceneManager.LoadScene ("VideoCaptureARHeadExample");
             #else
-            Application.LoadLevel ("VideoCaptureARExample");
+            Application.LoadLevel ("VideoCaptureARHeadExample");
             #endif
         }
         
-        public void OnOptimizationExample ()
+        public void OnFrameOptimizationExampleButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
-            SceneManager.LoadScene ("OptimizationExample");
+            SceneManager.LoadScene ("FrameOptimizationExample");
             #else
-            Application.LoadLevel ("OptimizationExample");
+            Application.LoadLevel ("FrameOptimizationExample");
             #endif
         }
     }

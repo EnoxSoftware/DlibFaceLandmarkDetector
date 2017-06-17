@@ -98,7 +98,7 @@ GameObject:
   - 114: {fileID: 67159766}
   - 114: {fileID: 67159767}
   m_Layer: 5
-  m_Name: IsShowingFacePointsToggle
+  m_Name: DisplayFacePointsToggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -168,7 +168,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1709852087}
-        m_MethodName: OnIsShowingFacePointsToggle
+        m_MethodName: OnDisplayFacePointsToggleValueChanged
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -410,7 +410,7 @@ GameObject:
   - 114: {fileID: 457604703}
   - 114: {fileID: 457604704}
   m_Layer: 5
-  m_Name: IsShowingEffectsToggle
+  m_Name: DisplayEffectsToggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -480,7 +480,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1709852087}
-        m_MethodName: OnIsShowinEffectsToggle
+        m_MethodName: OnDisplayEffectsToggleValueChanged
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -830,7 +830,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: IsShowingAxes
+  m_Text: DisplayAxes
 --- !u!222 &831312027
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -849,7 +849,7 @@ GameObject:
   - 114: {fileID: 876051148}
   - 114: {fileID: 876051149}
   m_Layer: 5
-  m_Name: IsShowingHeadToggle
+  m_Name: DisplayHeadToggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -919,7 +919,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1709852087}
-        m_MethodName: OnIsShowingHeadToggle
+        m_MethodName: OnDisplayHeadToggleValueChanged
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1128,7 +1128,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: IsShowingFacePoints
+  m_Text: DisplayFacePoints
 --- !u!222 &941509824
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1197,7 +1197,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: IsShowingHead
+  m_Text: DisplayHead
 --- !u!222 &976568517
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1675,7 +1675,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1709852087}
-        m_MethodName: OnBackButton
+        m_MethodName: OnBackButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2013,7 +2013,7 @@ GameObject:
   - 114: {fileID: 1585556836}
   - 114: {fileID: 1585556835}
   m_Layer: 5
-  m_Name: IsShowingAxesToggle
+  m_Name: DisplayAxesToggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2102,7 +2102,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1709852087}
-        m_MethodName: OnIsShowingAxesToggle
+        m_MethodName: OnDisplayAxesToggleValueChanged
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2209,14 +2209,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344fa434edac0df43ad218102326a4da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isShowingFacePoints: 0
-  isShowingFacePointsToggle: {fileID: 67159766}
-  isShowingAxes: 0
-  isShowingAxesToggle: {fileID: 1585556836}
-  isShowingHead: 1
-  isShowingHeadToggle: {fileID: 876051148}
-  isShowingEffects: 1
-  isShowingEffectsToggle: {fileID: 457604703}
+  displayFacePoints: 0
+  displayFacePointsToggle: {fileID: 67159766}
+  displayAxes: 0
+  displayAxesToggle: {fileID: 1585556836}
+  displayHead: 1
+  displayHeadToggle: {fileID: 876051148}
+  displayEffects: 1
+  displayEffectsToggle: {fileID: 457604703}
   axes: {fileID: 1266116280}
   head: {fileID: 569332745}
   rightEye: {fileID: 1068494620}
@@ -2451,7 +2451,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: IsShowingEffects
+  m_Text: DisplayEffects
 --- !u!222 &1960453256
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -3,12 +3,11 @@ using System.Collections;
 
 namespace DlibFaceLandmarkDetectorExample
 {
-/// <summary>
-/// AR utils.
-/// </summary>
+    /// <summary>
+    /// AR utils.
+    /// </summary>
     public class ARUtils
     {
-
         /// <summary>
         /// Extract translation from transform matrix.
         /// </summary>

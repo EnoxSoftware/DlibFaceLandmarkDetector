@@ -11,17 +11,22 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// Face Landmark Detection from WebCamTexture Example.
+    /// WebCamTexture example. (Example of face landmark detection from WebCamTexture)
     /// </summary>
     public class WebCamTextureExample : MonoBehaviour
     {
         /// <summary>
-        /// The web cam texture.
+        /// Should use front camera.
+        /// </summary>
+        public bool shouldUseFrontCamera = false;
+
+        /// <summary>
+        /// The webcam texture.
         /// </summary>
         WebCamTexture webCamTexture;
         
         /// <summary>
-        /// The web cam device.
+        /// The webcam device.
         /// </summary>
         WebCamDevice webCamDevice;
         
@@ -29,11 +34,6 @@ namespace DlibFaceLandmarkDetectorExample
         /// The colors.
         /// </summary>
         Color32[] colors;
-        
-        /// <summary>
-        /// Should use front facing.
-        /// </summary>
-        public bool shouldUseFrontFacing = false;
         
         /// <summary>
         /// The width.
@@ -46,9 +46,9 @@ namespace DlibFaceLandmarkDetectorExample
         int height = 240;
 
         /// <summary>
-        /// The init done.
+        /// Indicates whether this instance has been initialized.
         /// </summary>
-        bool initDone = false;
+        bool hasInitDone = false;
         
         /// <summary>
         /// The screenOrientation.
@@ -61,36 +61,36 @@ namespace DlibFaceLandmarkDetectorExample
         FaceLandmarkDetector faceLandmarkDetector;
 
         /// <summary>
-        /// The texture2 d.
+        /// The texture2D.
         /// </summary>
         Texture2D texture2D;
 
         /// <summary>
-        /// The flip.
+        /// Indicates whether the image is flipped
         /// </summary>
         bool flip;
 
         /// <summary>
         /// The shape_predictor_68_face_landmarks_dat_filepath.
         /// </summary>
-        private string shape_predictor_68_face_landmarks_dat_filepath;
+        string shape_predictor_68_face_landmarks_dat_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        private Stack<IEnumerator> coroutineStack = new Stack<IEnumerator> ();
+        Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
         #endif
 
         // Use this for initialization
         void Start ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var filepath_Coroutine = Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
-                coroutineStack.Clear ();
+            var getFilePath_Coroutine = Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
+                coroutines.Clear ();
 
                 shape_predictor_68_face_landmarks_dat_filepath = result;
                 Run ();
             });
-            coroutineStack.Push (filepath_Coroutine);
-            StartCoroutine (filepath_Coroutine);
+            coroutines.Push (getFilePath_Coroutine);
+            StartCoroutine (getFilePath_Coroutine);
             #else
             shape_predictor_68_face_landmarks_dat_filepath = Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
             Run ();
@@ -99,23 +99,21 @@ namespace DlibFaceLandmarkDetectorExample
 
         private void Run ()
         {
-
             faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
     
-            StartCoroutine (init ());
+            StartCoroutine (Initialize ());
         }
 
-        private IEnumerator init ()
+        private IEnumerator Initialize ()
         {
             if (webCamTexture != null) {
                 webCamTexture.Stop ();
-                initDone = false;
+                hasInitDone = false;
             }
             
             // Checks how many and which cameras are available on the device
             for (int cameraIndex = 0; cameraIndex < WebCamTexture.devices.Length; cameraIndex++) {
-                
-                if (WebCamTexture.devices [cameraIndex].isFrontFacing == shouldUseFrontFacing) {
+                if (WebCamTexture.devices [cameraIndex].isFrontFacing == shouldUseFrontCamera) {
                     
                     Debug.Log (cameraIndex + " name " + WebCamTexture.devices [cameraIndex].name + " isFrontFacing " + WebCamTexture.devices [cameraIndex].isFrontFacing);
                     
@@ -165,10 +163,10 @@ namespace DlibFaceLandmarkDetectorExample
                         
                     gameObject.GetComponent<Renderer> ().material.mainTexture = texture2D;
                         
-                    updateLayout ();
+                    UpdateLayout ();
                         
                     screenOrientation = Screen.orientation;
-                    initDone = true;
+                    hasInitDone = true;
                         
                     break;
                 } else {
@@ -177,7 +175,7 @@ namespace DlibFaceLandmarkDetectorExample
             }
         }
 
-        private void updateLayout ()
+        private void UpdateLayout ()
         {
             gameObject.transform.localRotation = new Quaternion (0, 0, 0, 0);
             gameObject.transform.localScale = new Vector3 (webCamTexture.width, webCamTexture.height, 1);
@@ -227,14 +225,13 @@ namespace DlibFaceLandmarkDetectorExample
     
         // Update is called once per frame
         void Update ()
-        {
-
-            if (!initDone)
+            {
+            if (!hasInitDone)
                 return;
                 
             if (screenOrientation != Screen.orientation) {
                 screenOrientation = Screen.orientation;
-                updateLayout ();
+                UpdateLayout ();
             }
 
             #if UNITY_IOS && !UNITY_EDITOR && (UNITY_4_6_3 || UNITY_4_6_4 || UNITY_5_0_0 || UNITY_5_0_1)
@@ -271,6 +268,9 @@ namespace DlibFaceLandmarkDetectorExample
             }
         }
 
+        /// <summary>
+        /// Raises the disable event.
+        /// </summary>
         void OnDisable ()
         {
             if(webCamTexture != null)
@@ -279,14 +279,17 @@ namespace DlibFaceLandmarkDetectorExample
                 faceLandmarkDetector.Dispose ();
 
             #if UNITY_WEBGL && !UNITY_EDITOR
-            foreach (var coroutine in coroutineStack) {
+            foreach (var coroutine in coroutines) {
                 StopCoroutine (coroutine);
                 ((IDisposable)coroutine).Dispose ();
             }
             #endif
         }
 
-        public void OnBackButton ()
+        /// <summary>
+        /// Raises the back button click event.
+        /// </summary>
+        public void OnBackButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");
@@ -294,11 +297,14 @@ namespace DlibFaceLandmarkDetectorExample
             Application.LoadLevel ("DlibFaceLandmarkDetectorExample");
             #endif
         }
-
-        public void OnChangeCameraButton ()
+        
+        /// <summary>
+        /// Raises the change camera button click event.
+        /// </summary>
+        public void OnChangeCameraButtonClick ()
         {
-            shouldUseFrontFacing = !shouldUseFrontFacing;
-            StartCoroutine (init ());
+            shouldUseFrontCamera = !shouldUseFrontCamera;
+            StartCoroutine (Initialize ());
         }
     }
 }

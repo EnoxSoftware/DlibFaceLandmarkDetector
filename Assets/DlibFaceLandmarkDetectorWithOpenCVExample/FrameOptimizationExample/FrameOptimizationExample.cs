@@ -13,20 +13,19 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// OptimizationExample (Resize Frame+Skip frame)
+    /// Frame optimization example. (Example of frame resizing and skipping using the OptimizationWebCamTextureToMatHelper)
     /// http://www.learnopencv.com/speeding-up-dlib-facial-landmark-detector/
     /// </summary>
     [RequireComponent(typeof(OptimizationWebCamTextureToMatHelper))]
-    public class OptimizationExample : MonoBehaviour
+    public class FrameOptimizationExample : MonoBehaviour
     {
-
         /// <summary>
         /// The texture.
         /// </summary>
         Texture2D texture;
 
         /// <summary>
-        /// The web cam texture to mat helper.
+        /// The webcam texture to mat helper.
         /// </summary>
         OptimizationWebCamTextureToMatHelper webCamTextureToMatHelper;
 
@@ -36,31 +35,31 @@ namespace DlibFaceLandmarkDetectorExample
         FaceLandmarkDetector faceLandmarkDetector;
 
         /// <summary>
-        /// The detect result.
+        /// The detection result.
         /// </summary>
-        List<UnityEngine.Rect> detectResult;
+        List<UnityEngine.Rect> detectionResult;
 
         /// <summary>
         /// The shape_predictor_68_face_landmarks_dat_filepath.
         /// </summary>
-        private string shape_predictor_68_face_landmarks_dat_filepath;
+        string shape_predictor_68_face_landmarks_dat_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        private Stack<IEnumerator> coroutineStack = new Stack<IEnumerator> ();
+        Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
         #endif
 
         // Use this for initialization
         void Start ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var filepath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
-                coroutineStack.Clear ();
+            var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
+                coroutines.Clear ();
 
                 shape_predictor_68_face_landmarks_dat_filepath = result;
                 Run ();
             });
-            coroutineStack.Push (filepath_Coroutine);
-            StartCoroutine (filepath_Coroutine);
+            coroutines.Push (getFilePath_Coroutine);
+            StartCoroutine (getFilePath_Coroutine);
             #else
             shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
             Run ();
@@ -72,15 +71,15 @@ namespace DlibFaceLandmarkDetectorExample
             faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
 
             webCamTextureToMatHelper = gameObject.GetComponent<OptimizationWebCamTextureToMatHelper> ();
-            webCamTextureToMatHelper.Init ();
+            webCamTextureToMatHelper.Initialize ();
         }
 
         /// <summary>
-        /// Raises the web cam texture to mat helper inited event.
+        /// Raises the webcam texture to mat helper initialized event.
         /// </summary>
-        public void OnWebCamTextureToMatHelperInited ()
+        public void OnWebCamTextureToMatHelperInitialized ()
         {
-            Debug.Log ("OnWebCamTextureToMatHelperInited");
+            Debug.Log ("OnWebCamTextureToMatHelperInitialized");
 
             Mat webCamTextureMat = webCamTextureToMatHelper.GetMat ();
 
@@ -102,7 +101,7 @@ namespace DlibFaceLandmarkDetectorExample
                 Camera.main.orthographicSize = height / 2;
             }
 
-            detectResult = new List<UnityEngine.Rect> ();
+            detectionResult = new List<UnityEngine.Rect> ();
         }
 
         /// <summary>
@@ -135,14 +134,14 @@ namespace DlibFaceLandmarkDetectorExample
                 OpenCVForUnityUtils.SetImage (faceLandmarkDetector, downScaleRgbaMat);
 
                 // Detect faces on resize image
-                if (!webCamTextureToMatHelper.IsSkipFrame ()) {
+                if (!webCamTextureToMatHelper.IsCurrentFrameSkipped ()) {
                     //detect face rects
-                    detectResult = faceLandmarkDetector.Detect ();
+                    detectionResult = faceLandmarkDetector.Detect ();
                 }
 
-                float DOWNSCALE_RATIO = webCamTextureToMatHelper.DOWNSCALE_RATIO;
+                float DOWNSCALE_RATIO = webCamTextureToMatHelper.downscaleRatio;
                 
-                foreach (var rect in detectResult) {
+                foreach (var rect in detectionResult) {
 
                     //detect landmark points
                     List<Vector2> points = faceLandmarkDetector.DetectLandmark (rect);
@@ -160,7 +159,7 @@ namespace DlibFaceLandmarkDetectorExample
                     OpenCVForUnityUtils.DrawFaceRect (rgbaMat, originalRect, new Scalar (255, 0, 0, 255), 2);
                 }
 
-                Imgproc.putText (rgbaMat, "Original: (" + rgbaMat.width () + "," + rgbaMat.height () + ") DownScale; (" + downScaleRgbaMat.width () + "," + downScaleRgbaMat.height () + ") SkipFrames: " + webCamTextureToMatHelper.SKIP_FRAMES, new Point (5, rgbaMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar (255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
+                Imgproc.putText (rgbaMat, "Original:(" + rgbaMat.width () + "," + rgbaMat.height () + ") DownScale:(" + downScaleRgbaMat.width () + "," + downScaleRgbaMat.height () + ") FrameSkipping: " + webCamTextureToMatHelper.frameSkippingRatio, new Point (5, rgbaMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar (255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
 
                 OpenCVForUnity.Utils.matToTexture2D (rgbaMat, texture, webCamTextureToMatHelper.GetBufferColors ());
             }
@@ -178,7 +177,7 @@ namespace DlibFaceLandmarkDetectorExample
                 faceLandmarkDetector.Dispose ();
 
             #if UNITY_WEBGL && !UNITY_EDITOR
-            foreach (var coroutine in coroutineStack) {
+            foreach (var coroutine in coroutines) {
                 StopCoroutine (coroutine);
                 ((IDisposable)coroutine).Dispose ();
             }
@@ -186,9 +185,9 @@ namespace DlibFaceLandmarkDetectorExample
         }
 
         /// <summary>
-        /// Raises the back button event.
+        /// Raises the back button click event.
         /// </summary>
-        public void OnBackButton ()
+        public void OnBackButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");
@@ -198,35 +197,35 @@ namespace DlibFaceLandmarkDetectorExample
         }
 
         /// <summary>
-        /// Raises the play button event.
+        /// Raises the play button click event.
         /// </summary>
-        public void OnPlayButton ()
+        public void OnPlayButtonClick ()
         {
             webCamTextureToMatHelper.Play ();
         }
 
         /// <summary>
-        /// Raises the pause button event.
+        /// Raises the pause button click event.
         /// </summary>
-        public void OnPauseButton ()
+        public void OnPauseButtonClick ()
         {
             webCamTextureToMatHelper.Pause ();
         }
 
         /// <summary>
-        /// Raises the stop button event.
+        /// Raises the stop button click event.
         /// </summary>
-        public void OnStopButton ()
+        public void OnStopButtonClick ()
         {
             webCamTextureToMatHelper.Stop ();
         }
 
         /// <summary>
-        /// Raises the change camera button event.
+        /// Raises the change camera button click event.
         /// </summary>
-        public void OnChangeCameraButton ()
+        public void OnChangeCameraButtonClick ()
         {
-            webCamTextureToMatHelper.Init (null, webCamTextureToMatHelper.requestWidth, webCamTextureToMatHelper.requestHeight, !webCamTextureToMatHelper.requestIsFrontFacing);
+            webCamTextureToMatHelper.Initialize (null, webCamTextureToMatHelper.requestedWidth, webCamTextureToMatHelper.requestedHeight, !webCamTextureToMatHelper.requestedIsFrontFacing);
         }
     }
 }

@@ -10,11 +10,13 @@ using DlibFaceLandmarkDetector;
 
 namespace DlibFaceLandmarkDetectorExample
 {
+    /// <summary>
+    /// Texture2D example. (Example of face landmark detection from Texture2D)
+    /// </summary>
     public class Texture2DExample : MonoBehaviour
     {
-
         /// <summary>
-        /// The texture2 d.
+        /// The texture2D.
         /// </summary>
         public Texture2D texture2D;
 
@@ -24,21 +26,21 @@ namespace DlibFaceLandmarkDetectorExample
         private string shape_predictor_68_face_landmarks_dat_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        private Stack<IEnumerator> coroutineStack = new Stack<IEnumerator> ();
+        private Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
         #endif
 
         // Use this for initialization
         void Start ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var filepath_Coroutine = Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
-                coroutineStack.Clear ();
+            var getFilePath_Coroutine = Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
+                coroutines.Clear ();
 
                 shape_predictor_68_face_landmarks_dat_filepath = result;
                 Run ();
             });
-            coroutineStack.Push (filepath_Coroutine);
-            StartCoroutine (filepath_Coroutine);
+            coroutines.Push (getFilePath_Coroutine);
+            StartCoroutine (getFilePath_Coroutine);
             #else
             shape_predictor_68_face_landmarks_dat_filepath = Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
             Run ();
@@ -109,14 +111,17 @@ namespace DlibFaceLandmarkDetectorExample
         void OnDisable ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            foreach (var coroutine in coroutineStack) {
+            foreach (var coroutine in coroutines) {
                 StopCoroutine (coroutine);
                 ((IDisposable)coroutine).Dispose ();
             }
             #endif
         }
 
-        public void OnBackButton ()
+        /// <summary>
+        /// Raises the back button click event.
+        /// </summary>
+        public void OnBackButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");

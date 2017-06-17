@@ -182,7 +182,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1124998460}
-        m_MethodName: OnShowLicenseButton
+        m_MethodName: OnShowLicenseButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -317,7 +317,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1124998460}
-        m_MethodName: OnTexture2DExample
+        m_MethodName: OnTexture2DExampleButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -506,7 +506,7 @@ GameObject:
   - 114: {fileID: 403607477}
   - 114: {fileID: 403607476}
   m_Layer: 5
-  m_Name: WebCamTextureARExample
+  m_Name: ARHeadExample
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -524,7 +524,7 @@ RectTransform:
   m_Children:
   - {fileID: 2018577304}
   m_Father: {fileID: 1558850095}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -588,7 +588,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1124998460}
-        m_MethodName: OnWebCamTextureARExample
+        m_MethodName: OnARHeadExampleButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -789,7 +789,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1124998460}
-        m_MethodName: OnCatDetectionExample
+        m_MethodName: OnCatDetectionExampleButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -888,7 +888,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: WebCamTextureToMatExample (require OpenCV for Unity)
+  m_Text: WebCamTextureToMatHelperExample (require OpenCV for Unity)
 --- !u!222 &580186189
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1035,7 +1035,7 @@ GameObject:
   - 114: {fileID: 845653024}
   - 114: {fileID: 845653023}
   m_Layer: 5
-  m_Name: WebCamTextureToMatExample
+  m_Name: WebCamTextureToMatHelperExample
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1117,7 +1117,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1124998460}
-        m_MethodName: OnWebCamTextureToMatExample
+        m_MethodName: OnWebCamTextureToMatHelperExampleButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1170,7 +1170,7 @@ GameObject:
   - 114: {fileID: 934343690}
   - 114: {fileID: 934343689}
   m_Layer: 5
-  m_Name: OptimizationExample
+  m_Name: FrameOptimizationExample
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1252,7 +1252,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1124998460}
-        m_MethodName: OnOptimizationExample
+        m_MethodName: OnFrameOptimizationExampleButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1601,7 +1601,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: OptimizationExample (require OpenCV for Unity)
+  m_Text: FrameOptimizationExample (require OpenCV for Unity)
 --- !u!222 &1286052885
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1703,7 +1703,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1124998460}
-        m_MethodName: OnTexture2DToMatExample
+        m_MethodName: OnTexture2DToMatExampleButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1818,7 +1818,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 760072662}
   m_Direction: 2
   m_Value: 1
-  m_Size: .855725467
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1947,7 +1947,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1124998460}
-        m_MethodName: OnWebCamTextureExample
+        m_MethodName: OnWebCamTextureExampleButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2139,7 +2139,7 @@ GameObject:
   - 114: {fileID: 1501604763}
   - 114: {fileID: 1501604762}
   m_Layer: 5
-  m_Name: VideoCaptureARExample
+  m_Name: VideoCaptureARHeadExample
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2221,7 +2221,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1124998460}
-        m_MethodName: OnVideoCaptureARExample
+        m_MethodName: OnVideoCaptureARHeadExampleButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2295,8 +2295,8 @@ RectTransform:
   - {fileID: 10792474}
   - {fileID: 1292636400}
   - {fileID: 845653022}
-  - {fileID: 403607475}
   - {fileID: 1599081665}
+  - {fileID: 403607475}
   - {fileID: 1501604761}
   - {fileID: 934343688}
   m_Father: {fileID: 296877743}
@@ -2370,7 +2370,7 @@ RectTransform:
   m_Children:
   - {fileID: 1751293587}
   m_Father: {fileID: 1558850095}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -2434,7 +2434,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1124998460}
-        m_MethodName: OnVideoCaptureExample
+        m_MethodName: OnVideoCaptureExampleButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2533,7 +2533,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: VideoCaptureARExample (require OpenCV for Unity)
+  m_Text: VideoCaptureARHeadExample (require OpenCV for Unity)
 --- !u!222 &1600174083
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2907,7 +2907,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: WebCamTextureARExample (require OpenCV for Unity)
+  m_Text: ARHeadExample (require OpenCV for Unity)
 --- !u!222 &2018577306
 CanvasRenderer:
   m_ObjectHideFlags: 0

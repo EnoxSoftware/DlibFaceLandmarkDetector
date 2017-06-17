@@ -12,13 +12,12 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// Face Landmark Detection from VideoCapture Example.
+    /// VideoCapture example. (Example of face landmark detection from VideoCapture)
     /// </summary>
     public class VideoCaptureExample : MonoBehaviour
     {
-
         /// <summary>
-        /// The capture.
+        /// The video capture.
         /// </summary>
         VideoCapture capture;
 
@@ -45,24 +44,24 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// The shape_predictor_68_face_landmarks_dat_filepath.
         /// </summary>
-        private string shape_predictor_68_face_landmarks_dat_filepath;
+        string shape_predictor_68_face_landmarks_dat_filepath;
 
         /// <summary>
         /// The couple_avi_filepath.
         /// </summary>
-        private string couple_avi_filepath;
+        string couple_avi_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        private Stack<IEnumerator> coroutineStack = new Stack<IEnumerator> ();
+        Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
         #endif
 
         // Use this for initialization
         void Start ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var filepath_coroutine = getFilePathCoroutine ();
-            coroutineStack.Push (filepath_coroutine);
-            StartCoroutine (filepath_coroutine);
+            var getFilePath_Coroutine = GetFilePath ();
+            coroutines.Push (getFilePath_Coroutine);
+            StartCoroutine (getFilePath_Coroutine);
             #else
             shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
             couple_avi_filepath = OpenCVForUnity.Utils.getFilePath ("couple.avi");
@@ -71,21 +70,21 @@ namespace DlibFaceLandmarkDetectorExample
         }
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        private IEnumerator getFilePathCoroutine ()
+        private IEnumerator GetFilePath ()
         {
             var getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
                 shape_predictor_68_face_landmarks_dat_filepath = result;
             });
-            coroutineStack.Push (getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine);
+            coroutines.Push (getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine);
             yield return StartCoroutine (getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine);
 
             var getFilePathAsync_couple_avi_filepath_Coroutine = OpenCVForUnity.Utils.getFilePathAsync ("couple.avi", (result) => {
                 couple_avi_filepath = result;
             });
-            coroutineStack.Push (getFilePathAsync_couple_avi_filepath_Coroutine);
+            coroutines.Push (getFilePathAsync_couple_avi_filepath_Coroutine);
             yield return StartCoroutine (getFilePathAsync_couple_avi_filepath_Coroutine);
 
-            coroutineStack.Clear ();
+            coroutines.Clear ();
 
             Run ();
         }
@@ -177,7 +176,10 @@ namespace DlibFaceLandmarkDetectorExample
                 OpenCVForUnity.Utils.matToTexture2D (rgbMat, texture, colors);
             }
         }
-        
+
+        /// <summary>
+        /// Raises the destroy event.
+        /// </summary>
         void OnDestroy ()
         {
             if (capture != null)
@@ -190,14 +192,17 @@ namespace DlibFaceLandmarkDetectorExample
                 faceLandmarkDetector.Dispose ();
 
             #if UNITY_WEBGL && !UNITY_EDITOR
-            foreach (var coroutine in coroutineStack) {
+            foreach (var coroutine in coroutines) {
                 StopCoroutine (coroutine);
                 ((IDisposable)coroutine).Dispose ();
             }
             #endif
         }
-        
-        public void OnBackButton ()
+
+        /// <summary>
+        /// Raises the back button click event.
+        /// </summary>
+        public void OnBackButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");

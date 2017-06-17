@@ -9,7 +9,6 @@ namespace DlibFaceLandmarkDetectorExample
 {
     public class ShowLicense : MonoBehaviour
     {
-
         // Use this for initialization
         void Start ()
         {
@@ -22,7 +21,10 @@ namespace DlibFaceLandmarkDetectorExample
     
         }
 
-        public void OnBackButton ()
+        /// <summary>
+        /// Raises the back button click event.
+        /// </summary>
+        public void OnBackButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");

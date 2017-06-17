@@ -12,7 +12,7 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// Face Landmark Detection from Texture2DToMat Example.
+    /// Texture2DToMat example. (Example of using the FaceLandmarkDetector with the OpenCVForUnity)
     /// </summary>
     public class Texture2DToMatExample : MonoBehaviour
     {
@@ -24,24 +24,24 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// The shape_predictor_68_face_landmarks_dat_filepath.
         /// </summary>
-        private string shape_predictor_68_face_landmarks_dat_filepath;
+        string shape_predictor_68_face_landmarks_dat_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        private Stack<IEnumerator> coroutineStack = new Stack<IEnumerator> ();
+        Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
         #endif
 
         // Use this for initialization
         void Start ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var filepath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
-                coroutineStack.Clear ();
+            var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
+                coroutines.Clear ();
 
                 shape_predictor_68_face_landmarks_dat_filepath = result;
                 Run ();
             });
-            coroutineStack.Push (filepath_Coroutine);
-            StartCoroutine (filepath_Coroutine);
+            coroutines.Push (getFilePath_Coroutine);
+            StartCoroutine (getFilePath_Coroutine);
             #else
             shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
             Run ();
@@ -51,7 +51,8 @@ namespace DlibFaceLandmarkDetectorExample
         private void Run ()
         {
             Mat imgMat = new Mat (imgTexture.height, imgTexture.width, CvType.CV_8UC4);
-            
+
+            // Convert Unity Texture2D to OpenCV Mat.
             OpenCVForUnity.Utils.texture2DToMat (imgTexture, imgMat);
             Debug.Log ("imgMat dst ToString " + imgMat.ToString ());
 
@@ -90,7 +91,7 @@ namespace DlibFaceLandmarkDetectorExample
 
                 //detect landmark points
                 List<Vector2> points = faceLandmarkDetector.DetectLandmark (result.rect);
-                                                
+
                 Debug.Log ("face points count : " + points.Count);
                 //draw landmark points
                 OpenCVForUnityUtils.DrawFaceLandmark (imgMat, points, new Scalar (0, 255, 0, 255), 2);
@@ -103,6 +104,7 @@ namespace DlibFaceLandmarkDetectorExample
 
             Texture2D texture = new Texture2D (imgMat.cols (), imgMat.rows (), TextureFormat.RGBA32, false);
 
+            // Convert OpenCV Mat to Unity Texture2D.
             OpenCVForUnity.Utils.matToTexture2D (imgMat, texture);
 
             gameObject.GetComponent<Renderer> ().material.mainTexture = texture;
@@ -120,14 +122,17 @@ namespace DlibFaceLandmarkDetectorExample
         void OnDisable ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            foreach (var coroutine in coroutineStack) {
+            foreach (var coroutine in coroutines) {
                 StopCoroutine (coroutine);
                 ((IDisposable)coroutine).Dispose ();
             }
             #endif
         }
 
-        public void OnBackButton ()
+        /// <summary>
+        /// Raises the back button click event.
+        /// </summary>
+        public void OnBackButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");

@@ -211,17 +211,15 @@ namespace DlibFaceLandmarkDetectorExample
         {
             //set 3d face object points.
             objectPoints = new MatOfPoint3f (
-                new Point3 (-31, 72, 86),//l eye (Interpupillary breadth)
-                new Point3 (31, 72, 86),//r eye (Interpupillary breadth)
-                new Point3 (0, 40, 114),//nose (Nose top)
-                new Point3 (-20, 15, 90),//l mouse (Mouth breadth)
-                new Point3 (20, 15, 90),//r mouse (Mouth breadth)
-                new Point3 (-69, 76, -2),//l ear (Bitragion breadth)
-                new Point3 (69, 76, -2)//r ear (Bitragion breadth)
+                new Point3 (-34, 90, 83),//l eye (Interpupillary breadth)
+                new Point3 (34, 90, 83),//r eye (Interpupillary breadth)
+                new Point3 (0.0, 50, 120),//nose (Nose top)
+                new Point3 (-26, 15, 83),//l mouse (Mouth breadth)
+                new Point3 (26, 15, 83),//r mouse (Mouth breadth)
+                new Point3 (-79, 90, 0.0),//l ear (Bitragion breadth)
+                new Point3 (79, 90, 0.0)//r ear (Bitragion breadth)
                 );
             imagePoints = new MatOfPoint2f ();
-            rvec = new Mat ();
-            tvec = new Mat ();
             rotMat = new Mat (3, 3, CvType.CV_64FC1);
             
             faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
@@ -379,21 +377,33 @@ namespace DlibFaceLandmarkDetectorExample
                         OpenCVForUnityUtils.DrawFaceLandmark (rgbaMat, points, new Scalar (0, 255, 0, 255), 2);
                     
                     imagePoints.fromArray (
-                        new Point ((points [38].x + points [41].x) / 2, (points [38].y + points [41].y) / 2),//l eye
-                        new Point ((points [43].x + points [46].x) / 2, (points [43].y + points [46].y) / 2),//r eye
-                        new Point (points [33].x, points [33].y),//nose
-                        new Point (points [48].x, points [48].y),//l mouth
-                        new Point (points [54].x, points [54].y) //r mouth
-                        ,
-                        new Point (points [0].x, points [0].y),//l ear
-                        new Point (points [16].x, points [16].y)//r ear
+                        new Point ((points [38].x + points [41].x) / 2, (points [38].y + points [41].y) / 2),//l eye (Interpupillary breadth)
+                        new Point ((points [43].x + points [46].x) / 2, (points [43].y + points [46].y) / 2),//r eye (Interpupillary breadth)
+                        new Point (points [30].x, points [30].y),//nose (Nose top)
+                        new Point (points [48].x, points [48].y),//l mouth (Mouth breadth)
+                        new Point (points [54].x, points [54].y), //r mouth (Mouth breadth)
+                        new Point (points [0].x, points [0].y),//l ear (Bitragion breadth)
+                        new Point (points [16].x, points [16].y)//r ear (Bitragion breadth)
                         );
                     
                     // Estimate head pose.
-                    Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec);
+                    if (rvec == null || tvec == null) {
+                        rvec = new Mat (3, 1, CvType.CV_64FC1);
+                        tvec = new Mat (3, 1, CvType.CV_64FC1);
+                        Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec);
+                    }
+                        
+                    double tvec_z = tvec.get (2, 0) [0];
+
+                    if (double.IsNaN(tvec_z) || tvec_z < 0) { // if tvec is wrong data, do not use extrinsic guesses.
+                        Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec);
+                    }else{
+                        Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec, true, Calib3d.SOLVEPNP_ITERATIVE);
+                    }
+
+//                    Debug.Log (tvec.dump());
                     
-                    
-                    if (tvec.get (2, 0) [0] > 0) {
+                    if (!double.IsNaN(tvec_z)) {
                         
                         if (Mathf.Abs ((float)(points [43].y - points [46].y)) > Mathf.Abs ((float)(points [42].x - points [45].x)) / 6.0) {
                             if (displayEffects)

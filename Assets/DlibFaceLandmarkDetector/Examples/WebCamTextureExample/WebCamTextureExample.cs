@@ -152,7 +152,7 @@ namespace DlibFaceLandmarkDetectorExample
                         yield return new WaitForEndOfFrame ();
                     } 
                     #endif
-                #endif
+                    #endif
                         
                     Debug.Log ("width " + webCamTexture.width + " height " + webCamTexture.height + " fps " + webCamTexture.requestedFPS);
                     Debug.Log ("videoRotationAngle " + webCamTexture.videoRotationAngle + " videoVerticallyMirrored " + webCamTexture.videoVerticallyMirrored + " isFrongFacing " + webCamDevice.isFrontFacing);
@@ -225,7 +225,7 @@ namespace DlibFaceLandmarkDetectorExample
     
         // Update is called once per frame
         void Update ()
-            {
+        {
             if (!hasInitDone)
                 return;
                 
@@ -238,7 +238,7 @@ namespace DlibFaceLandmarkDetectorExample
             if (webCamTexture.width > 16 && webCamTexture.height > 16) {
             #else
             if (webCamTexture.didUpdateThisFrame) {
-            #endif
+                #endif
 
                 webCamTexture.GetPixels32 (colors);
                 faceLandmarkDetector.SetImage<Color32> (colors, webCamTexture.width, webCamTexture.height, 4, flip);
@@ -247,7 +247,7 @@ namespace DlibFaceLandmarkDetectorExample
                 List<Rect> detectResult = faceLandmarkDetector.Detect ();
         
                 foreach (var rect in detectResult) {
-                //Debug.Log ("face : " + rect);
+                    //Debug.Log ("face : " + rect);
             
                     //detect landmark points
                     List<Vector2> points = faceLandmarkDetector.DetectLandmark (rect);
@@ -258,10 +258,10 @@ namespace DlibFaceLandmarkDetectorExample
                     //draw landmark points
                     faceLandmarkDetector.DrawDetectLandmarkResult<Color32> (colors, webCamTexture.width, webCamTexture.height, 4, flip, 0, 255, 0, 255);
 
-
-                    //draw face rect
-                    faceLandmarkDetector.DrawDetectResult<Color32> (colors, webCamTexture.width, webCamTexture.height, 4, flip, 255, 0, 0, 255, 2);
                 }
+
+                //draw face rect
+                faceLandmarkDetector.DrawDetectResult<Color32> (colors, webCamTexture.width, webCamTexture.height, 4, flip, 255, 0, 0, 255, 2);
 
                 texture2D.SetPixels32 (colors);
                 texture2D.Apply ();
@@ -273,9 +273,9 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         void OnDisable ()
         {
-            if(webCamTexture != null)
+            if (webCamTexture != null)
                 webCamTexture.Stop ();
-            if(faceLandmarkDetector != null)
+            if (faceLandmarkDetector != null)
                 faceLandmarkDetector.Dispose ();
 
             #if UNITY_WEBGL && !UNITY_EDITOR

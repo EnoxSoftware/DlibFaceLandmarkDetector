@@ -235,7 +235,7 @@ GameObject:
   - 114: {fileID: 134435683}
   - 114: {fileID: 134435682}
   m_Layer: 5
-  m_Name: Texture2DExample
+  m_Name: Texture2DExampleButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -506,7 +506,7 @@ GameObject:
   - 114: {fileID: 403607477}
   - 114: {fileID: 403607476}
   m_Layer: 5
-  m_Name: ARHeadExample
+  m_Name: ARHeadExampleButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -707,7 +707,7 @@ GameObject:
   - 114: {fileID: 561282211}
   - 114: {fileID: 561282210}
   m_Layer: 5
-  m_Name: CatDetectionExample
+  m_Name: CatDetectionExampleButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1035,7 +1035,7 @@ GameObject:
   - 114: {fileID: 845653024}
   - 114: {fileID: 845653023}
   m_Layer: 5
-  m_Name: WebCamTextureToMatHelperExample
+  m_Name: WebCamTextureToMatHelperExampleButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1170,7 +1170,7 @@ GameObject:
   - 114: {fileID: 934343690}
   - 114: {fileID: 934343689}
   m_Layer: 5
-  m_Name: FrameOptimizationExample
+  m_Name: FrameOptimizationExampleButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1621,7 +1621,7 @@ GameObject:
   - 114: {fileID: 1292636402}
   - 114: {fileID: 1292636401}
   m_Layer: 5
-  m_Name: Texture2DToMatExample
+  m_Name: Texture2DToMatExampleButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1817,7 +1817,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 760072663}
   m_HandleRect: {fileID: 760072662}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1865,7 +1865,7 @@ GameObject:
   - 114: {fileID: 1367440673}
   - 114: {fileID: 1367440672}
   m_Layer: 5
-  m_Name: WebCamTextureExample
+  m_Name: WebCamTextureExampleButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2139,7 +2139,7 @@ GameObject:
   - 114: {fileID: 1501604763}
   - 114: {fileID: 1501604762}
   m_Layer: 5
-  m_Name: VideoCaptureARHeadExample
+  m_Name: VideoCaptureARHeadExampleButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2352,7 +2352,7 @@ GameObject:
   - 114: {fileID: 1599081667}
   - 114: {fileID: 1599081666}
   m_Layer: 5
-  m_Name: VideoCaptureExample
+  m_Name: VideoCaptureExampleButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

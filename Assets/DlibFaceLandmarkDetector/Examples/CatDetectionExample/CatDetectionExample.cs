@@ -105,9 +105,10 @@ namespace DlibFaceLandmarkDetectorExample
                 //draw landmark points
                 faceLandmarkDetector.DrawDetectLandmarkResult (texture2D, 0, 255, 0, 255);
 
-                //draw face rects
-                faceLandmarkDetector.DrawDetectResult (texture2D, 255, 0, 0, 255, 3);
             }
+
+            //draw face rects
+            faceLandmarkDetector.DrawDetectResult (texture2D, 255, 0, 0, 255, 3);
 
             faceLandmarkDetector.Dispose ();
 

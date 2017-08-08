@@ -24,7 +24,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Dlib FaceLandmark Detector
-   &#160;<span id="projectnumber">1.1.3</span>
+   &#160;<span id="projectnumber">1.1.4</span>
    </div>
    <div id="projectbrief">Enox Software</div>
   </td>
@@ -103,8 +103,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:ab5936fd78d8a91f8eb2a4a1e7030f16e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61f02890aa996062d9ba0978de5d5792"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_utils.html#a61f02890aa996062d9ba0978de5d5792">getFilePath</a> (string filepath, bool refresh=false)</td></tr>
 <tr class="separator:a61f02890aa996062d9ba0978de5d5792"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9920e15bb0e0c895f898a6681110e590"><td class="memItemLeft" align="right" valign="top">static IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_utils.html#a9920e15bb0e0c895f898a6681110e590">getFilePathAsync</a> (string filepath, Action&lt; string &gt; callback, Action&lt; string, float &gt; progress=null, bool refresh=false)</td></tr>
-<tr class="separator:a9920e15bb0e0c895f898a6681110e590"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afde6b3994795b6ba42e93e54bbffb639"><td class="memItemLeft" align="right" valign="top">static IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_utils.html#afde6b3994795b6ba42e93e54bbffb639">getFilePathAsync</a> (string filepath, Action&lt; string &gt; completed, Action&lt; string, float &gt; progress=null, bool refresh=false)</td></tr>
+<tr class="separator:afde6b3994795b6ba42e93e54bbffb639"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd4a06e408db26ea023dc9fbe8b20ca3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_utils.html#abd4a06e408db26ea023dc9fbe8b20ca3">setDebugMode</a> (bool debugMode)</td></tr>
 <tr class="separator:abd4a06e408db26ea023dc9fbe8b20ca3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -140,22 +140,23 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Get the path of the file in the "StreamingAssets" folder. </p>
+<p>Gets the readable path of the file in the "StreamingAssets" folder. </p>
 <p><br />
-Set the relative folder path to the starting point of the "StreamingAssets" folder. e.g. "foobar.txt" or "hogehoge/foobar.txt". <br />
-[Android]The file in "StreamingAssets" folder is copied to Application.persistentDataPath.If refresh flag is false, when the file has already been copied, the file is not copied.If refresh flag is true, the file is always copyied. <br />
-[WebGL]If the file has not yet been copied to WebGL's FileSystem, you need to use <a class="el" href="class_dlib_face_landmark_detector_1_1_utils.html#a9920e15bb0e0c895f898a6681110e590">getFilePathAsync()</a> at first.</p>
+Set the relative file path from the starting point of the "StreamingAssets" folder. e.g. "foobar.txt" or "hogehoge/foobar.txt". <br />
+[Android]The target file that exists in the "StreamingAssets" folder is copied into the folder of the Application.persistentDataPath. If refresh flag is false, when the file has already been copied, the file is not copied. If refresh flag is true, the file is always copyied. <br />
+[WebGL]If the target file has not yet been copied to WebGL's virtual filesystem, you need to use <a class="el" href="class_dlib_face_landmark_detector_1_1_utils.html#afde6b3994795b6ba42e93e54bbffb639">getFilePathAsync()</a> at first.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">filepath</td><td>Set the relative folder path to the starting point of the "StreamingAssets" folder. e.g. "foobar.txt" or "hogehoge/foobar.txt". </td></tr>
-    <tr><td class="paramname">refresh</td><td>[Android]If refresh flag is false, when the file has already been copied, the file is not copied.If refresh flag is true, the file is always copyied. </td></tr>
+    <tr><td class="paramname">filepath</td><td>the relative file path starting from "StreamingAssets" folder </td></tr>
+    <tr><td class="paramname">refresh</td><td>[Android]If refresh flag is false, when the file has already been copied, the file is not copied. If refresh flag is true, the file is always copyied. </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>returns the file path in case of success and returns empty in case of error. </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="a9920e15bb0e0c895f898a6681110e590"></a>
+<a class="anchor" id="afde6b3994795b6ba42e93e54bbffb639"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -172,7 +173,7 @@ Set the relative folder path to the starting point of the "StreamingAssets" fold
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">Action&lt; string &gt;&#160;</td>
-          <td class="paramname"><em>callback</em>, </td>
+          <td class="paramname"><em>completed</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -198,17 +199,17 @@ Set the relative folder path to the starting point of the "StreamingAssets" fold
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Get the path of the file in the "StreamingAssets" folder to asynchronous. </p>
+<p>Gets the readable path of the file in the "StreamingAssets" folder by using coroutines. </p>
 <p><br />
-Set the relative folder path to the starting point of the "StreamingAssets" folder. e.g. "foobar.txt" or "hogehoge/foobar.txt". <br />
-[Android]The file in "StreamingAssets" folder is copied to Application.persistentDataPath.If refresh flag is false, when the file has already been copied, the file is not copied.If refresh flag is true, the file is always copyied. <br />
-[WebGL]The file in "StreamingAssets" folder is copied to WebGL's FileSystem.If refresh flag is false, when the file has already been copied, the file is not copied.If refresh flag is true, the file is always copyied.</p>
+Set the relative file path from the starting point of the "StreamingAssets" folder. e.g. "foobar.txt" or "hogehoge/foobar.txt". <br />
+[Android]The target file that exists in the "StreamingAssets" folder is copied into the folder of the Application.persistentDataPath. If refresh flag is false, when the file has already been copied, the file is not copied. If refresh flag is true, the file is always copyied. <br />
+[WebGL]The target file in the "StreamingAssets" folder is copied to the WebGL's virtual filesystem. If refresh flag is false, when the file has already been copied, the file is not copied. If refresh flag is true, the file is always copyied.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">filepath</td><td>Set the relative folder path to the starting point of the "StreamingAssets" folder. e.g. "foobar.txt" or "hogehoge/foobar.txt". </td></tr>
-    <tr><td class="paramname">callback</td><td>Callback function that is called when process is completed. Returns the file path in case of success and returns empty in case of error. </td></tr>
-    <tr><td class="paramname">progress</td><td>Callback function that is called when process is progress. Returns the file path and a value of 0 to 1. </td></tr>
-    <tr><td class="paramname">refresh</td><td>[Android][WebGL]If refresh flag is false, when the file has already been copied, the file is not copied.If refresh flag is true, the file is always copyied. </td></tr>
+    <tr><td class="paramname">filepath</td><td>the relative file path starting from "StreamingAssets" folder </td></tr>
+    <tr><td class="paramname">completed</td><td>the callback function that is called when process is completed. Returns the file path in case of success and returns empty in case of error. </td></tr>
+    <tr><td class="paramname">progress</td><td>the callback function that is called when process is progress. Returns the file path and a value of 0 to 1. </td></tr>
+    <tr><td class="paramname">refresh</td><td>[Android][WebGL]If refresh flag is false, when the file has already been copied, the file is not copied. If refresh flag is true, the file is always copyied. </td></tr>
   </table>
   </dd>
 </dl>
@@ -235,7 +236,8 @@ Set the relative folder path to the starting point of the "StreamingAssets" fold
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Get the <a class="el" href="namespace_dlib_face_landmark_detector.html">DlibFaceLandmarkDetector</a> Version. </p>
+<p>Returns this "Dlib FaceLandmark Detector" version number.</p>
+<dl class="section return"><dt>Returns</dt><dd>this "Dlib FaceLandmark Detector" version number </dd></dl>
 
 </div>
 </div>
@@ -262,7 +264,7 @@ Set the relative folder path to the starting point of the "StreamingAssets" fold
 </div><div class="memdoc">
 <p>Sets the debug mode. </p>
 <p><br />
-if true, The error log of the Native side OpenCV will be displayed on the Unity Editor Console. <br />
+if true, The error log of the Native side <a class="el" href="namespace_dlib_face_landmark_detector.html">DlibFaceLandmarkDetector</a> will be displayed on the Unity Editor Console. <br />
 This method is supported in WIN, MAC and LINUX. <br />
 Please use as follows. <br />
 Utils.setDebugMode(true); <br />
@@ -272,7 +274,7 @@ ccc <br />
 Utils.setDebugMode(false);</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">debugMode</td><td></td></tr>
+    <tr><td class="paramname">debugMode</td><td>if true, The error log of the Native side <a class="el" href="namespace_dlib_face_landmark_detector.html">DlibFaceLandmarkDetector</a> will be displayed on the Unity Editor Console </td></tr>
   </table>
   </dd>
 </dl>
@@ -285,7 +287,7 @@ Utils.setDebugMode(false);</p>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jul 7 2017 02:06:39 for Dlib FaceLandmark Detector by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Aug 8 2017 12:59:21 for Dlib FaceLandmark Detector by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

@@ -24,7 +24,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Dlib FaceLandmark Detector
-   &#160;<span id="projectnumber">1.1.3</span>
+   &#160;<span id="projectnumber">1.1.4</span>
    </div>
    <div id="projectbrief">Enox Software</div>
   </td>
@@ -232,7 +232,9 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Initializes <a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html" title="Face landmark detector. ">FaceLandmarkDetector</a> using default frontal face detector.</p>
+<p>Initializes a new instance of the <a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html" title="Face landmark detector. ">FaceLandmarkDetector</a> class. </p>
+<p><br />
+This instance uses default frontal face detector.</p>
 <p>ObjectDetector is initialized in such a code. frontal_face_detector face_detector; face_detector = get_frontal_face_detector();</p>
 <p>ShapePredictor is initialized in such a code. shape_predictor sp; deserialize(shape_predictor_filename) &gt;&gt; sp;</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -267,7 +269,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Initializes <a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html" title="Face landmark detector. ">FaceLandmarkDetector</a>.</p>
+<p>Initializes a new instance of the <a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html" title="Face landmark detector. ">FaceLandmarkDetector</a> class.</p>
 <p>ObjectDetector is initialized in such a code. if(object_detector_filename != null){ object_detector&lt;scan_fhog_pyramid&lt;pyramid_down&lt;6&gt;&gt;&gt; simple_detector; deserialize(object_detector_filename) &gt;&gt; simple_detector; }else{ frontal_face_detector face_detector; face_detector = get_frontal_face_detector(); }</p>
 <p>ShapePredictor is initialized in such a code. shape_predictor sp; deserialize(shape_predictor_filename) &gt;&gt; sp;</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -293,7 +295,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Detect Objects</p>
+<p>Detects Objects.</p>
 <dl class="section return"><dt>Returns</dt><dd>List&lt;Rect&gt; detected list of object's rect. </dd></dl>
 
 </div>
@@ -311,7 +313,13 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Detect Objects</p>
+<p>Detects Objects.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">adjust_threshold</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd>List&lt;Rect&gt; detected list of object's rect. </dd></dl>
 
 </div>
@@ -328,7 +336,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Detect Objects</p>
+<p>Detects Objects.</p>
 <dl class="section return"><dt>Returns</dt><dd>double[] detected object's data.[left_0, top_0, width_0, height_0, detection_confidence_0, weight_index_0, left_1, top_1, width_1, height_1, detection_confidence_1, weight_index_1, ...] </dd></dl>
 
 </div>
@@ -346,7 +354,13 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Detect Objects</p>
+<p>Detects Objects.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">adjust_threshold</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd>double[] detected object's data.[left_0, top_0, width_0, height_0, detection_confidence_0, weight_index_0, left_1, top_1, width_1, height_1, detection_confidence_1, weight_index_1, ...] </dd></dl>
 
 </div>
@@ -386,7 +400,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Detect Object Landmark</p>
+<p>Detects Object Landmark.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">left</td><td></td></tr>
@@ -413,7 +427,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Detect Object Landmark</p>
+<p>Detects Object Landmark.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">rect</td><td></td></tr>
@@ -459,7 +473,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Detect Object Landmark</p>
+<p>Detects Object Landmark.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">left</td><td></td></tr>
@@ -486,7 +500,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Detect Object Landmark</p>
+<p>Detects Object Landmark.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">rect</td><td></td></tr>
@@ -509,7 +523,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Detect Objects</p>
+<p>Detects Objects.</p>
 <dl class="section return"><dt>Returns</dt><dd>List&lt;RectDetection&gt; detected list of object's <a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector_1_1_rect_detection.html">RectDetection</a>. </dd></dl>
 
 </div>
@@ -527,7 +541,13 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Detect Objects</p>
+<p>Detects Objects.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">adjust_threshold</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd>List&lt;RectDetection&gt; detected list of object's <a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector_1_1_rect_detection.html">RectDetection</a>. </dd></dl>
 
 </div>
@@ -599,7 +619,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Draw Detect Landmark Result. This method supports 68 landmark points.</p>
+<p>Draws Detect Landmark Result. This method supports 68 landmark points.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">texture2D</td><td></td></tr>
@@ -672,7 +692,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Draw Detect Landmark Result. This method supports 68 landmark points.</p>
+<p>Draws Detect Landmark Result. This method supports 68 landmark points.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">intPtr</td><td></td></tr>
@@ -754,7 +774,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Draw Detect Landmark Result. This method supports 68 landmark points.</p>
+<p>Draws Detect Landmark Result. This method supports 68 landmark points.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">intPtr</td><td></td></tr>
@@ -831,7 +851,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Draw Detect Landmark Result. This method supports 68 landmark points.</p>
+<p>Draws Detect Landmark Result. This method supports 68 landmark points.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">array</td><td></td></tr>
@@ -913,7 +933,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Draw Detect Landmark Result. This method supports 68 landmark points.</p>
+<p>Draws Detect Landmark Result. This method supports 68 landmark points.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">array</td><td></td></tr>
@@ -976,7 +996,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Draw Detect Result</p>
+<p>Draws Detect Result.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">texture2D</td><td></td></tr>
@@ -1056,7 +1076,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Draw Detect Result</p>
+<p>Draws Detect Result.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">intPtr</td><td></td></tr>
@@ -1144,7 +1164,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Draw Detect Result</p>
+<p>Draws Detect Result.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">intPtr</td><td></td></tr>
@@ -1228,7 +1248,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Draw Detect Result</p>
+<p>Draws Detect Result.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">array</td><td></td></tr>
@@ -1317,7 +1337,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Draw Detect Result</p>
+<p>Draws Detect Result.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">array</td><td></td></tr>
@@ -1348,7 +1368,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Get ShapePredictorNumFeatures</p>
+<p>Gets ShapePredictorNumFeatures.</p>
 <dl class="section return"><dt>Returns</dt><dd>long </dd></dl>
 
 </div>
@@ -1365,7 +1385,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Get ShapePredictorNumParts</p>
+<p>Gets ShapePredictorNumParts.</p>
 <dl class="section return"><dt>Returns</dt><dd>long </dd></dl>
 
 </div>
@@ -1400,7 +1420,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Set Image from Texture2D</p>
+<p>Sets Image from Texture2D.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">texture2D</td><td></td></tr>
@@ -1423,7 +1443,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Set Image from WebCamTexture</p>
+<p>Sets Image from WebCamTexture.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">webCamTexture</td><td></td></tr>
@@ -1456,11 +1476,11 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Set Image from WebCamTexture</p>
+<p>Sets Image from WebCamTexture.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">webCamTexture</td><td></td></tr>
-    <tr><td class="paramname">bufferColors</td><td>Optional array to receive pixel data. You can optionally pass in an array of Color32s to use in colors to avoid allocating new memory each frame. The array needs to be initialized to a length matching width * height of the texture.(<a href="http://docs.unity3d.com/ScriptReference/WebCamTexture.GetPixels32.html">http://docs.unity3d.com/ScriptReference/WebCamTexture.GetPixels32.html</a>) </td></tr>
+    <tr><td class="paramname">bufferColors</td><td>the optional array to receive pixel data. You can optionally pass in an array of Color32s to use in colors to avoid allocating new memory each frame. The array needs to be initialized to a length matching width * height of the texture.(<a href="http://docs.unity3d.com/ScriptReference/WebCamTexture.GetPixels32.html">http://docs.unity3d.com/ScriptReference/WebCamTexture.GetPixels32.html</a>) </td></tr>
   </table>
   </dd>
 </dl>
@@ -1502,7 +1522,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Set Image from IntPtr</p>
+<p>Sets Image from IntPtr.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">intPtr</td><td></td></tr>
@@ -1556,7 +1576,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Set Image from IntPtr</p>
+<p>Sets Image from IntPtr.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">intPtr</td><td></td></tr>
@@ -1605,7 +1625,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Set Image from IList&lt;T&gt;</p>
+<p>Sets Image from IList&lt;T&gt;.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">array</td><td></td></tr>
@@ -1659,7 +1679,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Set Image from IList&lt;T&gt;</p>
+<p>Sets Image from IList&lt;T&gt;.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">array</td><td></td></tr>
@@ -1679,7 +1699,7 @@ Additional Inherited Members</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jul 7 2017 02:06:39 for Dlib FaceLandmark Detector by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Aug 8 2017 12:59:21 for Dlib FaceLandmark Detector by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

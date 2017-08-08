@@ -13,7 +13,8 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// Frame optimization example. (Example of frame resizing and skipping using the OptimizationWebCamTextureToMatHelper)
+    /// Frame optimization example.
+    /// An example of frame resizing and skipping using the OptimizationWebCamTextureToMatHelper.
     /// http://www.learnopencv.com/speeding-up-dlib-facial-landmark-detector/
     /// </summary>
     [RequireComponent(typeof(OptimizationWebCamTextureToMatHelper))]
@@ -166,9 +167,9 @@ namespace DlibFaceLandmarkDetectorExample
         }
     
         /// <summary>
-        /// Raises the disable event.
+        /// Raises the destroy event.
         /// </summary>
-        void OnDisable ()
+        void OnDestroy ()
         {
             if (webCamTextureToMatHelper != null)
                 webCamTextureToMatHelper.Dispose ();

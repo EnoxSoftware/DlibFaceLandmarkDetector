@@ -13,9 +13,9 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// AR head example. (Example of display of AR head from WebCamTextureToMatHelper)
+    /// AR head example.
     /// This example was referring to http://www.morethantechnical.com/2012/10/17/head-pose-estimation-with-opencv-opengl-revisited-w-code/
-    /// and use effect asset from http://ktk-kumamoto.hatenablog.com/entry/2014/09/14/092400
+    /// and use effect asset from http://ktk-kumamoto.hatenablog.com/entry/2014/09/14/092400.
     /// </summary>
     [RequireComponent(typeof(WebCamTextureToMatHelper))]
     public class ARHeadExample : MonoBehaviour
@@ -181,7 +181,7 @@ namespace DlibFaceLandmarkDetectorExample
         string shape_predictor_68_face_landmarks_dat_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        private Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
+        Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
         #endif
         
         // Use this for initialization
@@ -472,9 +472,9 @@ namespace DlibFaceLandmarkDetectorExample
         }
         
         /// <summary>
-        /// Raises the disable event.
+        /// Raises the destroy event.
         /// </summary>
-        void OnDisable ()
+        void OnDestroy ()
         {
             if (webCamTextureToMatHelper != null)
                 webCamTextureToMatHelper.Dispose ();

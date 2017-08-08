@@ -13,9 +13,9 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// VideoCapture AR head example. (Example of display of AR head from VideoCapture)
+    /// VideoCapture AR head example.
     /// This example was referring to http://www.morethantechnical.com/2012/10/17/head-pose-estimation-with-opencv-opengl-revisited-w-code/
-    /// and use effect asset from http://ktk-kumamoto.hatenablog.com/entry/2014/09/14/092400
+    /// and use effect asset from http://ktk-kumamoto.hatenablog.com/entry/2014/09/14/092400.
     /// </summary>
     public class VideoCaptureARHeadExample : MonoBehaviour
     {
@@ -517,9 +517,9 @@ namespace DlibFaceLandmarkDetectorExample
         }
         
         /// <summary>
-        /// Raises the disable event.
+        /// Raises the destroy event.
         /// </summary>
-        void OnDisable ()
+        void OnDestroy ()
         {
             if (camMatrix != null)
                 camMatrix.Dispose ();

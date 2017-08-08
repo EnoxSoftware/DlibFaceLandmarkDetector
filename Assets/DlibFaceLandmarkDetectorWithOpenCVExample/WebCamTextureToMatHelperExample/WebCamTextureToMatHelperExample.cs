@@ -13,7 +13,7 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// WebCamTextureToMatHelper example. (Example of face landmark detection from WebCamTextureToMatHelper)
+    /// WebCamTextureToMatHelper example.
     /// </summary>
     [RequireComponent(typeof(WebCamTextureToMatHelper))]
     public class WebCamTextureToMatHelperExample : MonoBehaviour
@@ -143,9 +143,9 @@ namespace DlibFaceLandmarkDetectorExample
         }
 
         /// <summary>
-        /// Raises the disable event.
+        /// Raises the destroy event.
         /// </summary>
-        void OnDisable ()
+        void OnDestroy ()
         {
             if (webCamTextureToMatHelper != null)
                 webCamTextureToMatHelper.Dispose ();

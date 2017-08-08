@@ -11,7 +11,8 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// Texture2D example. (Example of face landmark detection from Texture2D)
+    /// Texture2D example. 
+    /// An example of detecting face landmarks in texture2D images.
     /// </summary>
     public class Texture2DExample : MonoBehaviour
     {
@@ -23,10 +24,10 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// The shape_predictor_68_face_landmarks_dat_filepath.
         /// </summary>
-        private string shape_predictor_68_face_landmarks_dat_filepath;
+        string shape_predictor_68_face_landmarks_dat_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        private Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
+        Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
         #endif
 
         // Use this for initialization

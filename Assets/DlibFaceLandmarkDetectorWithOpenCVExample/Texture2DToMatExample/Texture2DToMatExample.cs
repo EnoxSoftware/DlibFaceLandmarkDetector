@@ -12,7 +12,8 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// Texture2DToMat example. (Example of using the FaceLandmarkDetector with the OpenCVForUnity)
+    /// Texture2DToMat example.
+    /// An example of using "Dlib FaceLandmark Detector"  together with "OpenCV for Unity".
     /// </summary>
     public class Texture2DToMatExample : MonoBehaviour
     {
@@ -117,9 +118,9 @@ namespace DlibFaceLandmarkDetectorExample
         }
 
         /// <summary>
-        /// Raises the disable event.
+        /// Raises the destroy event.
         /// </summary>
-        void OnDisable ()
+        void OnDestroy ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
             foreach (var coroutine in coroutines) {

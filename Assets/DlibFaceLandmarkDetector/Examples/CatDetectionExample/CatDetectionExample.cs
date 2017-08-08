@@ -12,6 +12,7 @@ namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
     /// Cat detection example.
+    /// An example of detecting cat face landmarks in texture2D images.
     /// </summary>
     public class CatDetectionExample : MonoBehaviour
     {
@@ -122,9 +123,9 @@ namespace DlibFaceLandmarkDetectorExample
         }
 
         /// <summary>
-        /// Raises the disable event.
+        /// Raises the destroy event.
         /// </summary>
-        void OnDisable ()
+        void OnDestroy ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
             foreach (var coroutine in coroutines) {

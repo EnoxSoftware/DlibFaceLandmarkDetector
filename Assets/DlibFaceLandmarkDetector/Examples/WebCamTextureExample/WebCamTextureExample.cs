@@ -11,7 +11,8 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// WebCamTexture example. (Example of face landmark detection from WebCamTexture)
+    /// WebCamTexture example.
+    /// An example of detecting face landmarks in WebCamTexture images.
     /// </summary>
     public class WebCamTextureExample : MonoBehaviour
     {
@@ -250,14 +251,10 @@ namespace DlibFaceLandmarkDetectorExample
                     //Debug.Log ("face : " + rect);
             
                     //detect landmark points
-                    List<Vector2> points = faceLandmarkDetector.DetectLandmark (rect);
-
-
-                    //Debug.Log ("face point : " + points.Count);
+                    faceLandmarkDetector.DetectLandmark (rect);
 
                     //draw landmark points
                     faceLandmarkDetector.DrawDetectLandmarkResult<Color32> (colors, webCamTexture.width, webCamTexture.height, 4, flip, 0, 255, 0, 255);
-
                 }
 
                 //draw face rect
@@ -269,9 +266,9 @@ namespace DlibFaceLandmarkDetectorExample
         }
 
         /// <summary>
-        /// Raises the disable event.
+        /// Raises the destroy event.
         /// </summary>
-        void OnDisable ()
+        void OnDestroy ()
         {
             if (webCamTexture != null)
                 webCamTexture.Stop ();

@@ -12,7 +12,8 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// VideoCapture example. (Example of face landmark detection from VideoCapture)
+    /// VideoCapture example.
+    /// An example of detecting face landmarks in VideoCapture images.
     /// </summary>
     public class VideoCaptureExample : MonoBehaviour
     {

@@ -13,11 +13,11 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// VideoCapture AR head example.
+    /// AR Head VideoCapture Example
     /// This example was referring to http://www.morethantechnical.com/2012/10/17/head-pose-estimation-with-opencv-opengl-revisited-w-code/
     /// and use effect asset from http://ktk-kumamoto.hatenablog.com/entry/2014/09/14/092400.
     /// </summary>
-    public class VideoCaptureARHeadExample : MonoBehaviour
+    public class ARHeadVideoCaptureExample : MonoBehaviour
     {
         /// <summary>
         /// Determines if displays face points.
@@ -185,9 +185,9 @@ namespace DlibFaceLandmarkDetectorExample
         FaceLandmarkDetector faceLandmarkDetector;
         
         /// <summary>
-        /// The shape_predictor_68_face_landmarks_dat_filepath.
+        /// The sp_human_face_68_dat_filepath.
         /// </summary>
-        string shape_predictor_68_face_landmarks_dat_filepath;
+        string sp_human_face_68_dat_filepath;
         
         /// <summary>
         /// The dance_avi_filepath.
@@ -212,7 +212,7 @@ namespace DlibFaceLandmarkDetectorExample
             coroutines.Push (getFilePath_Coroutine);
             StartCoroutine (getFilePath_Coroutine);
             #else
-            shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
+            sp_human_face_68_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("sp_human_face_68.dat");
             dance_avi_filepath = OpenCVForUnity.Utils.getFilePath ("dance.avi");
             Run ();
             #endif
@@ -221,11 +221,11 @@ namespace DlibFaceLandmarkDetectorExample
         #if UNITY_WEBGL && !UNITY_EDITOR
         private IEnumerator GetFilePath ()
         {
-            var getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
-                shape_predictor_68_face_landmarks_dat_filepath = result;
+            var getFilePathAsync_sp_human_face_68_dat_filepath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("sp_human_face_68.dat", (result) => {
+                sp_human_face_68_dat_filepath = result;
             });
-            coroutines.Push (getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine);
-            yield return StartCoroutine (getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine);
+            coroutines.Push (getFilePathAsync_sp_human_face_68_dat_filepath_Coroutine);
+            yield return StartCoroutine (getFilePathAsync_sp_human_face_68_dat_filepath_Coroutine);
 
             var getFilePathAsync_dance_avi_filepath_Coroutine = OpenCVForUnity.Utils.getFilePathAsync ("dance.avi", (result) => {
                 dance_avi_filepath = result;
@@ -250,11 +250,11 @@ namespace DlibFaceLandmarkDetectorExample
                 new Point3 (26, 15, 83),//r mouse (Mouth breadth)
                 new Point3 (-79, 90, 0.0),//l ear (Bitragion breadth)
                 new Point3 (79, 90, 0.0)//r ear (Bitragion breadth)
-                );
+            );
             imagePoints = new MatOfPoint2f ();
             rotMat = new Mat (3, 3, CvType.CV_64FC1);
             
-            faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
+            faceLandmarkDetector = new FaceLandmarkDetector (sp_human_face_68_dat_filepath);
             
             rgbMat = new Mat ();
             
@@ -422,7 +422,7 @@ namespace DlibFaceLandmarkDetectorExample
                         new Point (points [54].x, points [54].y), //r mouth (Mouth breadth)
                         new Point (points [0].x, points [0].y),//l ear (Bitragion breadth)
                         new Point (points [16].x, points [16].y)//r ear (Bitragion breadth)
-                        );
+                    );
                     
                     // Estimate head pose.
                     if (rvec == null || tvec == null) {
@@ -433,15 +433,15 @@ namespace DlibFaceLandmarkDetectorExample
 
                     double tvec_z = tvec.get (2, 0) [0];
 
-                    if (double.IsNaN(tvec_z) || tvec_z < 0) { // if tvec is wrong data, do not use extrinsic guesses.
+                    if (double.IsNaN (tvec_z) || tvec_z < 0) { // if tvec is wrong data, do not use extrinsic guesses.
                         Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec);
-                    }else{
+                    } else {
                         Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec, true, Calib3d.SOLVEPNP_ITERATIVE);
                     }
 
 //                    Debug.Log (tvec.dump());
                     
-                    if (!double.IsNaN(tvec_z)) {
+                    if (!double.IsNaN (tvec_z)) {
                         
                         if (Mathf.Abs ((float)(points [43].y - points [46].y)) > Mathf.Abs ((float)(points [42].x - points [45].x)) / 6.0) {
                             if (displayEffects)
@@ -465,14 +465,16 @@ namespace DlibFaceLandmarkDetectorExample
                             if (displayEffects) {
                                 mouth.SetActive (true);
                                 foreach (ParticleSystem ps in mouthParticleSystem) {
-                                    ps.enableEmission = true;
+                                    var em = ps.emission;
+                                    em.enabled = true;
                                     ps.startSize = 40 * (mouseDistance / noseDistance);
                                 }
                             }
                         } else {
                             if (displayEffects) {
                                 foreach (ParticleSystem ps in mouthParticleSystem) {
-                                    ps.enableEmission = false;
+                                    var em = ps.emission;
+                                    em.enabled = false;
                                 }
                             }
                         }
@@ -515,7 +517,7 @@ namespace DlibFaceLandmarkDetectorExample
                 OpenCVForUnity.Utils.matToTexture2D (rgbMat, texture, colors);
             }
         }
-        
+
         /// <summary>
         /// Raises the destroy event.
         /// </summary>
@@ -536,7 +538,7 @@ namespace DlibFaceLandmarkDetectorExample
             }
             #endif
         }
-        
+
         /// <summary>
         /// Raises the back button click event.
         /// </summary>
@@ -548,7 +550,7 @@ namespace DlibFaceLandmarkDetectorExample
             Application.LoadLevel ("DlibFaceLandmarkDetectorExample");
             #endif
         }
-        
+
         /// <summary>
         /// Raises the display face points toggle value changed event.
         /// </summary>
@@ -560,7 +562,7 @@ namespace DlibFaceLandmarkDetectorExample
                 displayFacePoints = false;
             }
         }
-        
+
         /// <summary>
         /// Raises the display axes toggle value changed event.
         /// </summary>
@@ -573,7 +575,7 @@ namespace DlibFaceLandmarkDetectorExample
                 axes.SetActive (false);
             }
         }
-        
+
         /// <summary>
         /// Raises the display head toggle value changed event.
         /// </summary>
@@ -586,7 +588,7 @@ namespace DlibFaceLandmarkDetectorExample
                 head.SetActive (false);
             }
         }
-        
+
         /// <summary>
         /// Raises the display effects toggle value changed event.
         /// </summary>

@@ -12,8 +12,8 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// Texture2DToMat example.
-    /// An example of using "Dlib FaceLandmark Detector"  together with "OpenCV for Unity".
+    /// Texture2DToMat Example
+    /// An example of using "Dlib FaceLandmark Detector" together with "OpenCV for Unity".
     /// </summary>
     public class Texture2DToMatExample : MonoBehaviour
     {
@@ -23,9 +23,9 @@ namespace DlibFaceLandmarkDetectorExample
         public Texture2D imgTexture;
 
         /// <summary>
-        /// The shape_predictor_68_face_landmarks_dat_filepath.
+        /// The sp_human_face_68_dat_filepath.
         /// </summary>
-        string shape_predictor_68_face_landmarks_dat_filepath;
+        string sp_human_face_68_dat_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
         Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
@@ -35,16 +35,16 @@ namespace DlibFaceLandmarkDetectorExample
         void Start ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
+            var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("sp_human_face_68.dat", (result) => {
                 coroutines.Clear ();
 
-                shape_predictor_68_face_landmarks_dat_filepath = result;
+                sp_human_face_68_dat_filepath = result;
                 Run ();
             });
             coroutines.Push (getFilePath_Coroutine);
             StartCoroutine (getFilePath_Coroutine);
             #else
-            shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
+            sp_human_face_68_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("sp_human_face_68.dat");
             Run ();
             #endif
         }
@@ -72,7 +72,7 @@ namespace DlibFaceLandmarkDetectorExample
             }
 
 
-            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
+            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (sp_human_face_68_dat_filepath);
 
             OpenCVForUnityUtils.SetImage (faceLandmarkDetector, imgMat);
 

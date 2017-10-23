@@ -78,15 +78,6 @@ namespace DlibFaceLandmarkDetectorExample
             #endif
         }
 
-        public void OnARHeadExampleButtonClick ()
-        {
-            #if UNITY_5_3 || UNITY_5_3_OR_NEWER
-            SceneManager.LoadScene ("ARHeadExample");
-            #else
-            Application.LoadLevel ("ARHeadExample");
-            #endif
-        }
-
         public void OnVideoCaptureExampleButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
@@ -96,15 +87,24 @@ namespace DlibFaceLandmarkDetectorExample
             #endif
         }
 
-        public void OnVideoCaptureARHeadExampleButtonClick ()
+        public void OnARHeadExampleButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER
-            SceneManager.LoadScene ("VideoCaptureARHeadExample");
+            SceneManager.LoadScene ("ARHeadExample");
             #else
-            Application.LoadLevel ("VideoCaptureARHeadExample");
+            Application.LoadLevel ("ARHeadExample");
             #endif
         }
-        
+
+        public void OnARHeadVideoCaptureExampleButtonClick ()
+        {
+            #if UNITY_5_3 || UNITY_5_3_OR_NEWER
+            SceneManager.LoadScene ("ARHeadVideoCaptureExample");
+            #else
+            Application.LoadLevel ("ARHeadVideoCaptureExample");
+            #endif
+        }
+
         public void OnFrameOptimizationExampleButtonClick ()
         {
             #if UNITY_5_3 || UNITY_5_3_OR_NEWER

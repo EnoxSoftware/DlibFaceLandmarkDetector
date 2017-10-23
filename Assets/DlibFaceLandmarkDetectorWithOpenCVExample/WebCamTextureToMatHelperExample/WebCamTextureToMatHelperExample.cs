@@ -13,9 +13,9 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// WebCamTextureToMatHelper example.
+    /// WebCamTextureToMatHelper Example
     /// </summary>
-    [RequireComponent(typeof(WebCamTextureToMatHelper))]
+    [RequireComponent (typeof(WebCamTextureToMatHelper))]
     public class WebCamTextureToMatHelperExample : MonoBehaviour
     {
         /// <summary>
@@ -34,9 +34,9 @@ namespace DlibFaceLandmarkDetectorExample
         FaceLandmarkDetector faceLandmarkDetector;
 
         /// <summary>
-        /// The shape_predictor_68_face_landmarks_dat_filepath.
+        /// The sp_human_face_68_dat_filepath.
         /// </summary>
-        string shape_predictor_68_face_landmarks_dat_filepath;
+        string sp_human_face_68_dat_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
         Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
@@ -46,23 +46,23 @@ namespace DlibFaceLandmarkDetectorExample
         void Start ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
+            var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("sp_human_face_68.dat", (result) => {
                 coroutines.Clear ();
 
-                shape_predictor_68_face_landmarks_dat_filepath = result;
+                sp_human_face_68_dat_filepath = result;
                 Run ();
             });
             coroutines.Push (getFilePath_Coroutine);
             StartCoroutine (getFilePath_Coroutine);
             #else
-            shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
+            sp_human_face_68_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("sp_human_face_68.dat");
             Run ();
             #endif
         }
 
         private void Run ()
         {
-            faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
+            faceLandmarkDetector = new FaceLandmarkDetector (sp_human_face_68_dat_filepath);
 
             webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper> ();
             webCamTextureToMatHelper.Initialize ();

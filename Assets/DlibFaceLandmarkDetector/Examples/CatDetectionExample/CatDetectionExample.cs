@@ -11,8 +11,8 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// Cat detection example.
-    /// An example of detecting cat face landmarks in texture2D images.
+    /// Cat Detection Example
+    /// An example of detecting cat face landmarks in a Texture2D image.
     /// </summary>
     public class CatDetectionExample : MonoBehaviour
     {
@@ -27,9 +27,9 @@ namespace DlibFaceLandmarkDetectorExample
         string frontal_cat_face_svm_filepath;
 
         /// <summary>
-        /// The shape_predictor_68_cat_face_landmarks_dat_filepath.
+        /// The sp_cat_face_68_dat_filepath.
         /// </summary>
-        string shape_predictor_68_cat_face_landmarks_dat_filepath;
+        string sp_cat_face_68_dat_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
         Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
@@ -44,7 +44,7 @@ namespace DlibFaceLandmarkDetectorExample
             StartCoroutine (getFilePath_Coroutine);
             #else
             frontal_cat_face_svm_filepath = Utils.getFilePath ("frontal_cat_face.svm");
-            shape_predictor_68_cat_face_landmarks_dat_filepath = Utils.getFilePath ("shape_predictor_68_cat_face_landmarks.dat");
+            sp_cat_face_68_dat_filepath = Utils.getFilePath ("sp_cat_face_68.dat");
             Run ();
             #endif
         }
@@ -58,11 +58,11 @@ namespace DlibFaceLandmarkDetectorExample
             coroutines.Push (getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine);
             yield return StartCoroutine (getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine);
 
-            var getFilePathAsync_shape_predictor_68_cat_face_landmarks_dat_filepath_Coroutine = Utils.getFilePathAsync ("shape_predictor_68_cat_face_landmarks.dat", (result) => {
-                shape_predictor_68_cat_face_landmarks_dat_filepath = result;
+        var getFilePathAsync_sp_cat_face_68_dat_filepath_Coroutine = Utils.getFilePathAsync ("sp_cat_face_68.dat", (result) => {
+                sp_cat_face_68_dat_filepath = result;
             });
-            coroutines.Push (getFilePathAsync_shape_predictor_68_cat_face_landmarks_dat_filepath_Coroutine);
-            yield return StartCoroutine (getFilePathAsync_shape_predictor_68_cat_face_landmarks_dat_filepath_Coroutine);
+            coroutines.Push (getFilePathAsync_sp_cat_face_68_dat_filepath_Coroutine);
+            yield return StartCoroutine (getFilePathAsync_sp_cat_face_68_dat_filepath_Coroutine);
 
             coroutines.Clear ();
 
@@ -86,7 +86,7 @@ namespace DlibFaceLandmarkDetectorExample
                 Camera.main.orthographicSize = height / 2;
             }
 
-            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (frontal_cat_face_svm_filepath, shape_predictor_68_cat_face_landmarks_dat_filepath);
+            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (frontal_cat_face_svm_filepath, sp_cat_face_68_dat_filepath);
             faceLandmarkDetector.SetImage (texture2D);
 
             //detect face rects

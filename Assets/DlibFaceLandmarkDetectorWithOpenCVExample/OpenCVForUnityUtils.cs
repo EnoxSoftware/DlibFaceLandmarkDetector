@@ -14,7 +14,7 @@ namespace DlibFaceLandmarkDetector
     public static class OpenCVForUnityUtils
     {
         /// <summary>
-        /// Sets the image.
+        /// Sets a image.
         /// </summary>
         /// <param name="faceLandmarkDetector">Face landmark detector.</param>
         /// <param name="imgMat">Image mat.</param>
@@ -27,7 +27,7 @@ namespace DlibFaceLandmarkDetector
         }
 
         /// <summary>
-        /// Draws the face rect.
+        /// Draws a face rect.
         /// </summary>
         /// <param name="imgMat">Image mat.</param>
         /// <param name="rect">Rect.</param>
@@ -39,7 +39,7 @@ namespace DlibFaceLandmarkDetector
         }
 
         /// <summary>
-        /// Draws the face landmark.
+        /// Draws a face landmark.
         /// This method supports 68 landmark points.
         /// </summary>
         /// <param name="imgMat">Image mat.</param>

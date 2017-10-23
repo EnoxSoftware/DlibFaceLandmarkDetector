@@ -13,11 +13,11 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// Frame optimization example.
+    /// Frame Optimization Example
     /// An example of frame resizing and skipping using the OptimizationWebCamTextureToMatHelper.
     /// http://www.learnopencv.com/speeding-up-dlib-facial-landmark-detector/
     /// </summary>
-    [RequireComponent(typeof(OptimizationWebCamTextureToMatHelper))]
+    [RequireComponent (typeof(OptimizationWebCamTextureToMatHelper))]
     public class FrameOptimizationExample : MonoBehaviour
     {
         /// <summary>
@@ -41,9 +41,9 @@ namespace DlibFaceLandmarkDetectorExample
         List<UnityEngine.Rect> detectionResult;
 
         /// <summary>
-        /// The shape_predictor_68_face_landmarks_dat_filepath.
+        /// The sp_human_face_68_dat_filepath.
         /// </summary>
-        string shape_predictor_68_face_landmarks_dat_filepath;
+        string sp_human_face_68_dat_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
         Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
@@ -53,23 +53,23 @@ namespace DlibFaceLandmarkDetectorExample
         void Start ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
+            var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("sp_human_face_68.dat", (result) => {
                 coroutines.Clear ();
 
-                shape_predictor_68_face_landmarks_dat_filepath = result;
+                sp_human_face_68_dat_filepath = result;
                 Run ();
             });
             coroutines.Push (getFilePath_Coroutine);
             StartCoroutine (getFilePath_Coroutine);
             #else
-            shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
+            sp_human_face_68_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("sp_human_face_68.dat");
             Run ();
             #endif
         }
 
         private void Run ()
         {
-            faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
+            faceLandmarkDetector = new FaceLandmarkDetector (sp_human_face_68_dat_filepath);
 
             webCamTextureToMatHelper = gameObject.GetComponent<OptimizationWebCamTextureToMatHelper> ();
             webCamTextureToMatHelper.Initialize ();
@@ -165,7 +165,7 @@ namespace DlibFaceLandmarkDetectorExample
                 OpenCVForUnity.Utils.matToTexture2D (rgbaMat, texture, webCamTextureToMatHelper.GetBufferColors ());
             }
         }
-    
+
         /// <summary>
         /// Raises the destroy event.
         /// </summary>

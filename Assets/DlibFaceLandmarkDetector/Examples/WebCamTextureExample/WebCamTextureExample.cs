@@ -11,7 +11,7 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// WebCamTexture example.
+    /// WebCamTexture Example
     /// An example of detecting face landmarks in WebCamTexture images.
     /// </summary>
     public class WebCamTextureExample : MonoBehaviour
@@ -72,9 +72,9 @@ namespace DlibFaceLandmarkDetectorExample
         bool flip;
 
         /// <summary>
-        /// The shape_predictor_68_face_landmarks_dat_filepath.
+        /// The sp_human_face_68_dat_filepath.
         /// </summary>
-        string shape_predictor_68_face_landmarks_dat_filepath;
+        string sp_human_face_68_dat_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
         Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
@@ -84,23 +84,23 @@ namespace DlibFaceLandmarkDetectorExample
         void Start ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var getFilePath_Coroutine = Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
+            var getFilePath_Coroutine = Utils.getFilePathAsync ("sp_human_face_68.dat", (result) => {
                 coroutines.Clear ();
 
-                shape_predictor_68_face_landmarks_dat_filepath = result;
+                sp_human_face_68_dat_filepath = result;
                 Run ();
             });
             coroutines.Push (getFilePath_Coroutine);
             StartCoroutine (getFilePath_Coroutine);
             #else
-            shape_predictor_68_face_landmarks_dat_filepath = Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
+            sp_human_face_68_dat_filepath = Utils.getFilePath ("sp_human_face_68.dat");
             Run ();
             #endif
         }
 
         private void Run ()
         {
-            faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
+            faceLandmarkDetector = new FaceLandmarkDetector (sp_human_face_68_dat_filepath);
     
             StartCoroutine (Initialize ());
         }
@@ -294,7 +294,7 @@ namespace DlibFaceLandmarkDetectorExample
             Application.LoadLevel ("DlibFaceLandmarkDetectorExample");
             #endif
         }
-        
+
         /// <summary>
         /// Raises the change camera button click event.
         /// </summary>

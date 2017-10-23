@@ -12,7 +12,7 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// VideoCapture example.
+    /// VideoCapture Example
     /// An example of detecting face landmarks in VideoCapture images.
     /// </summary>
     public class VideoCaptureExample : MonoBehaviour
@@ -43,9 +43,9 @@ namespace DlibFaceLandmarkDetectorExample
         FaceLandmarkDetector faceLandmarkDetector;
 
         /// <summary>
-        /// The shape_predictor_68_face_landmarks_dat_filepath.
+        /// The sp_human_face_68_dat_filepath.
         /// </summary>
-        string shape_predictor_68_face_landmarks_dat_filepath;
+        string sp_human_face_68_dat_filepath;
 
         /// <summary>
         /// The couple_avi_filepath.
@@ -64,7 +64,7 @@ namespace DlibFaceLandmarkDetectorExample
             coroutines.Push (getFilePath_Coroutine);
             StartCoroutine (getFilePath_Coroutine);
             #else
-            shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
+            sp_human_face_68_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("sp_human_face_68.dat");
             couple_avi_filepath = OpenCVForUnity.Utils.getFilePath ("couple.avi");
             Run ();
             #endif
@@ -73,11 +73,11 @@ namespace DlibFaceLandmarkDetectorExample
         #if UNITY_WEBGL && !UNITY_EDITOR
         private IEnumerator GetFilePath ()
         {
-            var getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
-                shape_predictor_68_face_landmarks_dat_filepath = result;
+            var getFilePathAsync_sp_human_face_68_dat_filepath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("sp_human_face_68.dat", (result) => {
+                sp_human_face_68_dat_filepath = result;
             });
-            coroutines.Push (getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine);
-            yield return StartCoroutine (getFilePathAsync_shape_predictor_68_face_landmarks_dat_filepath_Coroutine);
+            coroutines.Push (getFilePathAsync_sp_human_face_68_dat_filepath_Coroutine);
+            yield return StartCoroutine (getFilePathAsync_sp_human_face_68_dat_filepath_Coroutine);
 
             var getFilePathAsync_couple_avi_filepath_Coroutine = OpenCVForUnity.Utils.getFilePathAsync ("couple.avi", (result) => {
                 couple_avi_filepath = result;
@@ -93,7 +93,7 @@ namespace DlibFaceLandmarkDetectorExample
         
         private void Run ()
         {
-            faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
+            faceLandmarkDetector = new FaceLandmarkDetector (sp_human_face_68_dat_filepath);
             
             rgbMat = new Mat ();
             

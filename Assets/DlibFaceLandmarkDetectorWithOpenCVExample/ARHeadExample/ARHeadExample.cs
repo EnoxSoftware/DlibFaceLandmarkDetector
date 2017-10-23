@@ -13,11 +13,11 @@ using DlibFaceLandmarkDetector;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// AR head example.
+    /// AR Head Example
     /// This example was referring to http://www.morethantechnical.com/2012/10/17/head-pose-estimation-with-opencv-opengl-revisited-w-code/
     /// and use effect asset from http://ktk-kumamoto.hatenablog.com/entry/2014/09/14/092400.
     /// </summary>
-    [RequireComponent(typeof(WebCamTextureToMatHelper))]
+    [RequireComponent (typeof(WebCamTextureToMatHelper))]
     public class ARHeadExample : MonoBehaviour
     {
         /// <summary>
@@ -176,9 +176,9 @@ namespace DlibFaceLandmarkDetectorExample
         WebCamTextureToMatHelper webCamTextureToMatHelper;
         
         /// <summary>
-        /// The shape_predictor_68_face_landmarks_dat_filepath.
+        /// The sp_human_face_68_dat_filepath.
         /// </summary>
-        string shape_predictor_68_face_landmarks_dat_filepath;
+        string sp_human_face_68_dat_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
         Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
@@ -193,20 +193,20 @@ namespace DlibFaceLandmarkDetectorExample
             displayEffectsToggle.isOn = displayEffects;
             
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("shape_predictor_68_face_landmarks.dat", (result) => {
+            var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("sp_human_face_68.dat", (result) => {
                 coroutines.Clear ();
 
-                shape_predictor_68_face_landmarks_dat_filepath = result;
+                sp_human_face_68_dat_filepath = result;
                 Run ();
             });
             coroutines.Push (getFilePath_Coroutine);
             StartCoroutine (getFilePath_Coroutine);
             #else
-            shape_predictor_68_face_landmarks_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("shape_predictor_68_face_landmarks.dat");
+            sp_human_face_68_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("sp_human_face_68.dat");
             Run ();
             #endif
         }
-        
+
         private void Run ()
         {
             //set 3d face object points.
@@ -218,16 +218,16 @@ namespace DlibFaceLandmarkDetectorExample
                 new Point3 (26, 15, 83),//r mouse (Mouth breadth)
                 new Point3 (-79, 90, 0.0),//l ear (Bitragion breadth)
                 new Point3 (79, 90, 0.0)//r ear (Bitragion breadth)
-                );
+            );
             imagePoints = new MatOfPoint2f ();
             rotMat = new Mat (3, 3, CvType.CV_64FC1);
             
-            faceLandmarkDetector = new FaceLandmarkDetector (shape_predictor_68_face_landmarks_dat_filepath);
+            faceLandmarkDetector = new FaceLandmarkDetector (sp_human_face_68_dat_filepath);
             
             webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper> ();
             webCamTextureToMatHelper.Initialize ();
         }
-        
+
         /// <summary>
         /// Raises the web cam texture to mat helper initialized event.
         /// </summary>
@@ -335,7 +335,7 @@ namespace DlibFaceLandmarkDetectorExample
             
             mouthParticleSystem = mouth.GetComponentsInChildren<ParticleSystem> (true);
         }
-        
+
         /// <summary>
         /// Raises the web cam texture to mat helper disposed event.
         /// </summary>
@@ -346,12 +346,13 @@ namespace DlibFaceLandmarkDetectorExample
             camMatrix.Dispose ();
             distCoeffs.Dispose ();
         }
-        
+
         /// <summary>
         /// Raises the web cam texture to mat helper error occurred event.
         /// </summary>
         /// <param name="errorCode">Error code.</param>
-        public void OnWebCamTextureToMatHelperErrorOccurred(WebCamTextureToMatHelper.ErrorCode errorCode){
+        public void OnWebCamTextureToMatHelperErrorOccurred (WebCamTextureToMatHelper.ErrorCode errorCode)
+        {
             Debug.Log ("OnWebCamTextureToMatHelperErrorOccurred " + errorCode);
         }
         
@@ -384,7 +385,7 @@ namespace DlibFaceLandmarkDetectorExample
                         new Point (points [54].x, points [54].y), //r mouth (Mouth breadth)
                         new Point (points [0].x, points [0].y),//l ear (Bitragion breadth)
                         new Point (points [16].x, points [16].y)//r ear (Bitragion breadth)
-                        );
+                    );
                     
                     // Estimate head pose.
                     if (rvec == null || tvec == null) {
@@ -395,15 +396,15 @@ namespace DlibFaceLandmarkDetectorExample
                         
                     double tvec_z = tvec.get (2, 0) [0];
 
-                    if (double.IsNaN(tvec_z) || tvec_z < 0) { // if tvec is wrong data, do not use extrinsic guesses.
+                    if (double.IsNaN (tvec_z) || tvec_z < 0) { // if tvec is wrong data, do not use extrinsic guesses.
                         Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec);
-                    }else{
+                    } else {
                         Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec, true, Calib3d.SOLVEPNP_ITERATIVE);
                     }
 
 //                    Debug.Log (tvec.dump());
                     
-                    if (!double.IsNaN(tvec_z)) {
+                    if (!double.IsNaN (tvec_z)) {
                         
                         if (Mathf.Abs ((float)(points [43].y - points [46].y)) > Mathf.Abs ((float)(points [42].x - points [45].x)) / 6.0) {
                             if (displayEffects)
@@ -426,14 +427,16 @@ namespace DlibFaceLandmarkDetectorExample
                             if (displayEffects) {
                                 mouth.SetActive (true);
                                 foreach (ParticleSystem ps in mouthParticleSystem) {
-                                    ps.enableEmission = true;
+                                    var em = ps.emission;
+                                    em.enabled = true;
                                     ps.startSize = 40 * (mouseDistance / noseDistance);
                                 }
                             }
                         } else {
                             if (displayEffects) {
                                 foreach (ParticleSystem ps in mouthParticleSystem) {
-                                    ps.enableEmission = false;
+                                    var em = ps.emission;
+                                    em.enabled = false;
                                 }
                             }
                         }
@@ -470,7 +473,7 @@ namespace DlibFaceLandmarkDetectorExample
                 OpenCVForUnity.Utils.matToTexture2D (rgbaMat, texture, webCamTextureToMatHelper.GetBufferColors ());
             }
         }
-        
+
         /// <summary>
         /// Raises the destroy event.
         /// </summary>
@@ -489,7 +492,7 @@ namespace DlibFaceLandmarkDetectorExample
             }
             #endif
         }
-        
+
         /// <summary>
         /// Raises the back button click event.
         /// </summary>
@@ -501,7 +504,7 @@ namespace DlibFaceLandmarkDetectorExample
             Application.LoadLevel ("DlibFaceLandmarkDetectorExample");
             #endif
         }
-        
+
         /// <summary>
         /// Raises the play button click event.
         /// </summary>
@@ -509,7 +512,7 @@ namespace DlibFaceLandmarkDetectorExample
         {
             webCamTextureToMatHelper.Play ();
         }
-        
+
         /// <summary>
         /// Raises the pause button click event.
         /// </summary>
@@ -517,7 +520,7 @@ namespace DlibFaceLandmarkDetectorExample
         {
             webCamTextureToMatHelper.Pause ();
         }
-        
+
         /// <summary>
         /// Raises the stop button click event.
         /// </summary>
@@ -525,7 +528,7 @@ namespace DlibFaceLandmarkDetectorExample
         {
             webCamTextureToMatHelper.Stop ();
         }
-        
+
         /// <summary>
         /// Raises the change camera button click event.
         /// </summary>
@@ -533,7 +536,7 @@ namespace DlibFaceLandmarkDetectorExample
         {
             webCamTextureToMatHelper.Initialize (null, webCamTextureToMatHelper.requestedWidth, webCamTextureToMatHelper.requestedHeight, !webCamTextureToMatHelper.requestedIsFrontFacing);
         }
-        
+
         /// <summary>
         /// Raises the display face points toggle value changed event.
         /// </summary>
@@ -545,7 +548,7 @@ namespace DlibFaceLandmarkDetectorExample
                 displayFacePoints = false;
             }
         }
-        
+
         /// <summary>
         /// Raises the display axes toggle value changed event.
         /// </summary>
@@ -558,7 +561,7 @@ namespace DlibFaceLandmarkDetectorExample
                 axes.SetActive (false);
             }
         }
-        
+
         /// <summary>
         /// Raises the display head toggle value changed event.
         /// </summary>
@@ -571,7 +574,7 @@ namespace DlibFaceLandmarkDetectorExample
                 head.SetActive (false);
             }
         }
-        
+
         /// <summary>
         /// Raises the display effects toggle value changed event.
         /// </summary>

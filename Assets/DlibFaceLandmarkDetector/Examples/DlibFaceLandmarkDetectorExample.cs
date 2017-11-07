@@ -12,10 +12,7 @@ namespace DlibFaceLandmarkDetectorExample
         // Use this for initialization
         void Start ()
         {
-            #if UNITY_WSA_10_0
-            GameObject.Find("VideoCaptureExample").gameObject.SetActive(false);
-            GameObject.Find("VideoCaptureARExample").gameObject.SetActive(false);
-            #endif
+
         }
 
         // Update is called once per frame

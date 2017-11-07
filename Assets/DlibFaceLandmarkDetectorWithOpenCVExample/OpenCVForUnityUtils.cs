@@ -55,7 +55,14 @@ namespace DlibFaceLandmarkDetector
 //                                                                      
 //            }
 
-            if (points.Count == 68) {
+            if (points.Count == 5) {
+
+                Imgproc.line (imgMat, new Point (points [0].x, points [0].y), new Point (points [1].x, points [1].y), color, thickness);
+                Imgproc.line (imgMat, new Point (points [1].x, points [1].y), new Point (points [4].x, points [4].y), color, thickness);
+                Imgproc.line (imgMat, new Point (points [4].x, points [4].y), new Point (points [3].x, points [3].y), color, thickness);
+                Imgproc.line (imgMat, new Point (points [3].x, points [3].y), new Point (points [2].x, points [2].y), color, thickness);
+                
+            } else if (points.Count == 68) {
                 
                 for (int i = 1; i <= 16; ++i)
                     Imgproc.line (imgMat, new Point (points [i].x, points [i].y), new Point (points [i - 1].x, points [i - 1].y), color, thickness);

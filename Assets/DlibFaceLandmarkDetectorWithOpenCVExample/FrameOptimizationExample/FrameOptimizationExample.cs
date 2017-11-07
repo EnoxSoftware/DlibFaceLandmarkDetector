@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Runtime.InteropServices;
+using UnityEngine.UI;
 
 #if UNITY_5_3 || UNITY_5_3_OR_NEWER
 using UnityEngine.SceneManagement;
@@ -20,10 +21,51 @@ namespace DlibFaceLandmarkDetectorExample
     [RequireComponent (typeof(OptimizationWebCamTextureToMatHelper))]
     public class FrameOptimizationExample : MonoBehaviour
     {
+
+        /// <summary>
+        /// Determines if enable downscale.
+        /// </summary>
+        public bool enableDownScale;
+
+        /// <summary>
+        /// The enable downscale toggle.
+        /// </summary>
+        public Toggle enableDownScaleToggle;
+
+        /// <summary>
+        /// Determines if enable skipframe.
+        /// </summary>
+        public bool enableSkipFrame;
+
+        /// <summary>
+        /// The enable skipframe toggle.
+        /// </summary>
+        public Toggle enableSkipFrameToggle;
+
+        /// <summary>
+        /// Determines if use OpenCV FaceDetector.
+        /// </summary>
+        public bool useOpenCVFaceDetector;
+
+        /// <summary>
+        /// The use OpenCV FaceDetector toggle.
+        /// </summary>
+        public Toggle useOpenCVFaceDetectorToggle;
+
+        /// <summary>
+        /// The gray mat.
+        /// </summary>
+        Mat grayMat;
+
         /// <summary>
         /// The texture.
         /// </summary>
         Texture2D texture;
+
+        /// <summary>
+        /// The cascade.
+        /// </summary>
+        CascadeClassifier cascade;
 
         /// <summary>
         /// The webcam texture to mat helper.
@@ -41,6 +83,11 @@ namespace DlibFaceLandmarkDetectorExample
         List<UnityEngine.Rect> detectionResult;
 
         /// <summary>
+        /// The haarcascade_frontalface_alt_xml_filepath.
+        /// </summary>
+        string haarcascade_frontalface_alt_xml_filepath;
+
+        /// <summary>
         /// The sp_human_face_68_dat_filepath.
         /// </summary>
         string sp_human_face_68_dat_filepath;
@@ -52,23 +99,50 @@ namespace DlibFaceLandmarkDetectorExample
         // Use this for initialization
         void Start ()
         {
-            #if UNITY_WEBGL && !UNITY_EDITOR
-            var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("sp_human_face_68.dat", (result) => {
-                coroutines.Clear ();
+            enableDownScaleToggle.isOn = enableDownScale;
+            enableSkipFrameToggle.isOn = enableSkipFrame;
+            useOpenCVFaceDetectorToggle.isOn = useOpenCVFaceDetector;
 
-                sp_human_face_68_dat_filepath = result;
-                Run ();
-            });
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            var getFilePath_Coroutine = GetFilePath ();
             coroutines.Push (getFilePath_Coroutine);
             StartCoroutine (getFilePath_Coroutine);
             #else
+            haarcascade_frontalface_alt_xml_filepath = OpenCVForUnity.Utils.getFilePath ("haarcascade_frontalface_alt.xml");
             sp_human_face_68_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("sp_human_face_68.dat");
             Run ();
             #endif
         }
 
+        #if UNITY_WEBGL && !UNITY_EDITOR
+        private IEnumerator GetFilePath ()
+        {
+        var getFilePathAsync_0_Coroutine = OpenCVForUnity.Utils.getFilePathAsync ("haarcascade_frontalface_alt.xml", (result) => {
+        haarcascade_frontalface_alt_xml_filepath = result;
+        });
+        coroutines.Push (getFilePathAsync_0_Coroutine);
+        yield return StartCoroutine (getFilePathAsync_0_Coroutine);
+
+        var getFilePathAsync_1_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("sp_human_face_68.dat", (result) => {
+        sp_human_face_68_dat_filepath = result;
+        });
+        coroutines.Push (getFilePathAsync_1_Coroutine);
+        yield return StartCoroutine (getFilePathAsync_1_Coroutine);
+
+        coroutines.Clear ();
+
+        Run ();
+        }
+        #endif
+
         private void Run ()
         {
+            cascade = new CascadeClassifier (haarcascade_frontalface_alt_xml_filepath);
+            //            if (cascade.empty ()) {
+            //                Debug.LogError ("cascade file is not loaded.Please copy from “FaceTrackerExample/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+            //            }
+
+
             faceLandmarkDetector = new FaceLandmarkDetector (sp_human_face_68_dat_filepath);
 
             webCamTextureToMatHelper = gameObject.GetComponent<OptimizationWebCamTextureToMatHelper> ();
@@ -102,6 +176,9 @@ namespace DlibFaceLandmarkDetectorExample
                 Camera.main.orthographicSize = height / 2;
             }
 
+
+            grayMat = new Mat (webCamTextureMat.rows (), webCamTextureMat.cols (), CvType.CV_8UC1);
+
             detectionResult = new List<UnityEngine.Rect> ();
         }
 
@@ -111,6 +188,8 @@ namespace DlibFaceLandmarkDetectorExample
         public void OnWebCamTextureToMatHelperDisposed ()
         {
             Debug.Log ("OnWebCamTextureToMatHelperDisposed");
+
+            grayMat.Dispose ();
 
         }
 
@@ -130,17 +209,49 @@ namespace DlibFaceLandmarkDetectorExample
 
                 Mat rgbaMat = webCamTextureToMatHelper.GetMat ();
 
-                Mat downScaleRgbaMat = webCamTextureToMatHelper.GetDownScaleMat (rgbaMat);
+                Mat downScaleRgbaMat = null;
+                float DOWNSCALE_RATIO = 1.0f;
+                if (enableDownScale) {
+                    downScaleRgbaMat = webCamTextureToMatHelper.GetDownScaleMat (rgbaMat);
+                    DOWNSCALE_RATIO = webCamTextureToMatHelper.downscaleRatio;
+                } else {
+                    downScaleRgbaMat = rgbaMat;
+                    DOWNSCALE_RATIO = 1.0f;
+                }
+
 
                 OpenCVForUnityUtils.SetImage (faceLandmarkDetector, downScaleRgbaMat);
 
                 // Detect faces on resize image
-                if (!webCamTextureToMatHelper.IsCurrentFrameSkipped ()) {
+                if (!enableSkipFrame || !webCamTextureToMatHelper.IsCurrentFrameSkipped ()) {
                     //detect face rects
-                    detectionResult = faceLandmarkDetector.Detect ();
+                    if (useOpenCVFaceDetector) {
+                        // convert image to greyscale.
+                        Imgproc.cvtColor (downScaleRgbaMat, grayMat, Imgproc.COLOR_RGBA2GRAY);
+
+                        using (Mat equalizeHistMat = new Mat ())
+                        using (MatOfRect faces = new MatOfRect ()) {
+                            Imgproc.equalizeHist (grayMat, equalizeHistMat);
+
+                            cascade.detectMultiScale (equalizeHistMat, faces, 1.1f, 2, 0 | Objdetect.CASCADE_SCALE_IMAGE, new OpenCVForUnity.Size (equalizeHistMat.cols () * 0.15, equalizeHistMat.cols () * 0.15), new Size ());
+
+                            List<OpenCVForUnity.Rect> opencvDetectResult = faces.toList ();
+
+                            // adjust to Dilb's result.
+                            detectionResult.Clear ();
+                            foreach (var opencvRect in opencvDetectResult) {
+                                detectionResult.Add (new UnityEngine.Rect ((float)opencvRect.x, (float)opencvRect.y + (float)(opencvRect.height * 0.1f), (float)opencvRect.width, (float)opencvRect.height));
+                            }
+                        }
+                            
+                    } else {
+                        
+                        detectionResult = faceLandmarkDetector.Detect ();
+
+                    }
                 }
 
-                float DOWNSCALE_RATIO = webCamTextureToMatHelper.downscaleRatio;
+
                 
                 foreach (var rect in detectionResult) {
 
@@ -176,6 +287,9 @@ namespace DlibFaceLandmarkDetectorExample
 
             if (faceLandmarkDetector != null)
                 faceLandmarkDetector.Dispose ();
+
+            if (cascade != null)
+                cascade.Dispose ();
 
             #if UNITY_WEBGL && !UNITY_EDITOR
             foreach (var coroutine in coroutines) {
@@ -227,6 +341,42 @@ namespace DlibFaceLandmarkDetectorExample
         public void OnChangeCameraButtonClick ()
         {
             webCamTextureToMatHelper.Initialize (null, webCamTextureToMatHelper.requestedWidth, webCamTextureToMatHelper.requestedHeight, !webCamTextureToMatHelper.requestedIsFrontFacing);
+        }
+
+        /// <summary>
+        /// Raises the enable downscale toggle value changed event.
+        /// </summary>
+        public void OnEnableDownScaleToggleValueChanged ()
+        {
+            if (enableDownScaleToggle.isOn) {
+                enableDownScale = true;
+            } else {
+                enableDownScale = false;
+            }
+        }
+
+        /// <summary>
+        /// Raises the enable skipframe toggle value changed event.
+        /// </summary>
+        public void OnEnableSkipFrameToggleValueChanged ()
+        {
+            if (enableSkipFrameToggle.isOn) {
+                enableSkipFrame = true;
+            } else {
+                enableSkipFrame = false;
+            }
+        }
+
+        /// <summary>
+        /// Raises the use OpenCV FaceDetector toggle value changed event.
+        /// </summary>
+        public void OnUseOpenCVFaceDetectorToggleValueChanged ()
+        {
+            if (useOpenCVFaceDetectorToggle.isOn) {
+                useOpenCVFaceDetector = true;
+            } else {
+                useOpenCVFaceDetector = false;
+            }
         }
     }
 }

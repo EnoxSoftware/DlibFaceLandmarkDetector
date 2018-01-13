@@ -1585,7 +1585,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: WebCamTexture Example (landscape orientation)
+  m_Text: WebCamTexture Example
 --- !u!222 &991641971
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2079,7 +2079,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 760072662}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.8097082
+  m_Size: 0.8746613
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

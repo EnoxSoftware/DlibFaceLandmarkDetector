@@ -45,6 +45,8 @@ namespace DlibFaceLandmarkDetectorExample
         // Use this for initialization
         void Start ()
         {
+            webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper> ();
+
             #if UNITY_WEBGL && !UNITY_EDITOR
             var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("sp_human_face_68.dat", (result) => {
                 coroutines.Clear ();
@@ -64,7 +66,6 @@ namespace DlibFaceLandmarkDetectorExample
         {
             faceLandmarkDetector = new FaceLandmarkDetector (sp_human_face_68_dat_filepath);
 
-            webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper> ();
             webCamTextureToMatHelper.Initialize ();
         }
 

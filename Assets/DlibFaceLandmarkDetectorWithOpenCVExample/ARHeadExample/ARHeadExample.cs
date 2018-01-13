@@ -191,6 +191,8 @@ namespace DlibFaceLandmarkDetectorExample
             displayAxesToggle.isOn = displayAxes;
             displayHeadToggle.isOn = displayHead;
             displayEffectsToggle.isOn = displayEffects;
+
+            webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper> ();
             
             #if UNITY_WEBGL && !UNITY_EDITOR
             var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("sp_human_face_68.dat", (result) => {
@@ -223,8 +225,7 @@ namespace DlibFaceLandmarkDetectorExample
             rotMat = new Mat (3, 3, CvType.CV_64FC1);
             
             faceLandmarkDetector = new FaceLandmarkDetector (sp_human_face_68_dat_filepath);
-            
-            webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper> ();
+
             webCamTextureToMatHelper.Initialize ();
         }
 

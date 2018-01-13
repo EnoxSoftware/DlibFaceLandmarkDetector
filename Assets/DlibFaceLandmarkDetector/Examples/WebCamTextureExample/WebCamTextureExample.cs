@@ -17,9 +17,52 @@ namespace DlibFaceLandmarkDetectorExample
     public class WebCamTextureExample : MonoBehaviour
     {
         /// <summary>
-        /// Should use front camera.
+        /// Set the name of the device to use.
         /// </summary>
-        public bool shouldUseFrontCamera = false;
+        [SerializeField, TooltipAttribute ("Set the name of the device to use.")]
+        public string requestedDeviceName = null;
+
+        /// <summary>
+        /// Set the width of WebCamTexture.
+        /// </summary>
+        [SerializeField, TooltipAttribute ("Set the width of WebCamTexture.")]
+        public int requestedWidth = 320;
+
+        /// <summary>
+        /// Set the height of WebCamTexture.
+        /// </summary>
+        [SerializeField, TooltipAttribute ("Set the height of WebCamTexture.")]
+        public int requestedHeight = 240;
+
+        /// <summary>
+        /// Set whether to use the front facing camera.
+        /// </summary>
+        [SerializeField, TooltipAttribute ("Set whether to use the front facing camera.")]
+        public bool requestedIsFrontFacing = false;
+
+        /// <summary>
+        /// Set FPS of WebCamTexture.
+        /// </summary>
+        [SerializeField, TooltipAttribute ("Set FPS of WebCamTexture.")]
+        public int requestedFPS = 30;
+
+        /// <summary>
+        /// Sets whether to rotate WebCamTexture 90 degrees.
+        /// </summary>
+        [SerializeField, TooltipAttribute ("Sets whether to rotate WebCamTexture 90 degrees.")]
+        public bool requestedRotate90Degree = false;
+
+        /// <summary>
+        /// Determines if flips vertically.
+        /// </summary>
+        [SerializeField, TooltipAttribute ("Determines if flips vertically.")]
+        public bool flipVertical = false;
+
+        /// <summary>
+        /// Determines if flips horizontal.
+        /// </summary>
+        [SerializeField, TooltipAttribute ("Determines if flips horizontal.")]
+        public bool flipHorizontal = false;
 
         /// <summary>
         /// The webcam texture.
@@ -35,16 +78,16 @@ namespace DlibFaceLandmarkDetectorExample
         /// The colors.
         /// </summary>
         Color32[] colors;
-        
+
         /// <summary>
-        /// The width.
+        /// Determines if rotates 90 degree.
         /// </summary>
-        int width = 320;
-        
+        bool rotate90Degree = false;
+
         /// <summary>
-        /// The height.
+        /// Indicates whether this instance is waiting for initialization to complete.
         /// </summary>
-        int height = 240;
+        protected bool isInitWaiting = false;
 
         /// <summary>
         /// Indicates whether this instance has been initialized.
@@ -65,11 +108,6 @@ namespace DlibFaceLandmarkDetectorExample
         /// The texture2D.
         /// </summary>
         Texture2D texture2D;
-
-        /// <summary>
-        /// Indicates whether the image is flipped
-        /// </summary>
-        bool flip;
 
         /// <summary>
         /// The sp_human_face_68_dat_filepath.
@@ -107,36 +145,45 @@ namespace DlibFaceLandmarkDetectorExample
 
         private IEnumerator Initialize ()
         {
+            if (isInitWaiting)
+                yield break;
+
             if (webCamTexture != null) {
                 webCamTexture.Stop ();
+                texture2D = null;
+                rotate90Degree = false;
+                isInitWaiting = false;
                 hasInitDone = false;
             }
-            
-            // Checks how many and which cameras are available on the device
-            for (int cameraIndex = 0; cameraIndex < WebCamTexture.devices.Length; cameraIndex++) {
-                if (WebCamTexture.devices [cameraIndex].isFrontFacing == shouldUseFrontCamera) {
-                    
-                    Debug.Log (cameraIndex + " name " + WebCamTexture.devices [cameraIndex].name + " isFrontFacing " + WebCamTexture.devices [cameraIndex].isFrontFacing);
-                    
-                    webCamDevice = WebCamTexture.devices [cameraIndex];
-                    
-                    webCamTexture = new WebCamTexture (webCamDevice.name, width, height);
-                    
-                    break;
+
+            isInitWaiting = true;
+
+            if (!String.IsNullOrEmpty (requestedDeviceName)) {
+                webCamTexture = new WebCamTexture (requestedDeviceName, requestedWidth, requestedHeight, requestedFPS);
+            } else {
+                // Checks how many and which cameras are available on the device
+                for (int cameraIndex = 0; cameraIndex < WebCamTexture.devices.Length; cameraIndex++) {
+                    if (WebCamTexture.devices [cameraIndex].isFrontFacing == requestedIsFrontFacing) {
+
+                        webCamDevice = WebCamTexture.devices [cameraIndex];
+                        webCamTexture = new WebCamTexture (webCamDevice.name, requestedWidth, requestedHeight, requestedFPS);
+
+                        break;
+                    }
                 }
             }
-            
+
             if (webCamTexture == null) {
-                //          Debug.Log ("webCamTexture is null");
                 if (WebCamTexture.devices.Length > 0) {
                     webCamDevice = WebCamTexture.devices [0];
-                    webCamTexture = new WebCamTexture (webCamDevice.name, width, height);
+                    webCamTexture = new WebCamTexture (webCamDevice.name, requestedWidth, requestedHeight, requestedFPS);
                 } else {
-                    webCamTexture = new WebCamTexture (width, height);
+                    isInitWaiting = false;
+
+                    yield break;
                 }
             }
             
-            Debug.Log ("width " + webCamTexture.width + " height " + webCamTexture.height + " fps " + webCamTexture.requestedFPS);
 
             // Starts the camera
             webCamTexture.Play ();
@@ -159,14 +206,44 @@ namespace DlibFaceLandmarkDetectorExample
                     Debug.Log ("videoRotationAngle " + webCamTexture.videoRotationAngle + " videoVerticallyMirrored " + webCamTexture.videoVerticallyMirrored + " isFrongFacing " + webCamDevice.isFrontFacing);
                         
                     colors = new Color32[webCamTexture.width * webCamTexture.height];
+                     
+                    #if !UNITY_EDITOR && !(UNITY_STANDALONE || UNITY_WEBGL) 
+                    if (Screen.orientation == ScreenOrientation.Portrait || Screen.orientation == ScreenOrientation.PortraitUpsideDown) {
+                        rotate90Degree = true;
+                    }else{
+                        rotate90Degree = false;
+                    }
+
+                    #endif
+
+                    if (rotate90Degree || requestedRotate90Degree) {
+                        rotate90Degree = true;
+                        texture2D = new Texture2D (webCamTexture.height, webCamTexture.width, TextureFormat.RGBA32, false);
+                    } else {
+                        texture2D = new Texture2D (webCamTexture.width, webCamTexture.height, TextureFormat.RGBA32, false);
+                    }
                         
-                    texture2D = new Texture2D (webCamTexture.width, webCamTexture.height, TextureFormat.RGBA32, false);
                         
                     gameObject.GetComponent<Renderer> ().material.mainTexture = texture2D;
+
+
+                    gameObject.transform.localScale = new Vector3 (texture2D.width, texture2D.height, 1);
+                    Debug.Log ("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
+
                         
-                    UpdateLayout ();
+                    float width = texture2D.width;
+                    float height = texture2D.height;
+
+                    float widthScale = (float)Screen.width / width;
+                    float heightScale = (float)Screen.height / height;
+                    if (widthScale < heightScale) {
+                        Camera.main.orthographicSize = (width * (float)Screen.height / (float)Screen.width) / 2;
+                    } else {
+                        Camera.main.orthographicSize = height / 2;
+                    }
                         
                     screenOrientation = Screen.orientation;
+                    isInitWaiting = false;
                     hasInitDone = true;
                         
                     break;
@@ -175,54 +252,7 @@ namespace DlibFaceLandmarkDetectorExample
                 }
             }
         }
-
-        private void UpdateLayout ()
-        {
-            gameObject.transform.localRotation = new Quaternion (0, 0, 0, 0);
-            gameObject.transform.localScale = new Vector3 (webCamTexture.width, webCamTexture.height, 1);
-                
-            if (webCamTexture.videoRotationAngle == 90 || webCamTexture.videoRotationAngle == 270) {
-                gameObject.transform.eulerAngles = new Vector3 (0, 0, -90);
-            }
-                
-            float width = 0;
-            float height = 0;
-            if (webCamTexture.videoRotationAngle == 90 || webCamTexture.videoRotationAngle == 270) {
-                width = gameObject.transform.localScale.y;
-                height = gameObject.transform.localScale.x;
-            } else if (webCamTexture.videoRotationAngle == 0 || webCamTexture.videoRotationAngle == 180) {
-                width = gameObject.transform.localScale.x;
-                height = gameObject.transform.localScale.y;
-            }
-                
-            float widthScale = (float)Screen.width / width;
-            float heightScale = (float)Screen.height / height;
-            if (widthScale < heightScale) {
-                Camera.main.orthographicSize = (width * (float)Screen.height / (float)Screen.width) / 2;
-            } else {
-                Camera.main.orthographicSize = height / 2;
-            }
-
-            flip = true;
-            if (webCamDevice.isFrontFacing) {
-                if (webCamTexture.videoRotationAngle == 90) {
-                    flip = !flip;
-                }
-                if (webCamTexture.videoRotationAngle == 180) {
-                    flip = !flip;
-                }
-            } else {
-                if (webCamTexture.videoRotationAngle == 180) {
-                    flip = !flip;
-                } else if (webCamTexture.videoRotationAngle == 270) {
-                    flip = !flip;
-                }
-            }
             
-            if (!flip) {
-                gameObject.transform.localScale = new Vector3 (gameObject.transform.localScale.x, -gameObject.transform.localScale.y, 1);
-            }
-        }
     
         // Update is called once per frame
         void Update ()
@@ -231,18 +261,19 @@ namespace DlibFaceLandmarkDetectorExample
                 return;
                 
             if (screenOrientation != Screen.orientation) {
-                screenOrientation = Screen.orientation;
-                UpdateLayout ();
+                StartCoroutine (Initialize ());
             }
 
-            #if UNITY_IOS && !UNITY_EDITOR && (UNITY_4_6_3 || UNITY_4_6_4 || UNITY_5_0_0 || UNITY_5_0_1)
-            if (webCamTexture.width > 16 && webCamTexture.height > 16) {
-            #else
+           
             if (webCamTexture.didUpdateThisFrame) {
-                #endif
 
                 webCamTexture.GetPixels32 (colors);
-                faceLandmarkDetector.SetImage<Color32> (colors, webCamTexture.width, webCamTexture.height, 4, flip);
+
+                //Adjust an array of color pixels according to screen orientation and WebCamDevice parameter.
+                colors = RotateAndFlip (colors, webCamTexture.width, webCamTexture.height);
+
+
+                faceLandmarkDetector.SetImage<Color32> (colors, texture2D.width, texture2D.height, 4, true);
         
                 //detect face rects
                 List<Rect> detectResult = faceLandmarkDetector.Detect ();
@@ -254,12 +285,14 @@ namespace DlibFaceLandmarkDetectorExample
                     faceLandmarkDetector.DetectLandmark (rect);
 
                     //draw landmark points
-                    faceLandmarkDetector.DrawDetectLandmarkResult<Color32> (colors, webCamTexture.width, webCamTexture.height, 4, flip, 0, 255, 0, 255);
+                    faceLandmarkDetector.DrawDetectLandmarkResult<Color32> (colors, texture2D.width, texture2D.height, 4, true, 0, 255, 0, 255);
                 }
 
                 //draw face rect
-                faceLandmarkDetector.DrawDetectResult<Color32> (colors, webCamTexture.width, webCamTexture.height, 4, flip, 255, 0, 0, 255, 2);
+                faceLandmarkDetector.DrawDetectResult<Color32> (colors, texture2D.width, texture2D.height, 4, true, 255, 0, 0, 255, 2);
 
+
+                    
                 texture2D.SetPixels32 (colors);
                 texture2D.Apply ();
             }
@@ -300,8 +333,173 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         public void OnChangeCameraButtonClick ()
         {
-            shouldUseFrontCamera = !shouldUseFrontCamera;
+            requestedIsFrontFacing = !requestedIsFrontFacing;
             StartCoroutine (Initialize ());
+        }
+
+        /// <summary>
+        /// Rotates and flip.
+        /// </summary>
+        /// <returns>Output Colors.</returns>
+        /// <param name="colors">Colors.</param>
+        /// <param name="width">Width.</param>
+        /// <param name="height">Height.</param>
+        Color32[] RotateAndFlip (Color32[] colors, int width, int height)
+        {
+            if (rotate90Degree) {
+                colors = RotateCW (colors, width, height);
+            }
+
+            int flipCode = int.MinValue;
+
+            if (webCamDevice.isFrontFacing) {
+                if (webCamTexture.videoRotationAngle == 0) {
+                    flipCode = 1;
+                } else if (webCamTexture.videoRotationAngle == 90) {
+                    flipCode = 1;
+                }
+                if (webCamTexture.videoRotationAngle == 180) {
+                    flipCode = 0;
+                } else if (webCamTexture.videoRotationAngle == 270) {
+                    flipCode = 0;
+                }
+            } else {
+                if (webCamTexture.videoRotationAngle == 180) {
+                    flipCode = -1;
+                } else if (webCamTexture.videoRotationAngle == 270) {
+                    flipCode = -1;
+                }
+            }
+
+            if (flipVertical) {
+                if (flipCode == int.MinValue) {
+                    flipCode = 0;
+                } else if (flipCode == 0) {
+                    flipCode = int.MinValue;
+                } else if (flipCode == 1) {
+                    flipCode = -1;
+                } else if (flipCode == -1) {
+                    flipCode = 1;
+                }
+            }
+
+            if (flipHorizontal) {
+                if (flipCode == int.MinValue) {
+                    flipCode = 1;
+                } else if (flipCode == 0) {
+                    flipCode = -1;
+                } else if (flipCode == 1) {
+                    flipCode = int.MinValue;
+                } else if (flipCode == -1) {
+                    flipCode = 0;
+                }
+            }
+
+            if (flipCode > int.MinValue) {
+                if (rotate90Degree) {
+                    if (flipCode == 0) {
+                        colors = FlipVertical (colors, height, width);
+                    } else if (flipCode == 1) {
+                        colors = FlipHorizontal (colors, height, width);
+                    } else if (flipCode < 0) {
+                        colors = FlipVertical (colors, height, width);
+                        colors = FlipHorizontal (colors, height, width);
+                    }
+                } else {
+                    if (flipCode == 0) {
+                        colors = FlipVertical (colors, width, height);
+                    } else if (flipCode == 1) {
+                        colors = FlipHorizontal (colors, width, height);
+                    } else if (flipCode < 0) {
+                        colors = FlipVertical (colors, width, height);
+                        colors = FlipHorizontal (colors, width, height);
+                    }
+                }
+            }
+
+            return colors;
+        }
+
+        /// <summary>
+        /// Flips vertical.
+        /// </summary>
+        /// <returns>Output Colors.</returns>
+        /// <param name="colors">Colors.</param>
+        /// <param name="width">Width.</param>
+        /// <param name="height">Height.</param>
+        Color32[] FlipVertical (Color32[] colors, int width, int height)
+        {
+            Color32[] result = new Color32[colors.Length];
+            int i = 0;
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    result [x + ((height - 1) - y) * width] = colors [x + y * width];
+                    i++;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Flips horizontal.
+        /// </summary>
+        /// <returns>Output Colors.</returns>
+        /// <param name="colors">Colors.</param>
+        /// <param name="width">Width.</param>
+        /// <param name="height">Height.</param>
+        Color32[] FlipHorizontal (Color32[] colors, int width, int height)
+        {
+            Color32[] result = new Color32[colors.Length];
+            int i = 0;
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    result [((width - 1) - x) + y * width] = colors [x + y * width];
+                    i++;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Rotates 90 CLOCKWISE.
+        /// </summary>
+        /// <returns>Output Colors.</returns>
+        /// <param name="colors">Colors.</param>
+        /// <param name="width">Width.</param>
+        /// <param name="height">Height.</param>
+        Color32[] RotateCW (Color32[] colors, int height, int width)
+        {
+            Color32[] result = new Color32[colors.Length];
+            int i = 0;
+            for (int x = height - 1; x >= 0; x--) {
+                for (int y = 0; y < width; y++) {
+                    result [i] = colors [x + y * height];
+                    i++;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Rotates 90 COUNTERCLOCKWISE.
+        /// </summary>
+        /// <returns>Output Colors.</returns>
+        /// <param name="colors">Colors.</param>
+        /// <param name="height">Height.</param>
+        /// <param name="width">Width.</param>
+        Color32[] RotateCCW (Color32[] colors, int width, int height)
+        {
+            Color32[] result = new Color32[colors.Length];
+            int i = 0;
+            for (int x = 0; x < width; x++) {
+                for (int y = height - 1; y >= 0; y--) {
+                    result [i] = colors [x + y * width];
+                    i++;
+                }
+            }
+            return result;
         }
     }
 }

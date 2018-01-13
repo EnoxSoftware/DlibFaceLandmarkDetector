@@ -103,6 +103,8 @@ namespace DlibFaceLandmarkDetectorExample
             enableSkipFrameToggle.isOn = enableSkipFrame;
             useOpenCVFaceDetectorToggle.isOn = useOpenCVFaceDetector;
 
+            webCamTextureToMatHelper = gameObject.GetComponent<OptimizationWebCamTextureToMatHelper> ();
+
             #if UNITY_WEBGL && !UNITY_EDITOR
             var getFilePath_Coroutine = GetFilePath ();
             coroutines.Push (getFilePath_Coroutine);
@@ -145,7 +147,6 @@ namespace DlibFaceLandmarkDetectorExample
 
             faceLandmarkDetector = new FaceLandmarkDetector (sp_human_face_68_dat_filepath);
 
-            webCamTextureToMatHelper = gameObject.GetComponent<OptimizationWebCamTextureToMatHelper> ();
             webCamTextureToMatHelper.Initialize ();
         }
 

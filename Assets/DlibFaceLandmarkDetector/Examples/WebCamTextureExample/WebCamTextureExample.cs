@@ -97,7 +97,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// The screenOrientation.
         /// </summary>
-        ScreenOrientation screenOrientation = ScreenOrientation.Unknown;
+        ScreenOrientation screenOrientation;
 
         /// <summary>
         /// The face landmark detector.

@@ -430,7 +430,12 @@ namespace DlibFaceLandmarkDetectorExample
                                 foreach (ParticleSystem ps in mouthParticleSystem) {
                                     var em = ps.emission;
                                     em.enabled = true;
+#if UNITY_5_5_OR_NEWER
+                                    var main = ps.main;
+                                    main.startSizeMultiplier = 40 * (mouseDistance / noseDistance);
+#else
                                     ps.startSize = 40 * (mouseDistance / noseDistance);
+#endif
                                 }
                             }
                         } else {

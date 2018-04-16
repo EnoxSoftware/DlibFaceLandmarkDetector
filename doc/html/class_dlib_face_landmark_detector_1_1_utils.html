@@ -24,7 +24,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Dlib FaceLandmark Detector
-   &#160;<span id="projectnumber">1.1.9</span>
+   &#160;<span id="projectnumber">1.2.0</span>
    </div>
    <div id="projectbrief">Enox Software</div>
   </td>
@@ -105,8 +105,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a61f02890aa996062d9ba0978de5d5792"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afde6b3994795b6ba42e93e54bbffb639"><td class="memItemLeft" align="right" valign="top">static IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_utils.html#afde6b3994795b6ba42e93e54bbffb639">getFilePathAsync</a> (string filepath, Action&lt; string &gt; completed, Action&lt; string, float &gt; progress=null, bool refresh=false)</td></tr>
 <tr class="separator:afde6b3994795b6ba42e93e54bbffb639"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd4a06e408db26ea023dc9fbe8b20ca3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_utils.html#abd4a06e408db26ea023dc9fbe8b20ca3">setDebugMode</a> (bool debugMode)</td></tr>
-<tr class="separator:abd4a06e408db26ea023dc9fbe8b20ca3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7094a742caf0f4f14daa84909dd51122"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_utils.html#a7094a742caf0f4f14daa84909dd51122">setDebugMode</a> (bool debugMode, bool throwException=false)</td></tr>
+<tr class="separator:a7094a742caf0f4f14daa84909dd51122"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a61f02890aa996062d9ba0978de5d5792"></a>
@@ -241,7 +241,7 @@ Set a relative file path from the starting point of the "StreamingAssets" folder
 
 </div>
 </div>
-<a class="anchor" id="abd4a06e408db26ea023dc9fbe8b20ca3"></a>
+<a class="anchor" id="a7094a742caf0f4f14daa84909dd51122"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -252,8 +252,18 @@ Set a relative file path from the starting point of the "StreamingAssets" folder
           <td class="memname">static void DlibFaceLandmarkDetector.Utils.setDebugMode </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>debugMode</em></td><td>)</td>
+          <td class="paramname"><em>debugMode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>throwException</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -264,7 +274,7 @@ Set a relative file path from the starting point of the "StreamingAssets" folder
 </div><div class="memdoc">
 <p>Sets the debug mode. </p>
 <p><br />
-if true, The error log of the Native side <a class="el" href="namespace_dlib_face_landmark_detector.html">DlibFaceLandmarkDetector</a> will be displayed on the Unity Editor Console. <br />
+if true, The error log of the Native side <a class="el" href="namespace_dlib_face_landmark_detector.html">DlibFaceLandmarkDetector</a> will be displayed on the Unity Editor Console.However, if throwException is true, <a class="el" href="class_dlib_face_landmark_detector_1_1_dlib_exception.html" title="The exception that is thrown by OpenCVForUntiy. ">DlibException</a> is thrown instead of calling Debug.LogError (msg). <br />
 This method is supported in WIN, MAC and LINUX. <br />
 Please use as follows. <br />
 Utils.setDebugMode(true); <br />
@@ -275,6 +285,7 @@ Utils.setDebugMode(false);</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">debugMode</td><td>if true, The error log of the Native side <a class="el" href="namespace_dlib_face_landmark_detector.html">DlibFaceLandmarkDetector</a> will be displayed on the Unity Editor Console </td></tr>
+    <tr><td class="paramname">throwException</td><td>if true, <a class="el" href="class_dlib_face_landmark_detector_1_1_dlib_exception.html" title="The exception that is thrown by OpenCVForUntiy. ">DlibException</a> is thrown instead of calling Debug.LogError (msg). </td></tr>
   </table>
   </dd>
 </dl>
@@ -287,7 +298,7 @@ Utils.setDebugMode(false);</p>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jan 29 2018 00:44:02 for Dlib FaceLandmark Detector by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 16 2018 00:22:33 for Dlib FaceLandmark Detector by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

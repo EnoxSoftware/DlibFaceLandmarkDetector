@@ -585,7 +585,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
 --- !u!1 &544218197
 GameObject:
   m_ObjectHideFlags: 0
@@ -2354,6 +2354,8 @@ GameObject:
   - 64: {fileID: 1709852083}
   - 23: {fileID: 1709852082}
   - 114: {fileID: 1709852087}
+  - 114: {fileID: 1709852089}
+  - 114: {fileID: 1709852088}
   - 114: {fileID: 1709852086}
   m_Layer: 0
   m_Name: Quad
@@ -2419,7 +2421,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
 --- !u!114 &1709852086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2428,18 +2430,67 @@ MonoBehaviour:
   m_GameObject: {fileID: 1709852081}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40195cce70bac6d488f69e01128cca64, type: 3}
+  m_Script: {fileID: 11500000, guid: 0d1d59e7be9d1244da331cf04b8ee610, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  requestedDeviceName: 
-  requestedWidth: 640
-  requestedHeight: 480
-  requestedIsFrontFacing: 0
-  requestedFPS: 30
-  flipVertical: 0
-  flipHorizontal: 0
-  rotate90Degree: 0
-  timeoutFrameCount: 300
+  alignment: 1
+  offset: {x: 10, y: 10}
+  boxVisible: 1
+  boxWidth: 200
+  boxHeight: 270
+  padding: {x: 8, y: 5}
+  consoleHeight: 50
+  consoleText: 
+--- !u!114 &1709852087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1709852081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b8d3fb701d2275469fc7dcc5b0a6b25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableDownScale: 1
+  enableDownScaleToggle: {fileID: 2044157696}
+  enableSkipFrame: 1
+  enableSkipFrameToggle: {fileID: 196761745}
+  useOpenCVFaceDetector: 0
+  useOpenCVFaceDetectorToggle: {fileID: 1121565845}
+--- !u!114 &1709852088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1709852081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b334794e01fd614c9b7379097a9913f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _downscaleRatio: 2
+  _frameSkippingRatio: 2
+--- !u!114 &1709852089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1709852081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 783d415b5f351b441a93a6b95641439a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _requestedDeviceName: 
+  _requestedWidth: 640
+  _requestedHeight: 480
+  _requestedIsFrontFacing: 0
+  _requestedFPS: 30
+  _rotate90Degree: 0
+  _flipVertical: 0
+  _flipHorizontal: 0
+  _timeoutFrameCount: 300
   onInitialized:
     m_PersistentCalls:
       m_Calls:
@@ -2488,25 +2539,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: DlibFaceLandmarkDetectorExample.WebCamTextureToMatHelper+ErrorUnityEvent,
       Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  downscaleRatio: 2
-  frameSkippingRatio: 2
---- !u!114 &1709852087
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1709852081}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b8d3fb701d2275469fc7dcc5b0a6b25, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enableDownScale: 1
-  enableDownScaleToggle: {fileID: 2044157696}
-  enableSkipFrame: 1
-  enableSkipFrameToggle: {fileID: 196761745}
-  useOpenCVFaceDetector: 0
-  useOpenCVFaceDetectorToggle: {fileID: 1121565845}
 --- !u!1 &1930514428
 GameObject:
   m_ObjectHideFlags: 0

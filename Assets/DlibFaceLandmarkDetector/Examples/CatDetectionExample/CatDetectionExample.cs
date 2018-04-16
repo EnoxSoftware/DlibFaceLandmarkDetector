@@ -22,6 +22,11 @@ namespace DlibFaceLandmarkDetectorExample
         public Texture2D texture2D;
 
         /// <summary>
+        /// The FPS monitor.
+        /// </summary>
+        FpsMonitor fpsMonitor;
+
+        /// <summary>
         /// The frontal_cat_face_svm_filepath.
         /// </summary>
         string frontal_cat_face_svm_filepath;
@@ -38,6 +43,8 @@ namespace DlibFaceLandmarkDetectorExample
         // Use this for initialization
         void Start ()
         {
+            fpsMonitor = GetComponent<FpsMonitor> ();
+
             #if UNITY_WEBGL && !UNITY_EDITOR
             var getFilePath_Coroutine = GetFilePath ();
             coroutines.Push (getFilePath_Coroutine);
@@ -114,6 +121,14 @@ namespace DlibFaceLandmarkDetectorExample
             faceLandmarkDetector.Dispose ();
 
             gameObject.GetComponent<Renderer> ().material.mainTexture = texture2D;
+
+            if (fpsMonitor != null){
+                fpsMonitor.Add ("dlib object detector", "frontal_cat_face.svm");
+                fpsMonitor.Add ("dlib shape predictor", "sp_cat_face_68.dat");
+                fpsMonitor.Add ("width", width.ToString());
+                fpsMonitor.Add ("height", height.ToString());
+                fpsMonitor.Add ("orientation", Screen.orientation.ToString());
+            }
         }
 
         // Update is called once per frame

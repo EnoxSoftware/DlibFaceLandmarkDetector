@@ -22,9 +22,19 @@ namespace DlibFaceLandmarkDetectorExample
         public Texture2D texture2D;
 
         /// <summary>
-        /// The sp_human_face_68_dat_filepath.
+        /// The FPS monitor.
         /// </summary>
-        string sp_human_face_68_dat_filepath;
+        FpsMonitor fpsMonitor;
+
+        /// <summary>
+        /// The dlib shape predictor file name.
+        /// </summary>
+        string dlibShapePredictorFileName = "sp_human_face_68.dat";
+
+        /// <summary>
+        /// The dlib shape predictor file path.
+        /// </summary>
+        string dlibShapePredictorFilePath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
         Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
@@ -33,17 +43,20 @@ namespace DlibFaceLandmarkDetectorExample
         // Use this for initialization
         void Start ()
         {
+            fpsMonitor = GetComponent<FpsMonitor> ();
+
+            dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var getFilePath_Coroutine = Utils.getFilePathAsync ("sp_human_face_68.dat", (result) => {
+            var getFilePath_Coroutine = Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
                 coroutines.Clear ();
 
-                sp_human_face_68_dat_filepath = result;
+            dlibShapePredictorFilePath = result;
                 Run ();
             });
             coroutines.Push (getFilePath_Coroutine);
             StartCoroutine (getFilePath_Coroutine);
             #else
-            sp_human_face_68_dat_filepath = Utils.getFilePath ("sp_human_face_68.dat");
+            dlibShapePredictorFilePath = Utils.getFilePath (dlibShapePredictorFileName);
             Run ();
             #endif
         }
@@ -68,7 +81,7 @@ namespace DlibFaceLandmarkDetectorExample
                 Camera.main.orthographicSize = height / 2;
             }
 
-            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (sp_human_face_68_dat_filepath);
+            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (dlibShapePredictorFilePath);
             faceLandmarkDetector.SetImage (texture2D);
 
             //detect face rects
@@ -99,6 +112,13 @@ namespace DlibFaceLandmarkDetectorExample
 
 
             Utils.setDebugMode (false);
+
+            if (fpsMonitor != null) {                
+                fpsMonitor.Add ("dlib shape predictor", dlibShapePredictorFileName);
+                fpsMonitor.Add ("width", width.ToString ());
+                fpsMonitor.Add ("height", height.ToString ());
+                fpsMonitor.Add ("orientation", Screen.orientation.ToString ());
+            }
         }
 
         // Update is called once per frame

@@ -43,9 +43,19 @@ namespace DlibFaceLandmarkDetectorExample
         FaceLandmarkDetector faceLandmarkDetector;
 
         /// <summary>
-        /// The sp_human_face_68_dat_filepath.
+        /// The FPS monitor.
         /// </summary>
-        string sp_human_face_68_dat_filepath;
+        FpsMonitor fpsMonitor;
+
+        /// <summary>
+        /// The dlib shape predictor file name.
+        /// </summary>
+        string dlibShapePredictorFileName = "sp_human_face_68.dat";
+
+        /// <summary>
+        /// The dlib shape predictor file path.
+        /// </summary>
+        string dlibShapePredictorFilePath;
 
         /// <summary>
         /// The couple_avi_filepath.
@@ -59,12 +69,15 @@ namespace DlibFaceLandmarkDetectorExample
         // Use this for initialization
         void Start ()
         {
+            fpsMonitor = GetComponent<FpsMonitor> ();
+
+            dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
             #if UNITY_WEBGL && !UNITY_EDITOR
             var getFilePath_Coroutine = GetFilePath ();
             coroutines.Push (getFilePath_Coroutine);
             StartCoroutine (getFilePath_Coroutine);
             #else
-            sp_human_face_68_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("sp_human_face_68.dat");
+            dlibShapePredictorFilePath = DlibFaceLandmarkDetector.Utils.getFilePath (dlibShapePredictorFileName);
             couple_avi_filepath = OpenCVForUnity.Utils.getFilePath ("couple.avi");
             Run ();
             #endif
@@ -73,11 +86,11 @@ namespace DlibFaceLandmarkDetectorExample
         #if UNITY_WEBGL && !UNITY_EDITOR
         private IEnumerator GetFilePath ()
         {
-            var getFilePathAsync_sp_human_face_68_dat_filepath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("sp_human_face_68.dat", (result) => {
-                sp_human_face_68_dat_filepath = result;
+            var getFilePathAsync_dlibShapePredictorFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
+                    dlibShapePredictorFilePath = result;
             });
-            coroutines.Push (getFilePathAsync_sp_human_face_68_dat_filepath_Coroutine);
-            yield return StartCoroutine (getFilePathAsync_sp_human_face_68_dat_filepath_Coroutine);
+            coroutines.Push (getFilePathAsync_dlibShapePredictorFilePath_Coroutine);
+            yield return StartCoroutine (getFilePathAsync_dlibShapePredictorFilePath_Coroutine);
 
             var getFilePathAsync_couple_avi_filepath_Coroutine = OpenCVForUnity.Utils.getFilePathAsync ("couple.avi", (result) => {
                 couple_avi_filepath = result;
@@ -93,7 +106,7 @@ namespace DlibFaceLandmarkDetectorExample
         
         private void Run ()
         {
-            faceLandmarkDetector = new FaceLandmarkDetector (sp_human_face_68_dat_filepath);
+            faceLandmarkDetector = new FaceLandmarkDetector (dlibShapePredictorFilePath);
             
             rgbMat = new Mat ();
             
@@ -134,6 +147,13 @@ namespace DlibFaceLandmarkDetectorExample
             capture.set (Videoio.CAP_PROP_POS_FRAMES, 0);
 
             gameObject.GetComponent<Renderer> ().material.mainTexture = texture;
+
+            if (fpsMonitor != null){
+                fpsMonitor.Add ("dlib shape predictor", dlibShapePredictorFileName);
+                fpsMonitor.Add ("width", frameWidth.ToString());
+                fpsMonitor.Add ("height", frameHeight.ToString());
+                fpsMonitor.Add ("orientation", Screen.orientation.ToString());
+            }
         }
         
         // Update is called once per frame
@@ -172,7 +192,7 @@ namespace DlibFaceLandmarkDetectorExample
                     OpenCVForUnityUtils.DrawFaceRect (rgbMat, rect, new Scalar (255, 0, 0), 2);
                 }
                 
-                Imgproc.putText (rgbMat, "W:" + rgbMat.width () + " H:" + rgbMat.height () + " SO:" + Screen.orientation, new Point (5, rgbMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255), 1, Imgproc.LINE_AA, false);
+                //Imgproc.putText (rgbMat, "W:" + rgbMat.width () + " H:" + rgbMat.height () + " SO:" + Screen.orientation, new Point (5, rgbMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255), 1, Imgproc.LINE_AA, false);
 
                 OpenCVForUnity.Utils.matToTexture2D (rgbMat, texture, colors);
             }
@@ -188,6 +208,11 @@ namespace DlibFaceLandmarkDetectorExample
 
             if (rgbMat != null)
                 rgbMat.Dispose ();
+
+            if (texture != null) {
+                Texture2D.Destroy(texture);
+                texture = null;
+            }
 
             if (faceLandmarkDetector != null)
                 faceLandmarkDetector.Dispose ();

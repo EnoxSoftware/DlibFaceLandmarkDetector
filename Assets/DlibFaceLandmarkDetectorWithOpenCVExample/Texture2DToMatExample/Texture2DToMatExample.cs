@@ -23,9 +23,19 @@ namespace DlibFaceLandmarkDetectorExample
         public Texture2D imgTexture;
 
         /// <summary>
-        /// The sp_human_face_68_dat_filepath.
+        /// The FPS monitor.
         /// </summary>
-        string sp_human_face_68_dat_filepath;
+        FpsMonitor fpsMonitor;
+
+        /// <summary>
+        /// The dlib shape predictor file name.
+        /// </summary>
+        string dlibShapePredictorFileName = "sp_human_face_68.dat";
+
+        /// <summary>
+        /// The dlib shape predictor file path.
+        /// </summary>
+        string dlibShapePredictorFilePath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
         Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
@@ -34,17 +44,20 @@ namespace DlibFaceLandmarkDetectorExample
         // Use this for initialization
         void Start ()
         {
+            fpsMonitor = GetComponent<FpsMonitor> ();
+
+            dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync ("sp_human_face_68.dat", (result) => {
+            var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
                 coroutines.Clear ();
 
-                sp_human_face_68_dat_filepath = result;
+                dlibShapePredictorFilePath = result;
                 Run ();
             });
             coroutines.Push (getFilePath_Coroutine);
             StartCoroutine (getFilePath_Coroutine);
             #else
-            sp_human_face_68_dat_filepath = DlibFaceLandmarkDetector.Utils.getFilePath ("sp_human_face_68.dat");
+            dlibShapePredictorFilePath = DlibFaceLandmarkDetector.Utils.getFilePath (dlibShapePredictorFileName);
             Run ();
             #endif
         }
@@ -72,33 +85,28 @@ namespace DlibFaceLandmarkDetectorExample
             }
 
 
-            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (sp_human_face_68_dat_filepath);
+            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (dlibShapePredictorFilePath);
 
             OpenCVForUnityUtils.SetImage (faceLandmarkDetector, imgMat);
 
         
             //detect face rectdetecton
             List<FaceLandmarkDetector.RectDetection> detectResult = faceLandmarkDetector.DetectRectDetection ();
-                        
+
             foreach (var result in detectResult) {
                 Debug.Log ("rect : " + result.rect);
                 Debug.Log ("detection_confidence : " + result.detection_confidence);
                 Debug.Log ("weight_index : " + result.weight_index);
-            
-                //              Debug.Log ("face : " + rect);
-
-                Imgproc.putText (imgMat, "" + result.detection_confidence, new Point (result.rect.xMin, result.rect.yMin - 20), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255, 255), 1, Imgproc.LINE_AA, false);
-                Imgproc.putText (imgMat, "" + result.weight_index, new Point (result.rect.xMin, result.rect.yMin - 5), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255, 255), 1, Imgproc.LINE_AA, false);
 
                 //detect landmark points
                 List<Vector2> points = faceLandmarkDetector.DetectLandmark (result.rect);
 
                 Debug.Log ("face points count : " + points.Count);
                 //draw landmark points
-                OpenCVForUnityUtils.DrawFaceLandmark (imgMat, points, new Scalar (0, 255, 0, 255), 2);
+                OpenCVForUnityUtils.DrawFaceLandmark (imgMat, points, new Scalar (0, 255, 0, 255), 2, true);
 
                 //draw face rect
-                OpenCVForUnityUtils.DrawFaceRect (imgMat, result.rect, new Scalar (255, 0, 0, 255), 2);
+                OpenCVForUnityUtils.DrawFaceRect (imgMat, result, new Scalar (255, 0, 0, 255), 2);
             }
 
             faceLandmarkDetector.Dispose ();
@@ -109,6 +117,13 @@ namespace DlibFaceLandmarkDetectorExample
             OpenCVForUnity.Utils.matToTexture2D (imgMat, texture);
 
             gameObject.GetComponent<Renderer> ().material.mainTexture = texture;
+
+            if (fpsMonitor != null){                
+                fpsMonitor.Add ("dlib shape predictor", dlibShapePredictorFileName);
+                fpsMonitor.Add ("width", width.ToString());
+                fpsMonitor.Add ("height", height.ToString());
+                fpsMonitor.Add ("orientation", Screen.orientation.ToString());
+            }
         }
 
         // Update is called once per frame

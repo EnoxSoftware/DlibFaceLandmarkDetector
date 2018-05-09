@@ -22,7 +22,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         public bool isDebugMode = false;
 
-        [Space(10)]
+        [Space (10)]
 
         /// <summary>
         /// The draw low pass filter toggle.
@@ -73,11 +73,6 @@ namespace DlibFaceLandmarkDetectorExample
         /// The rgb mat.
         /// </summary>
         Mat rgbMat;
-
-        /// <summary>
-        /// The colors.
-        /// </summary>
-        Color32[] colors;
 
         /// <summary>
         /// The texture.
@@ -190,9 +185,9 @@ namespace DlibFaceLandmarkDetectorExample
         {
             faceLandmarkDetector = new FaceLandmarkDetector (dlibShapePredictorFilePath);
 
-            lowPassFilter = new LowPassPointsFilter ((int)faceLandmarkDetector.GetShapePredictorNumParts());
-            kalmanFilter = new KFPointsFilter ((int)faceLandmarkDetector.GetShapePredictorNumParts());
-            opticalFlowFilter = new OFPointsFilter ((int)faceLandmarkDetector.GetShapePredictorNumParts());
+            lowPassFilter = new LowPassPointsFilter ((int)faceLandmarkDetector.GetShapePredictorNumParts ());
+            kalmanFilter = new KFPointsFilter ((int)faceLandmarkDetector.GetShapePredictorNumParts ());
+            opticalFlowFilter = new OFPointsFilter ((int)faceLandmarkDetector.GetShapePredictorNumParts ());
 
             rgbMat = new Mat ();
 
@@ -220,8 +215,7 @@ namespace DlibFaceLandmarkDetectorExample
             capture.retrieve (rgbMat, 0);
             int frameWidth = rgbMat.cols ();
             int frameHeight = rgbMat.rows ();
-            colors = new Color32[frameWidth * frameHeight];
-            texture = new Texture2D (frameWidth, frameHeight, TextureFormat.RGBA32, false);
+            texture = new Texture2D (frameWidth, frameHeight, TextureFormat.RGB24, false);
             gameObject.transform.localScale = new Vector3 ((float)frameWidth, (float)frameHeight, 1);
             float widthScale = (float)Screen.width / (float)frameWidth;
             float heightScale = (float)Screen.height / (float)frameHeight;
@@ -266,7 +260,7 @@ namespace DlibFaceLandmarkDetectorExample
                 //detect face rects
                 List<UnityEngine.Rect> detectResult = faceLandmarkDetector.Detect ();
 
-                UnityEngine.Rect rect = new UnityEngine.Rect();
+                UnityEngine.Rect rect = new UnityEngine.Rect ();
                 List<Vector2> points = null;
                 if (detectResult.Count > 0) {
 
@@ -287,7 +281,7 @@ namespace DlibFaceLandmarkDetectorExample
                             opticalFlowFilter.Reset ();
                         if (drawOFAndLPFilter)
                             opticalFlowFilter.Reset ();
-                            lowPassFilter.Reset ();
+                        lowPassFilter.Reset ();
                     }
                 }
 
@@ -328,7 +322,7 @@ namespace DlibFaceLandmarkDetectorExample
 
                 //Imgproc.putText (rgbMat, "W:" + rgbMat.width () + " H:" + rgbMat.height () + " SO:" + Screen.orientation, new Point (5, rgbMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255), 1, Imgproc.LINE_AA, false);
 
-                OpenCVForUnity.Utils.matToTexture2D (rgbMat, texture, colors);
+                OpenCVForUnity.Utils.fastMatToTexture2D (rgbMat, texture);
             }
         }
 

@@ -9,7 +9,7 @@ namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
     /// WebcamTexture to mat helper.
-    /// v 1.0.7
+    /// v 1.0.8
     /// </summary>
     public class WebCamTextureToMatHelper : MonoBehaviour
     {
@@ -18,7 +18,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         [SerializeField, FormerlySerializedAs("requestedDeviceName"), TooltipAttribute ("Set the name of the device to use. (or device index number)")]
         protected string _requestedDeviceName = null;
-        public string requestedDeviceName {
+        public virtual string requestedDeviceName {
             get { return _requestedDeviceName; } 
             set {
                 _requestedDeviceName = value;
@@ -33,7 +33,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         [SerializeField, FormerlySerializedAs("requestedWidth"), TooltipAttribute ("Set the width of camera.")]
         protected int _requestedWidth = 640;
-        public int requestedWidth {
+        public virtual int requestedWidth {
             get { return _requestedWidth; } 
             set {
                 _requestedWidth = (int)Mathf.Clamp(value, 0f, float.MaxValue);
@@ -48,7 +48,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         [SerializeField, FormerlySerializedAs("requestedHeight"), TooltipAttribute ("Set the height of camera.")]
         protected int _requestedHeight = 480;
-        public int requestedHeight {
+        public virtual int requestedHeight {
             get { return _requestedHeight; } 
             set {
                 _requestedHeight = (int)Mathf.Clamp(value, 0f, float.MaxValue);
@@ -63,7 +63,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         [SerializeField, FormerlySerializedAs("requestedIsFrontFacing"), TooltipAttribute ("Set whether to use the front facing camera.")]
         protected bool _requestedIsFrontFacing = false;
-        public bool requestedIsFrontFacing {
+        public virtual bool requestedIsFrontFacing {
             get { return _requestedIsFrontFacing; } 
             set {
                 _requestedIsFrontFacing = value;
@@ -78,7 +78,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         [SerializeField, FormerlySerializedAs("requestedFPS"), TooltipAttribute ("Set the frame rate of camera.")]
         protected float _requestedFPS = 30f;
-        public float requestedFPS {
+        public virtual float requestedFPS {
             get { return _requestedFPS; } 
             set {
                 _requestedFPS = Mathf.Clamp(value, -1f, float.MaxValue);
@@ -96,7 +96,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         [SerializeField, FormerlySerializedAs("rotate90Degree"), TooltipAttribute ("Sets whether to rotate camera frame 90 degrees. (clockwise)")]
         protected bool _rotate90Degree = false;
-        public bool rotate90Degree {
+        public virtual bool rotate90Degree {
             get { return _rotate90Degree; } 
             set {
                 _rotate90Degree = value;
@@ -111,7 +111,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         [SerializeField, FormerlySerializedAs("flipVertical"), TooltipAttribute ("Determines if flips vertically.")]
         protected bool _flipVertical = false;
-        public bool flipVertical {
+        public virtual bool flipVertical {
             get { return _flipVertical; } 
             set { _flipVertical = value; }
         }
@@ -121,7 +121,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         [SerializeField, FormerlySerializedAs("flipHorizontal"), TooltipAttribute ("Determines if flips horizontal.")]
         protected bool _flipHorizontal = false;
-        public bool flipHorizontal {
+        public virtual bool flipHorizontal {
             get { return _flipHorizontal; } 
             set { _flipHorizontal = value; }
         }
@@ -131,7 +131,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         [SerializeField, FormerlySerializedAs("timeoutFrameCount"), TooltipAttribute ("The number of frames before the initialization process times out.")]
         protected int _timeoutFrameCount = 300;
-        public int timeoutFrameCount {
+        public virtual int timeoutFrameCount {
             get { return _timeoutFrameCount; } 
             set { _timeoutFrameCount = (int)Mathf.Clamp(value, 0f, float.MaxValue); }
         }
@@ -221,7 +221,7 @@ namespace DlibFaceLandmarkDetectorExample
             
         }
 
-        protected void OnValidate()
+        protected virtual void OnValidate()
         {
             _requestedWidth = (int)Mathf.Clamp(_requestedWidth, 0f, float.MaxValue);
             _requestedHeight = (int)Mathf.Clamp(_requestedHeight, 0f, float.MaxValue);

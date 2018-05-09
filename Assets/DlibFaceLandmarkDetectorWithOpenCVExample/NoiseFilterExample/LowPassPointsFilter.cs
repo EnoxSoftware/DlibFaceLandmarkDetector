@@ -7,12 +7,13 @@ namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
     /// Low Pass Points Filter.
-    /// v 1.0.0
+    /// v 1.0.1
     /// </summary>
     public class LowPassPointsFilter : PointsFilterBase
     {
+        public double diffLawPass = 2;
+
         bool flag = false;
-        double diffLawPass = 2;
 
         List<Vector2> lastPoints;
 

@@ -157,12 +157,12 @@ namespace DlibFaceLandmarkDetectorExample
         MatOfDouble distCoeffs;
 
         /// <summary>
-        /// The matrix that inverts the Y axis.
+        /// The matrix that inverts the Y-axis.
         /// </summary>
         Matrix4x4 invertYM;
         
         /// <summary>
-        /// The matrix that inverts the Z axis.
+        /// The matrix that inverts the Z-axis.
         /// </summary>
         Matrix4x4 invertZM;
         
@@ -578,7 +578,7 @@ namespace DlibFaceLandmarkDetectorExample
                     // right-handed coordinates system (OpenCV) to left-handed one (Unity)
                     ARM = invertYM * transformationM;
 
-                    // Apply Z axis inverted matrix.
+                    // Apply Z-axis inverted matrix.
                     ARM = ARM * invertZM;
 
                     if (shouldMoveARCamera) {
@@ -592,7 +592,7 @@ namespace DlibFaceLandmarkDetectorExample
                 
                 //Imgproc.putText (rgbaMat, "W:" + rgbaMat.width () + " H:" + rgbaMat.height () + " SO:" + Screen.orientation, new Point (5, rgbaMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255, 255), 1, Imgproc.LINE_AA, false);
                 
-                OpenCVForUnity.Utils.matToTexture2D (rgbaMat, texture, webCamTextureToMatHelper.GetBufferColors ());
+                OpenCVForUnity.Utils.fastMatToTexture2D (rgbaMat, texture);
             }
         }
 

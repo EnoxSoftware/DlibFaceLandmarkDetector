@@ -7,12 +7,15 @@ namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
     /// Optical Flow Points Filter.
-    /// v 1.0.0
+    /// v 1.0.2
     /// </summary>
     public class OFPointsFilter : PointsFilterBase
     {
+        public double diffCheckSensitivity = 1;
+
         bool flag = false;
         double diffDlib = 1;
+        MatOfPoint prevTrackPtsMat;
 
         // Optical Flow
         Mat prevgray, gray;
@@ -26,6 +29,7 @@ namespace DlibFaceLandmarkDetectorExample
         public OFPointsFilter (int numberOfElements) : base (numberOfElements)
         {        
             diffDlib = diffDlib * (double)numberOfElements / 68.0;
+            prevTrackPtsMat = new MatOfPoint ();
 
             // Initialize Optical Flow
             InitializeOpticalFlow ();
@@ -69,7 +73,6 @@ namespace DlibFaceLandmarkDetectorExample
                 flag = true;
             }
 
-
             if (srcPoints != null) {
 
                 if (dstPoints == null) {
@@ -100,6 +103,12 @@ namespace DlibFaceLandmarkDetectorExample
                     Video.calcOpticalFlowPyrLK (prevgray, gray, mOP2fPrevTrackPts, mOP2fNextTrackPts, status, err);
                     prevTrackPts = mOP2fPrevTrackPts.toList ();
                     nextTrackPts = mOP2fNextTrackPts.toList ();
+
+                    // clac diffDlib
+                    prevTrackPtsMat.fromList (prevTrackPts);
+                    OpenCVForUnity.Rect rect = Imgproc.boundingRect (prevTrackPtsMat);
+                    double diffDlib = this.diffDlib * rect.area () / 40000.0 * diffCheckSensitivity;
+
                     // if the face is moving so fast, use dlib to detect the face
                     double diff = calDistanceDiff (prevTrackPts, nextTrackPts);
                     if (drawDebugPoints)
@@ -171,6 +180,9 @@ namespace DlibFaceLandmarkDetectorExample
         public override void Dispose ()
         {
             DisposeOpticalFlow ();
+
+            if (prevTrackPtsMat != null)
+                prevTrackPtsMat.Dispose ();
         }
 
         protected virtual void InitializeOpticalFlow ()

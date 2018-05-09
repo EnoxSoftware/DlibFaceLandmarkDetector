@@ -136,11 +136,6 @@ namespace DlibFaceLandmarkDetectorExample
         ParticleSystem[] mouthParticleSystem;
         
         /// <summary>
-        /// The colors.
-        /// </summary>
-        Color32[] colors;
-        
-        /// <summary>
         /// The cameraparam matrix.
         /// </summary>
         Mat camMatrix;
@@ -151,12 +146,12 @@ namespace DlibFaceLandmarkDetectorExample
         MatOfDouble distCoeffs;
 
         /// <summary>
-        /// The matrix that inverts the Y axis.
+        /// The matrix that inverts the Y-axis.
         /// </summary>
         Matrix4x4 invertYM;
         
         /// <summary>
-        /// The matrix that inverts the Z axis.
+        /// The matrix that inverts the Z-axis.
         /// </summary>
         Matrix4x4 invertZM;
         
@@ -265,11 +260,11 @@ namespace DlibFaceLandmarkDetectorExample
         #if UNITY_WEBGL && !UNITY_EDITOR
         private IEnumerator GetFilePath ()
         {
-            var getFilePathAsync_dlibShapePredictorFilePathdlibShapePredictorFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
+            var getFilePathAsync_dlibShapePredictorFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
                 dlibShapePredictorFilePath = result;
             });
-            coroutines.Push (getFilePathAsync_dlibShapePredictorFilePathdlibShapePredictorFilePath_Coroutine);
-            yield return StartCoroutine (getFilePathAsync_dlibShapePredictorFilePathdlibShapePredictorFilePath_Coroutine);
+            coroutines.Push (getFilePathAsync_dlibShapePredictorFilePath_Coroutine);
+            yield return StartCoroutine (getFilePathAsync_dlibShapePredictorFilePath_Coroutine);
 
             var getFilePathAsync_dance_avi_filepath_Coroutine = OpenCVForUnity.Utils.getFilePathAsync ("dance.avi", (result) => {
                 dance_avi_filepath = result;
@@ -332,8 +327,7 @@ namespace DlibFaceLandmarkDetectorExample
             capture.retrieve (rgbMat, 0);
             int frameWidth = rgbMat.cols ();
             int frameHeight = rgbMat.rows ();
-            colors = new Color32[frameWidth * frameHeight];
-            texture = new Texture2D (frameWidth, frameHeight, TextureFormat.RGBA32, false);
+            texture = new Texture2D (frameWidth, frameHeight, TextureFormat.RGB24, false);
             gameObject.transform.localScale = new Vector3 ((float)frameWidth, (float)frameHeight, 1);
             capture.set (Videoio.CAP_PROP_POS_FRAMES, 0);
             
@@ -592,7 +586,7 @@ namespace DlibFaceLandmarkDetectorExample
                     // right-handed coordinates system (OpenCV) to left-handed one (Unity)
                     ARM = invertYM * transformationM;
 
-                    // Apply Z axis inverted matrix.
+                    // Apply Z-axis inverted matrix.
                     ARM = ARM * invertZM;
 
                     if (shouldMoveARCamera) {
@@ -613,7 +607,7 @@ namespace DlibFaceLandmarkDetectorExample
 
             //Imgproc.putText (rgbMat, "W:" + rgbMat.width () + " H:" + rgbMat.height () + " SO:" + Screen.orientation, new Point (5, rgbMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255), 1, Imgproc.LINE_AA, false);
 
-            OpenCVForUnity.Utils.matToTexture2D (rgbMat, texture, colors);
+            OpenCVForUnity.Utils.fastMatToTexture2D (rgbMat, texture);
         }
 
         /// <summary>

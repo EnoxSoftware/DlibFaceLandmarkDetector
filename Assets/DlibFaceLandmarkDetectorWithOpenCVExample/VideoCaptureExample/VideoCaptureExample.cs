@@ -28,11 +28,6 @@ namespace DlibFaceLandmarkDetectorExample
         Mat rgbMat;
 
         /// <summary>
-        /// The colors.
-        /// </summary>
-        Color32[] colors;
-
-        /// <summary>
         /// The texture.
         /// </summary>
         Texture2D texture;
@@ -134,8 +129,7 @@ namespace DlibFaceLandmarkDetectorExample
             capture.retrieve (rgbMat, 0);
             int frameWidth = rgbMat.cols ();
             int frameHeight = rgbMat.rows ();
-            colors = new Color32[frameWidth * frameHeight];
-            texture = new Texture2D (frameWidth, frameHeight, TextureFormat.RGBA32, false);
+            texture = new Texture2D (frameWidth, frameHeight, TextureFormat.RGB24, false);
             gameObject.transform.localScale = new Vector3 ((float)frameWidth, (float)frameHeight, 1);
             float widthScale = (float)Screen.width / (float)frameWidth;
             float heightScale = (float)Screen.height / (float)frameHeight;
@@ -148,11 +142,11 @@ namespace DlibFaceLandmarkDetectorExample
 
             gameObject.GetComponent<Renderer> ().material.mainTexture = texture;
 
-            if (fpsMonitor != null){
+            if (fpsMonitor != null) {
                 fpsMonitor.Add ("dlib shape predictor", dlibShapePredictorFileName);
-                fpsMonitor.Add ("width", frameWidth.ToString());
-                fpsMonitor.Add ("height", frameHeight.ToString());
-                fpsMonitor.Add ("orientation", Screen.orientation.ToString());
+                fpsMonitor.Add ("width", frameWidth.ToString ());
+                fpsMonitor.Add ("height", frameHeight.ToString ());
+                fpsMonitor.Add ("orientation", Screen.orientation.ToString ());
             }
         }
         
@@ -194,7 +188,7 @@ namespace DlibFaceLandmarkDetectorExample
                 
                 //Imgproc.putText (rgbMat, "W:" + rgbMat.width () + " H:" + rgbMat.height () + " SO:" + Screen.orientation, new Point (5, rgbMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255), 1, Imgproc.LINE_AA, false);
 
-                OpenCVForUnity.Utils.matToTexture2D (rgbMat, texture, colors);
+                OpenCVForUnity.Utils.fastMatToTexture2D (rgbMat, texture);
             }
         }
 
@@ -210,7 +204,7 @@ namespace DlibFaceLandmarkDetectorExample
                 rgbMat.Dispose ();
 
             if (texture != null) {
-                Texture2D.Destroy(texture);
+                Texture2D.Destroy (texture);
                 texture = null;
             }
 

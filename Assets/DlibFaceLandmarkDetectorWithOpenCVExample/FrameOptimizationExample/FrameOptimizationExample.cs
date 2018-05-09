@@ -328,7 +328,7 @@ namespace DlibFaceLandmarkDetectorExample
 
                 //Imgproc.putText (rgbaMat, "Original:(" + rgbaMat.width () + "," + rgbaMat.height () + ") DownScale:(" + downScaleRgbaMat.width () + "," + downScaleRgbaMat.height () + ") FrameSkipping: " + imageOptimizationHelper.frameSkippingRatio, new Point (5, rgbaMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar (255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
 
-                OpenCVForUnity.Utils.matToTexture2D (rgbaMat, texture, webCamTextureToMatHelper.GetBufferColors ());
+                OpenCVForUnity.Utils.fastMatToTexture2D (rgbaMat, texture);
             }
         }
 

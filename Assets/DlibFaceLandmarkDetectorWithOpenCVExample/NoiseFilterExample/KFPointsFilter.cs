@@ -7,12 +7,15 @@ namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
     /// Kalman Filter Points Filter.
-    /// v 1.0.0
+    /// v 1.0.2
     /// </summary>
     public class KFPointsFilter : PointsFilterBase
     {
+        public double diffCheckSensitivity = 1;
+
         bool flag = false;
         double diffDlib = 1;
+        MatOfPoint prevTrackPtsMat;
 
         List<Point> src_points;
         List<Point> last_points;
@@ -27,6 +30,7 @@ namespace DlibFaceLandmarkDetectorExample
         public KFPointsFilter (int numberOfElements) : base (numberOfElements)
         {
             diffDlib = diffDlib * (double)numberOfElements / 68.0;
+            prevTrackPtsMat = new MatOfPoint ();
 
             src_points = new List<Point> ();
             for (int i = 0; i < numberOfElements; i++) {
@@ -73,6 +77,12 @@ namespace DlibFaceLandmarkDetectorExample
                     src_points [i].x = srcPoints [i].x;
                     src_points [i].y = srcPoints [i].y;
                 }
+
+                // clac diffDlib
+                prevTrackPtsMat.fromList (src_points);
+                OpenCVForUnity.Rect rect = Imgproc.boundingRect (prevTrackPtsMat);
+                double diffDlib = this.diffDlib * rect.area () / 40000.0 * diffCheckSensitivity;
+
                 // if the face is moving so fast, use dlib to detect the face
                 double diff = calDistanceDiff (src_points, last_points);
                 if (drawDebugPoints)
@@ -178,6 +188,9 @@ namespace DlibFaceLandmarkDetectorExample
                 src_points.Clear ();
 
             DisposeKalmanFilter ();
+
+            if (prevTrackPtsMat != null)
+                prevTrackPtsMat.Dispose ();
         }
 
         protected virtual void InitializeKalmanFilter ()

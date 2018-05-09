@@ -261,7 +261,7 @@ namespace DlibFaceLandmarkDetectorExample
                         yield return new WaitForEndOfFrame ();
                     } 
                     #endif
-                #endif
+                    #endif
                         
                     Debug.Log ("name:" + webCamTexture.deviceName + " width:" + webCamTexture.width + " height:" + webCamTexture.height + " fps:" + webCamTexture.requestedFPS);
                     Debug.Log ("videoRotationAngle:" + webCamTexture.videoRotationAngle + " videoVerticallyMirrored:" + webCamTexture.videoVerticallyMirrored + " isFrongFacing:" + webCamDevice.isFrontFacing);
@@ -296,10 +296,10 @@ namespace DlibFaceLandmarkDetectorExample
                 webCamTexture = null;
             }
             if (texture != null) {
-                Texture2D.Destroy(texture);
+                Texture2D.Destroy (texture);
                 texture = null;
             }
-        }           
+        }
 
         /// <summary>
         /// Raises the webcam texture initialized event.
@@ -332,11 +332,11 @@ namespace DlibFaceLandmarkDetectorExample
             gameObject.transform.localScale = new Vector3 (texture.width, texture.height, 1);
             Debug.Log ("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
 
-            if (fpsMonitor != null){                
+            if (fpsMonitor != null) {                
                 fpsMonitor.Add ("dlib shape predictor", dlibShapePredictorFileName);
-                fpsMonitor.Add ("width", texture.width.ToString());
-                fpsMonitor.Add ("height", texture.height.ToString());
-                fpsMonitor.Add ("orientation", Screen.orientation.ToString());
+                fpsMonitor.Add ("width", texture.width.ToString ());
+                fpsMonitor.Add ("height", texture.height.ToString ());
+                fpsMonitor.Add ("orientation", Screen.orientation.ToString ());
             }
 
 
@@ -391,7 +391,7 @@ namespace DlibFaceLandmarkDetectorExample
                     faceLandmarkDetector.DrawDetectResult<Color32> (colors, texture.width, texture.height, 4, true, 255, 0, 0, 255, 2);
                     
                     texture.SetPixels32 (colors);
-                    texture.Apply ();
+                    texture.Apply (false);
                 }
             }
         }
@@ -529,15 +529,15 @@ namespace DlibFaceLandmarkDetectorExample
         /// <param name="height">Height.</param>
         void FlipVertical (Color32[] src, Color32[] dst, int width, int height)
         {
-            for(var i = 0; i < height / 2; i++) {
+            for (var i = 0; i < height / 2; i++) {
                 var y = i * width;
                 var x = (height - i - 1) * width;
-                for(var j = 0; j < width; j++) {
+                for (var j = 0; j < width; j++) {
                     int s = y + j;
                     int t = x + j;
-                    Color32 c = src[s];
-                    dst[s] = src[t];
-                    dst[t] = c;
+                    Color32 c = src [s];
+                    dst [s] = src [t];
+                    dst [t] = c;
                 }
             }
         }
@@ -554,12 +554,12 @@ namespace DlibFaceLandmarkDetectorExample
             for (int i = 0; i < height; i++) {
                 int y = i * width;
                 int x = y + width - 1;
-                for(var j = 0; j < width / 2; j++) {
+                for (var j = 0; j < width / 2; j++) {
                     int s = y + j;
                     int t = x - j;
-                    Color32 c = src[s];
-                    dst[s] = src[t];
-                    dst[t] = c;
+                    Color32 c = src [s];
+                    dst [s] = src [t];
+                    dst [t] = c;
                 }
             }
         }
@@ -574,10 +574,10 @@ namespace DlibFaceLandmarkDetectorExample
         void Rotate180 (Color32[] src, Color32[] dst, int height, int width)
         {
             int i = src.Length;
-            for (int x = 0; x < i/2; x++) {
-                Color32 t = src[x];
-                dst[x] = src[i-x-1];
-                dst[i-x-1] = t;
+            for (int x = 0; x < i / 2; x++) {
+                Color32 t = src [x];
+                dst [x] = src [i - x - 1];
+                dst [i - x - 1] = t;
             }
         }
 

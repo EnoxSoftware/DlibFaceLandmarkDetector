@@ -293,7 +293,7 @@ namespace DlibFaceLandmarkDetectorExample
 
                             List<OpenCVForUnity.Rect> opencvDetectResult = faces.toList ();
 
-                            // adjust to Dilb's result.
+                            // correct the deviation of the detection result of the face rectangle of OpenCV and Dlib.
                             detectionResult.Clear ();
                             foreach (var opencvRect in opencvDetectResult) {
                                 detectionResult.Add (new UnityEngine.Rect ((float)opencvRect.x, (float)opencvRect.y + (float)(opencvRect.height * 0.1f), (float)opencvRect.width, (float)opencvRect.height));
@@ -301,7 +301,7 @@ namespace DlibFaceLandmarkDetectorExample
                         }
                             
                     } else {
-                        
+
                         detectionResult = faceLandmarkDetector.Detect ();
 
                     }

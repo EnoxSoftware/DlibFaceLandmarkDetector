@@ -63,15 +63,14 @@ namespace DlibFaceLandmarkDetector
         public static void DrawFaceRect (Mat imgMat, double[] rect, Scalar color, int thickness)
         {            
             if (rect.Length > 4)
-                Imgproc.putText (imgMat, "detection_confidence : " + rect[4], new Point (rect[0], rect[1] - 20), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255, 255), 1, Imgproc.LINE_AA, false);
+                Imgproc.putText (imgMat, "detection_confidence : " + rect [4], new Point (rect [0], rect [1] - 20), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255, 255), 1, Imgproc.LINE_AA, false);
             if (rect.Length > 5)
-                Imgproc.putText (imgMat, "weight_index : " + rect[5], new Point (rect[0], rect[1] - 5), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255, 255), 1, Imgproc.LINE_AA, false);
-            Imgproc.rectangle (imgMat, new Point (rect[0], rect[1]), new Point (rect[0] + rect[2], rect[1] + rect[3]), color, thickness);
+                Imgproc.putText (imgMat, "weight_index : " + rect [5], new Point (rect [0], rect [1] - 5), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255, 255), 1, Imgproc.LINE_AA, false);
+            Imgproc.rectangle (imgMat, new Point (rect [0], rect [1]), new Point (rect [0] + rect [2], rect [1] + rect [3]), color, thickness);
         }
 
         /// <summary>
         /// Draws a face landmark.
-        /// This method supports 68 landmark points.
         /// </summary>
         /// <param name="imgMat">Image mat.</param>
         /// <param name="points">Points.</param>
@@ -195,7 +194,6 @@ namespace DlibFaceLandmarkDetector
 
         /// <summary>
         /// Draws a face landmark.
-        /// This method supports 68 landmark points.
         /// </summary>
         /// <param name="imgMat">Image mat.</param>
         /// <param name="points">Detected object landmark data.[x_0, y_0, x_1, y_1, ...]</param>
@@ -278,7 +276,7 @@ namespace DlibFaceLandmarkDetector
             }
 
             for (int i = 0; i < pts.Count; ++i) {
-                vecs.Add (new Vector2((float)pts[i].x, (float)pts[i].y));
+                vecs.Add (new Vector2 ((float)pts [i].x, (float)pts [i].y));
             }
 
             return vecs;
@@ -324,7 +322,7 @@ namespace DlibFaceLandmarkDetector
             }
 
             for (int i = 0; i < vecs.Count; ++i) {
-                vecs [i] = new Vector2((float)arr [i * 2], (float)arr [i * 2 + 1]);
+                vecs [i] = new Vector2 ((float)arr [i * 2], (float)arr [i * 2 + 1]);
             }
 
             return vecs;

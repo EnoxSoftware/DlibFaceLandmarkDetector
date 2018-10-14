@@ -4,7 +4,7 @@ Dlib FaceLandmark Detector
 Overview
 -----
 Dlib FaceLandmark Detector is required to run example code of this repository.
-<https://www.assetstore.unity3d.com/#!/content/64314>  
+[https://assetstore.unity.com/packages/tools/integration/dlib-facelandmark-detector-64314](https://assetstore.unity.com/packages/tools/integration/dlib-facelandmark-detector-64314?aid=1011l4ehR)  
 
 Setup Tutorial & Demo Video
 -----

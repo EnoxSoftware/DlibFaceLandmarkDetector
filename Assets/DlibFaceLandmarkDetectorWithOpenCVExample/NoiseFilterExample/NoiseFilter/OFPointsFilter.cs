@@ -1,13 +1,15 @@
-﻿using OpenCVForUnity;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+using OpenCVForUnity.CoreModule;
+using OpenCVForUnity.ImgprocModule;
+using OpenCVForUnity.VideoModule;
 
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
     /// Optical Flow Points Filter.
-    /// v 1.0.2
+    /// v 1.0.3
     /// </summary>
     public class OFPointsFilter : PointsFilterBase
     {
@@ -67,7 +69,7 @@ namespace DlibFaceLandmarkDetectorExample
                 }
 
                 for (int i = 0; i < numberOfElements; i++) {
-                    prevTrackPts[i] = new Point (srcPoints [i].x, srcPoints [i].y);
+                    prevTrackPts [i] = new Point (srcPoints [i].x, srcPoints [i].y);
                 }
 
                 flag = true;
@@ -106,7 +108,7 @@ namespace DlibFaceLandmarkDetectorExample
 
                     // clac diffDlib
                     prevTrackPtsMat.fromList (prevTrackPts);
-                    OpenCVForUnity.Rect rect = Imgproc.boundingRect (prevTrackPtsMat);
+                    OpenCVForUnity.CoreModule.Rect rect = Imgproc.boundingRect (prevTrackPtsMat);
                     double diffDlib = this.diffDlib * rect.area () / 40000.0 * diffCheckSensitivity;
 
                     // if the face is moving so fast, use dlib to detect the face
@@ -156,21 +158,21 @@ namespace DlibFaceLandmarkDetectorExample
 
             // Reset Optical Flow
             for (int i = 0; i < numberOfElements; i++) {
-                prevTrackPts[i].x = 0.0;
-                prevTrackPts[i].y = 0.0;
+                prevTrackPts [i].x = 0.0;
+                prevTrackPts [i].y = 0.0;
             }
             for (int i = 0; i < numberOfElements; i++) {
-                nextTrackPts[i].x = 0.0;
-                nextTrackPts[i].y = 0.0;
+                nextTrackPts [i].x = 0.0;
+                nextTrackPts [i].y = 0.0;
             }
 
             if (prevgray != null) {
                 prevgray.Dispose ();
-                prevgray = new Mat();
+                prevgray = new Mat ();
             }
             if (gray != null) {
                 gray.Dispose ();
-                gray = new Mat();
+                gray = new Mat ();
             }
         }
 

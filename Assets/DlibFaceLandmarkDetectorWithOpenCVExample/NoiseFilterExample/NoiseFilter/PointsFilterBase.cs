@@ -1,13 +1,13 @@
-﻿using OpenCVForUnity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using OpenCVForUnity.CoreModule;
 
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
     /// Points Filter Base.
-    /// v 1.0.0
+    /// v 1.0.1
     /// </summary>
     public abstract class PointsFilterBase
     {

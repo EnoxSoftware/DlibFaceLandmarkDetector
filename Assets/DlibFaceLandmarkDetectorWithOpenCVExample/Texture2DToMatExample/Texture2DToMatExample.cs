@@ -1,13 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
-
-#if UNITY_5_3 || UNITY_5_3_OR_NEWER
+using UnityEngine;
 using UnityEngine.SceneManagement;
-#endif
-using OpenCVForUnity;
 using DlibFaceLandmarkDetector;
+using OpenCVForUnity.CoreModule;
 
 namespace DlibFaceLandmarkDetectorExample
 {
@@ -38,7 +35,7 @@ namespace DlibFaceLandmarkDetectorExample
         string dlibShapePredictorFilePath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
+        IEnumerator getFilePath_Coroutine;
         #endif
 
         // Use this for initialization
@@ -48,16 +45,15 @@ namespace DlibFaceLandmarkDetectorExample
 
             dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
-                coroutines.Clear ();
+            getFilePath_Coroutine = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
+                getFilePath_Coroutine = null;
 
                 dlibShapePredictorFilePath = result;
                 Run ();
             });
-            coroutines.Push (getFilePath_Coroutine);
             StartCoroutine (getFilePath_Coroutine);
             #else
-            dlibShapePredictorFilePath = DlibFaceLandmarkDetector.Utils.getFilePath (dlibShapePredictorFileName);
+            dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath (dlibShapePredictorFileName);
             Run ();
             #endif
         }
@@ -67,7 +63,7 @@ namespace DlibFaceLandmarkDetectorExample
             Mat imgMat = new Mat (imgTexture.height, imgTexture.width, CvType.CV_8UC4);
 
             // Convert Unity Texture2D to OpenCV Mat.
-            OpenCVForUnity.Utils.texture2DToMat (imgTexture, imgMat);
+            OpenCVForUnity.UnityUtils.Utils.texture2DToMat (imgTexture, imgMat);
             Debug.Log ("imgMat dst ToString " + imgMat.ToString ());
 
             gameObject.transform.localScale = new Vector3 (imgTexture.width, imgTexture.height, 1);
@@ -114,15 +110,15 @@ namespace DlibFaceLandmarkDetectorExample
             Texture2D texture = new Texture2D (imgMat.cols (), imgMat.rows (), TextureFormat.RGBA32, false);
 
             // Convert OpenCV Mat to Unity Texture2D.
-            OpenCVForUnity.Utils.matToTexture2D (imgMat, texture);
+            OpenCVForUnity.UnityUtils.Utils.matToTexture2D (imgMat, texture);
 
             gameObject.GetComponent<Renderer> ().material.mainTexture = texture;
 
-            if (fpsMonitor != null){                
+            if (fpsMonitor != null) {                
                 fpsMonitor.Add ("dlib shape predictor", dlibShapePredictorFileName);
-                fpsMonitor.Add ("width", width.ToString());
-                fpsMonitor.Add ("height", height.ToString());
-                fpsMonitor.Add ("orientation", Screen.orientation.ToString());
+                fpsMonitor.Add ("width", width.ToString ());
+                fpsMonitor.Add ("height", height.ToString ());
+                fpsMonitor.Add ("orientation", Screen.orientation.ToString ());
             }
         }
 
@@ -138,9 +134,9 @@ namespace DlibFaceLandmarkDetectorExample
         void OnDestroy ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            foreach (var coroutine in coroutines) {
-                StopCoroutine (coroutine);
-                ((IDisposable)coroutine).Dispose ();
+            if (getFilePath_Coroutine != null) {
+                StopCoroutine (getFilePath_Coroutine);
+                ((IDisposable)getFilePath_Coroutine).Dispose ();
             }
             #endif
         }
@@ -150,11 +146,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         public void OnBackButtonClick ()
         {
-            #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");
-            #else
-            Application.LoadLevel ("DlibFaceLandmarkDetectorExample");
-            #endif
         }
     }
 }

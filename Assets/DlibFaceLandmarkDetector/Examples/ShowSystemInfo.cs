@@ -1,12 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UI;
-
-
-#if UNITY_5_3 || UNITY_5_3_OR_NEWER
-using UnityEngine.SceneManagement;
-#endif
+using DlibFaceLandmarkDetector.UnityUtils;
 
 namespace DlibFaceLandmarkDetectorExample
 {
@@ -43,7 +40,7 @@ namespace DlibFaceLandmarkDetectorExample
         {
             Dictionary<string, string> dicSystemInfo = new Dictionary<string, string> ();
 
-            dicSystemInfo.Add ("DlibFaceLandmarkDetector version", "dlibfacelandmarkdetector" + " " + DlibFaceLandmarkDetector.Utils.getVersion ());
+            dicSystemInfo.Add ("DlibFaceLandmarkDetector version", "dlibfacelandmarkdetector" + " " + Utils.getVersion ());
             dicSystemInfo.Add ("Build Unity version", Application.unityVersion);
 
             #if UNITY_EDITOR
@@ -106,7 +103,7 @@ namespace DlibFaceLandmarkDetectorExample
             dicSystemInfo.Add ("graphicsShaderLevel", SystemInfo.graphicsShaderLevel.ToString ());
             
             #if UNITY_5_4_OR_NEWER
-            dicSystemInfo.Add("copyTextureSupport", SystemInfo.copyTextureSupport.ToString());
+            dicSystemInfo.Add ("copyTextureSupport", SystemInfo.copyTextureSupport.ToString ());
             #else
             dicSystemInfo.Add ("copyTextureSupport", "");
             #endif
@@ -121,11 +118,7 @@ namespace DlibFaceLandmarkDetectorExample
 
         public void OnBackButtonClick ()
         {
-            #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");
-            #else
-            Application.LoadLevel ("DlibFaceLandmarkDetectorExample");
-            #endif
         }
     }
 }

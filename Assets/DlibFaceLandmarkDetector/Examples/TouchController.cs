@@ -9,7 +9,7 @@ namespace DlibFaceLandmarkDetectorExample
 
         public GameObject Cube;
         public float Speed = 0.1f;
-    
+
         void Update ()
         {
 

@@ -1,14 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
+using UnityEngine;
 using UnityEngine.UI;
-
-#if UNITY_5_3 || UNITY_5_3_OR_NEWER
 using UnityEngine.SceneManagement;
-#endif
-using OpenCVForUnity;
 using DlibFaceLandmarkDetector;
+using OpenCVForUnity.CoreModule;
+using OpenCVForUnity.ImgprocModule;
+using OpenCVForUnity.UnityUtils.Helper;
 
 namespace DlibFaceLandmarkDetectorExample
 {
@@ -32,7 +31,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         public bool isDebugMode = false;
 
-        [Space(10)]
+        [Space (10)]
 
         /// <summary>
         /// The filter mode dropdown.
@@ -105,11 +104,7 @@ namespace DlibFaceLandmarkDetectorExample
         const int maximumAllowedSkippedFrames = 4;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
-        #endif
-
-        #if UNITY_ANDROID && !UNITY_EDITOR
-        float rearCameraRequestedFPS;
+        IEnumerator getFilePath_Coroutine;
         #endif
 
         // Use this for initialization
@@ -123,16 +118,15 @@ namespace DlibFaceLandmarkDetectorExample
 
             dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var getFilePath_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
-                coroutines.Clear ();
+            getFilePath_Coroutine = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
+                getFilePath_Coroutine = null;
 
                 dlibShapePredictorFilePath = result;
                 Run ();
             });
-            coroutines.Push (getFilePath_Coroutine);
             StartCoroutine (getFilePath_Coroutine);
             #else
-            dlibShapePredictorFilePath = DlibFaceLandmarkDetector.Utils.getFilePath (dlibShapePredictorFileName);
+            dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath (dlibShapePredictorFileName);
             Run ();
             #endif
         }
@@ -141,24 +135,15 @@ namespace DlibFaceLandmarkDetectorExample
         {
             faceLandmarkDetector = new FaceLandmarkDetector (dlibShapePredictorFilePath);
 
-            lowPassFilter = new LowPassPointsFilter ((int)faceLandmarkDetector.GetShapePredictorNumParts());
-            kalmanFilter = new KFPointsFilter ((int)faceLandmarkDetector.GetShapePredictorNumParts());
-            opticalFlowFilter = new OFPointsFilter ((int)faceLandmarkDetector.GetShapePredictorNumParts());
+            lowPassFilter = new LowPassPointsFilter ((int)faceLandmarkDetector.GetShapePredictorNumParts ());
+            kalmanFilter = new KFPointsFilter ((int)faceLandmarkDetector.GetShapePredictorNumParts ());
+            opticalFlowFilter = new OFPointsFilter ((int)faceLandmarkDetector.GetShapePredictorNumParts ());
 
             #if UNITY_ANDROID && !UNITY_EDITOR
-            // Set the requestedFPS parameter to avoid the problem of the WebCamTexture image becoming low light on some Android devices. (Pixel, pixel 2)
-            // https://forum.unity.com/threads/android-webcamtexture-in-low-light-only-some-models.520656/
-            // https://forum.unity.com/threads/released-opencv-for-unity.277080/page-33#post-3445178
-            rearCameraRequestedFPS = webCamTextureToMatHelper.requestedFPS;
-            if (webCamTextureToMatHelper.requestedIsFrontFacing) {                
-                webCamTextureToMatHelper.requestedFPS = 15;
-                webCamTextureToMatHelper.Initialize ();
-            } else {
-                webCamTextureToMatHelper.Initialize ();
-            }
-            #else
-            webCamTextureToMatHelper.Initialize ();
+            // Avoids the front camera low light issue that occurs in only some Android devices (e.g. Google Pixel, Pixel2).
+            webCamTextureToMatHelper.avoidAndroidFrontCameraLowLightIssue = true;
             #endif
+            webCamTextureToMatHelper.Initialize ();
         }
 
         /// <summary>
@@ -176,11 +161,11 @@ namespace DlibFaceLandmarkDetectorExample
             gameObject.transform.localScale = new Vector3 (webCamTextureMat.cols (), webCamTextureMat.rows (), 1);
             Debug.Log ("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
 
-            if (fpsMonitor != null){
+            if (fpsMonitor != null) {
                 fpsMonitor.Add ("dlib shape predictor", dlibShapePredictorFileName);
-                fpsMonitor.Add ("width", webCamTextureToMatHelper.GetWidth().ToString());
-                fpsMonitor.Add ("height", webCamTextureToMatHelper.GetHeight().ToString());
-                fpsMonitor.Add ("orientation", Screen.orientation.ToString());
+                fpsMonitor.Add ("width", webCamTextureToMatHelper.GetWidth ().ToString ());
+                fpsMonitor.Add ("height", webCamTextureToMatHelper.GetHeight ().ToString ());
+                fpsMonitor.Add ("orientation", Screen.orientation.ToString ());
             }
 
                                     
@@ -212,7 +197,7 @@ namespace DlibFaceLandmarkDetectorExample
             Debug.Log ("OnWebCamTextureToMatHelperDisposed");
 
             if (texture != null) {
-                Texture2D.Destroy(texture);
+                Texture2D.Destroy (texture);
                 texture = null;
             }
         }
@@ -238,7 +223,7 @@ namespace DlibFaceLandmarkDetectorExample
                 //detect face rects
                 List<UnityEngine.Rect> detectResult = faceLandmarkDetector.Detect ();
 
-                UnityEngine.Rect rect = new UnityEngine.Rect();
+                UnityEngine.Rect rect = new UnityEngine.Rect ();
                 List<Vector2> points = null;
                 bool shouldResetfilter = false;
                 if (detectResult.Count > 0) {
@@ -256,8 +241,7 @@ namespace DlibFaceLandmarkDetectorExample
                     }
                 }
 
-                switch(filterMode)
-                {
+                switch (filterMode) {
                 default:
                 case FilterMode.None:
                     break;
@@ -318,9 +302,9 @@ namespace DlibFaceLandmarkDetectorExample
                 }
 
 
-                //Imgproc.putText (rgbaMat, "W:" + rgbaMat.width () + " H:" + rgbaMat.height () + " SO:" + Screen.orientation, new Point (5, rgbaMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255, 255), 1, Imgproc.LINE_AA, false);
+                //Imgproc.putText (rgbaMat, "W:" + rgbaMat.width () + " H:" + rgbaMat.height () + " SO:" + Screen.orientation, new Point (5, rgbaMat.rows () - 10), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255, 255), 1, Imgproc.LINE_AA, false);
 
-                OpenCVForUnity.Utils.fastMatToTexture2D (rgbaMat, texture);
+                OpenCVForUnity.UnityUtils.Utils.fastMatToTexture2D (rgbaMat, texture);
             }
         }
 
@@ -343,9 +327,9 @@ namespace DlibFaceLandmarkDetectorExample
                 opticalFlowFilter.Dispose ();
 
             #if UNITY_WEBGL && !UNITY_EDITOR
-            foreach (var coroutine in coroutines) {
-                StopCoroutine (coroutine);
-                ((IDisposable)coroutine).Dispose ();
+            if (getFilePath_Coroutine != null) {
+                StopCoroutine (getFilePath_Coroutine);
+                ((IDisposable)getFilePath_Coroutine).Dispose ();
             }
             #endif
         }
@@ -355,11 +339,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         public void OnBackButtonClick ()
         {
-            #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");
-            #else
-            Application.LoadLevel ("DlibFaceLandmarkDetectorExample");
-            #endif
         }
 
         /// <summary>
@@ -391,16 +371,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         public void OnChangeCameraButtonClick ()
         {
-            #if UNITY_ANDROID && !UNITY_EDITOR
-            if (!webCamTextureToMatHelper.IsFrontFacing ()) {
-                rearCameraRequestedFPS = webCamTextureToMatHelper.requestedFPS;
-                webCamTextureToMatHelper.Initialize (!webCamTextureToMatHelper.IsFrontFacing (), 15, webCamTextureToMatHelper.rotate90Degree);
-            } else {                
-                webCamTextureToMatHelper.Initialize (!webCamTextureToMatHelper.IsFrontFacing (), rearCameraRequestedFPS, webCamTextureToMatHelper.rotate90Degree);
-            }
-            #else
             webCamTextureToMatHelper.requestedIsFrontFacing = !webCamTextureToMatHelper.IsFrontFacing ();
-            #endif
         }
 
         /// <summary>

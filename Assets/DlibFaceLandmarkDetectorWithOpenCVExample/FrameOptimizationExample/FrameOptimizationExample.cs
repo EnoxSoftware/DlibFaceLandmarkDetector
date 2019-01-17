@@ -1,15 +1,14 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
-using System.Runtime.InteropServices;
+using UnityEngine;
 using UnityEngine.UI;
-
-#if UNITY_5_3 || UNITY_5_3_OR_NEWER
 using UnityEngine.SceneManagement;
-#endif
-using OpenCVForUnity;
 using DlibFaceLandmarkDetector;
+using OpenCVForUnity.CoreModule;
+using OpenCVForUnity.ObjdetectModule;
+using OpenCVForUnity.ImgprocModule;
+using OpenCVForUnity.UnityUtils.Helper;
 
 namespace DlibFaceLandmarkDetectorExample
 {
@@ -21,7 +20,6 @@ namespace DlibFaceLandmarkDetectorExample
     [RequireComponent (typeof(WebCamTextureToMatHelper), typeof(ImageOptimizationHelper))]
     public class FrameOptimizationExample : MonoBehaviour
     {
-
         /// <summary>
         /// Determines if enable downscale.
         /// </summary>
@@ -108,11 +106,7 @@ namespace DlibFaceLandmarkDetectorExample
         string dlibShapePredictorFilePath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
-        #endif
-
-        #if UNITY_ANDROID && !UNITY_EDITOR
-        float rearCameraRequestedFPS;
+        IEnumerator getFilePath_Coroutine;
         #endif
 
         // Use this for initialization
@@ -129,12 +123,11 @@ namespace DlibFaceLandmarkDetectorExample
 
             dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var getFilePath_Coroutine = GetFilePath ();
-            coroutines.Push (getFilePath_Coroutine);
+            getFilePath_Coroutine = GetFilePath ();
             StartCoroutine (getFilePath_Coroutine);
             #else
-            haarcascade_frontalface_alt_xml_filepath = OpenCVForUnity.Utils.getFilePath ("haarcascade_frontalface_alt.xml");
-            dlibShapePredictorFilePath = DlibFaceLandmarkDetector.Utils.getFilePath (dlibShapePredictorFileName);
+            haarcascade_frontalface_alt_xml_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath ("haarcascade_frontalface_alt.xml");
+            dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath (dlibShapePredictorFileName);
             Run ();
             #endif
         }
@@ -142,19 +135,17 @@ namespace DlibFaceLandmarkDetectorExample
         #if UNITY_WEBGL && !UNITY_EDITOR
         private IEnumerator GetFilePath ()
         {
-            var getFilePathAsync_0_Coroutine = OpenCVForUnity.Utils.getFilePathAsync ("haarcascade_frontalface_alt.xml", (result) => {
+            var getFilePathAsync_0_Coroutine = OpenCVForUnity.UnityUtils.Utils.getFilePathAsync ("haarcascade_frontalface_alt.xml", (result) => {
                 haarcascade_frontalface_alt_xml_filepath = result;
             });
-            coroutines.Push (getFilePathAsync_0_Coroutine);
-            yield return StartCoroutine (getFilePathAsync_0_Coroutine);
+            yield return getFilePathAsync_0_Coroutine;
 
-            var getFilePathAsync_1_Coroutine = DlibFaceLandmarkDetector.Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
+            var getFilePathAsync_1_Coroutine = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
                 dlibShapePredictorFilePath = result;
             });
-            coroutines.Push (getFilePathAsync_1_Coroutine);
-            yield return StartCoroutine (getFilePathAsync_1_Coroutine);
+            yield return getFilePathAsync_1_Coroutine;
 
-            coroutines.Clear ();
+            getFilePath_Coroutine = null;
 
             Run ();
         }
@@ -171,19 +162,10 @@ namespace DlibFaceLandmarkDetectorExample
             faceLandmarkDetector = new FaceLandmarkDetector (dlibShapePredictorFilePath);
 
             #if UNITY_ANDROID && !UNITY_EDITOR
-            // Set the requestedFPS parameter to avoid the problem of the WebCamTexture image becoming low light on some Android devices. (Pixel, pixel 2)
-            // https://forum.unity.com/threads/android-webcamtexture-in-low-light-only-some-models.520656/
-            // https://forum.unity.com/threads/released-opencv-for-unity.277080/page-33#post-3445178
-            rearCameraRequestedFPS = webCamTextureToMatHelper.requestedFPS;
-            if (webCamTextureToMatHelper.requestedIsFrontFacing) {                
-                webCamTextureToMatHelper.requestedFPS = 15;
-                webCamTextureToMatHelper.Initialize ();
-            } else {
-                webCamTextureToMatHelper.Initialize ();
-            }
-            #else
-            webCamTextureToMatHelper.Initialize ();
+            // Avoids the front camera low light issue that occurs in only some Android devices (e.g. Google Pixel, Pixel2).
+            webCamTextureToMatHelper.avoidAndroidFrontCameraLowLightIssue = true;
             #endif
+            webCamTextureToMatHelper.Initialize ();
         }
 
         /// <summary>
@@ -203,15 +185,15 @@ namespace DlibFaceLandmarkDetectorExample
             gameObject.transform.localScale = new Vector3 (webCamTextureMat.cols (), webCamTextureMat.rows (), 1);
             Debug.Log ("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
 
-            if (fpsMonitor != null){
+            if (fpsMonitor != null) {
                 fpsMonitor.Add ("dlib shape predictor", dlibShapePredictorFileName);
-                fpsMonitor.Add ("original_width", webCamTextureToMatHelper.GetWidth().ToString());
-                fpsMonitor.Add ("original_height", webCamTextureToMatHelper.GetHeight().ToString());
-                fpsMonitor.Add ("downscaleRaito", imageOptimizationHelper.downscaleRatio.ToString());
-                fpsMonitor.Add ("frameSkippingRatio", imageOptimizationHelper.frameSkippingRatio.ToString());
-                fpsMonitor.Add ("downscale_width", downscaleMat.width().ToString());
-                fpsMonitor.Add ("downscale_height", downscaleMat.height().ToString());
-                fpsMonitor.Add ("orientation", Screen.orientation.ToString());
+                fpsMonitor.Add ("original_width", webCamTextureToMatHelper.GetWidth ().ToString ());
+                fpsMonitor.Add ("original_height", webCamTextureToMatHelper.GetHeight ().ToString ());
+                fpsMonitor.Add ("downscaleRaito", imageOptimizationHelper.downscaleRatio.ToString ());
+                fpsMonitor.Add ("frameSkippingRatio", imageOptimizationHelper.frameSkippingRatio.ToString ());
+                fpsMonitor.Add ("downscale_width", downscaleMat.width ().ToString ());
+                fpsMonitor.Add ("downscale_height", downscaleMat.height ().ToString ());
+                fpsMonitor.Add ("orientation", Screen.orientation.ToString ());
             }
 
                                     
@@ -244,7 +226,7 @@ namespace DlibFaceLandmarkDetectorExample
                 grayMat = null;
             }
             if (texture != null) {
-                Texture2D.Destroy(texture);
+                Texture2D.Destroy (texture);
                 texture = null;
             }
         }
@@ -289,9 +271,9 @@ namespace DlibFaceLandmarkDetectorExample
                         using (MatOfRect faces = new MatOfRect ()) {
                             Imgproc.equalizeHist (grayMat, equalizeHistMat);
 
-                            cascade.detectMultiScale (equalizeHistMat, faces, 1.1f, 2, 0 | Objdetect.CASCADE_SCALE_IMAGE, new OpenCVForUnity.Size (equalizeHistMat.cols () * 0.15, equalizeHistMat.cols () * 0.15), new Size ());
+                            cascade.detectMultiScale (equalizeHistMat, faces, 1.1f, 2, 0 | Objdetect.CASCADE_SCALE_IMAGE, new Size (equalizeHistMat.cols () * 0.15, equalizeHistMat.cols () * 0.15), new Size ());
 
-                            List<OpenCVForUnity.Rect> opencvDetectResult = faces.toList ();
+                            List<OpenCVForUnity.CoreModule.Rect> opencvDetectResult = faces.toList ();
 
                             // correct the deviation of the detection result of the face rectangle of OpenCV and Dlib.
                             detectionResult.Clear ();
@@ -326,9 +308,9 @@ namespace DlibFaceLandmarkDetectorExample
                     OpenCVForUnityUtils.DrawFaceRect (rgbaMat, originalRect, new Scalar (255, 0, 0, 255), 2);
                 }
 
-                //Imgproc.putText (rgbaMat, "Original:(" + rgbaMat.width () + "," + rgbaMat.height () + ") DownScale:(" + downScaleRgbaMat.width () + "," + downScaleRgbaMat.height () + ") FrameSkipping: " + imageOptimizationHelper.frameSkippingRatio, new Point (5, rgbaMat.rows () - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar (255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
+                //Imgproc.putText (rgbaMat, "Original:(" + rgbaMat.width () + "," + rgbaMat.height () + ") DownScale:(" + downScaleRgbaMat.width () + "," + downScaleRgbaMat.height () + ") FrameSkipping: " + imageOptimizationHelper.frameSkippingRatio, new Point (5, rgbaMat.rows () - 10), Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar (255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
 
-                OpenCVForUnity.Utils.fastMatToTexture2D (rgbaMat, texture);
+                OpenCVForUnity.UnityUtils.Utils.fastMatToTexture2D (rgbaMat, texture);
             }
         }
 
@@ -350,9 +332,9 @@ namespace DlibFaceLandmarkDetectorExample
                 cascade.Dispose ();
 
             #if UNITY_WEBGL && !UNITY_EDITOR
-            foreach (var coroutine in coroutines) {
-                StopCoroutine (coroutine);
-                ((IDisposable)coroutine).Dispose ();
+            if (getFilePath_Coroutine != null) {
+                StopCoroutine (getFilePath_Coroutine);
+                ((IDisposable)getFilePath_Coroutine).Dispose ();
             }
             #endif
         }
@@ -362,11 +344,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         public void OnBackButtonClick ()
         {
-            #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");
-            #else
-            Application.LoadLevel ("DlibFaceLandmarkDetectorExample");
-            #endif
         }
 
         /// <summary>
@@ -398,16 +376,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         public void OnChangeCameraButtonClick ()
         {
-            #if UNITY_ANDROID && !UNITY_EDITOR
-            if (!webCamTextureToMatHelper.IsFrontFacing ()) {
-                rearCameraRequestedFPS = webCamTextureToMatHelper.requestedFPS;
-                webCamTextureToMatHelper.Initialize (!webCamTextureToMatHelper.IsFrontFacing (), 15, webCamTextureToMatHelper.rotate90Degree);
-            } else {                
-                webCamTextureToMatHelper.Initialize (!webCamTextureToMatHelper.IsFrontFacing (), rearCameraRequestedFPS, webCamTextureToMatHelper.rotate90Degree);
-            }
-            #else
             webCamTextureToMatHelper.requestedIsFrontFacing = !webCamTextureToMatHelper.IsFrontFacing ();
-            #endif
         }
 
         /// <summary>

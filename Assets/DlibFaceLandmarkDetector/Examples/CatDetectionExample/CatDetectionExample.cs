@@ -1,11 +1,9 @@
-using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
-
-#if UNITY_5_3 || UNITY_5_3_OR_NEWER
+using UnityEngine;
 using UnityEngine.SceneManagement;
-#endif
+using DlibFaceLandmarkDetector.UnityUtils;
 using DlibFaceLandmarkDetector;
 
 namespace DlibFaceLandmarkDetectorExample
@@ -37,7 +35,7 @@ namespace DlibFaceLandmarkDetectorExample
         string sp_cat_face_68_dat_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
+        IEnumerator getFilePath_Coroutine;
         #endif
 
         // Use this for initialization
@@ -46,8 +44,7 @@ namespace DlibFaceLandmarkDetectorExample
             fpsMonitor = GetComponent<FpsMonitor> ();
 
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var getFilePath_Coroutine = GetFilePath ();
-            coroutines.Push (getFilePath_Coroutine);
+            getFilePath_Coroutine = GetFilePath ();
             StartCoroutine (getFilePath_Coroutine);
             #else
             frontal_cat_face_svm_filepath = Utils.getFilePath ("frontal_cat_face.svm");
@@ -62,16 +59,14 @@ namespace DlibFaceLandmarkDetectorExample
             var getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine = Utils.getFilePathAsync ("frontal_cat_face.svm", (result) => {
                 frontal_cat_face_svm_filepath = result;
             });
-            coroutines.Push (getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine);
-            yield return StartCoroutine (getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine);
+            yield return getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine;
 
-        var getFilePathAsync_sp_cat_face_68_dat_filepath_Coroutine = Utils.getFilePathAsync ("sp_cat_face_68.dat", (result) => {
+            var getFilePathAsync_sp_cat_face_68_dat_filepath_Coroutine = Utils.getFilePathAsync ("sp_cat_face_68.dat", (result) => {
                 sp_cat_face_68_dat_filepath = result;
             });
-            coroutines.Push (getFilePathAsync_sp_cat_face_68_dat_filepath_Coroutine);
-            yield return StartCoroutine (getFilePathAsync_sp_cat_face_68_dat_filepath_Coroutine);
+            yield return getFilePathAsync_sp_cat_face_68_dat_filepath_Coroutine;
 
-            coroutines.Clear ();
+            getFilePath_Coroutine = null;
 
             Run ();
         }
@@ -112,7 +107,6 @@ namespace DlibFaceLandmarkDetectorExample
 
                 //draw landmark points
                 faceLandmarkDetector.DrawDetectLandmarkResult (texture2D, 0, 255, 0, 255);
-
             }
 
             //draw face rects
@@ -122,12 +116,12 @@ namespace DlibFaceLandmarkDetectorExample
 
             gameObject.GetComponent<Renderer> ().material.mainTexture = texture2D;
 
-            if (fpsMonitor != null){
+            if (fpsMonitor != null) {
                 fpsMonitor.Add ("dlib object detector", "frontal_cat_face.svm");
                 fpsMonitor.Add ("dlib shape predictor", "sp_cat_face_68.dat");
-                fpsMonitor.Add ("width", width.ToString());
-                fpsMonitor.Add ("height", height.ToString());
-                fpsMonitor.Add ("orientation", Screen.orientation.ToString());
+                fpsMonitor.Add ("width", width.ToString ());
+                fpsMonitor.Add ("height", height.ToString ());
+                fpsMonitor.Add ("orientation", Screen.orientation.ToString ());
             }
         }
 
@@ -143,9 +137,9 @@ namespace DlibFaceLandmarkDetectorExample
         void OnDestroy ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            foreach (var coroutine in coroutines) {
-                StopCoroutine (coroutine);
-                ((IDisposable)coroutine).Dispose ();
+            if (getFilePath_Coroutine != null) {
+                StopCoroutine (getFilePath_Coroutine);
+                ((IDisposable)getFilePath_Coroutine).Dispose ();
             }
             #endif
         }
@@ -155,11 +149,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         public void OnBackButtonClick ()
         {
-            #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");
-            #else
-            Application.LoadLevel ("DlibFaceLandmarkDetectorExample");
-            #endif
         }
     }
 }

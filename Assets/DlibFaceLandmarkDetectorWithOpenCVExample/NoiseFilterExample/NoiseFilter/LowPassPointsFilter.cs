@@ -1,13 +1,14 @@
-﻿using OpenCVForUnity;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+using OpenCVForUnity.CoreModule;
+using OpenCVForUnity.ImgprocModule;
 
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
     /// Low Pass Points Filter.
-    /// v 1.0.1
+    /// v 1.0.2
     /// </summary>
     public class LowPassPointsFilter : PointsFilterBase
     {
@@ -89,7 +90,7 @@ namespace DlibFaceLandmarkDetectorExample
         {
             flag = false;
             for (int i = 0; i < lastPoints.Count; i++) {
-                lastPoints[i] = new Vector2 ();
+                lastPoints [i] = new Vector2 ();
             }
         }
 

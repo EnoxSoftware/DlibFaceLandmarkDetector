@@ -1,11 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
-
-#if UNITY_5_3 || UNITY_5_3_OR_NEWER
+using UnityEngine;
 using UnityEngine.SceneManagement;
-#endif
+using DlibFaceLandmarkDetector.UnityUtils;
 using DlibFaceLandmarkDetector;
 
 namespace DlibFaceLandmarkDetectorExample
@@ -37,7 +35,7 @@ namespace DlibFaceLandmarkDetectorExample
         string dlibShapePredictorFilePath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        Stack<IEnumerator> coroutines = new Stack<IEnumerator> ();
+        IEnumerator getFilePath_Coroutine;
         #endif
 
         // Use this for initialization
@@ -47,13 +45,12 @@ namespace DlibFaceLandmarkDetectorExample
 
             dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
             #if UNITY_WEBGL && !UNITY_EDITOR
-            var getFilePath_Coroutine = Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
-                coroutines.Clear ();
+            getFilePath_Coroutine = Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
+                getFilePath_Coroutine = null;
 
-            dlibShapePredictorFilePath = result;
+                dlibShapePredictorFilePath = result;
                 Run ();
             });
-            coroutines.Push (getFilePath_Coroutine);
             StartCoroutine (getFilePath_Coroutine);
             #else
             dlibShapePredictorFilePath = Utils.getFilePath (dlibShapePredictorFileName);
@@ -133,9 +130,9 @@ namespace DlibFaceLandmarkDetectorExample
         void OnDisable ()
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
-            foreach (var coroutine in coroutines) {
-                StopCoroutine (coroutine);
-                ((IDisposable)coroutine).Dispose ();
+            if (getFilePath_Coroutine != null) {
+                StopCoroutine (getFilePath_Coroutine);
+                ((IDisposable)getFilePath_Coroutine).Dispose ();
             }
             #endif
         }
@@ -145,11 +142,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         public void OnBackButtonClick ()
         {
-            #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");
-            #else
-            Application.LoadLevel ("DlibFaceLandmarkDetectorExample");
-            #endif
         }
     }
 }

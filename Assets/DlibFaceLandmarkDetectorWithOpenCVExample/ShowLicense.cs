@@ -1,9 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
-
-#if UNITY_5_3 || UNITY_5_3_OR_NEWER
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-#endif
 
 namespace DlibFaceLandmarkDetectorExample
 {
@@ -26,11 +23,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         public void OnBackButtonClick ()
         {
-            #if UNITY_5_3 || UNITY_5_3_OR_NEWER
             SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");
-            #else
-            Application.LoadLevel ("DlibFaceLandmarkDetectorExample");
-            #endif
         }
     }
 }

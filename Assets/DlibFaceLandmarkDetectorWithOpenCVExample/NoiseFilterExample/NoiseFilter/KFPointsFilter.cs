@@ -1,13 +1,15 @@
-﻿using OpenCVForUnity;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+using OpenCVForUnity.CoreModule;
+using OpenCVForUnity.VideoModule;
+using OpenCVForUnity.ImgprocModule;
 
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
     /// Kalman Filter Points Filter.
-    /// v 1.0.2
+    /// v 1.0.3
     /// </summary>
     public class KFPointsFilter : PointsFilterBase
     {
@@ -80,7 +82,7 @@ namespace DlibFaceLandmarkDetectorExample
 
                 // clac diffDlib
                 prevTrackPtsMat.fromList (src_points);
-                OpenCVForUnity.Rect rect = Imgproc.boundingRect (prevTrackPtsMat);
+                OpenCVForUnity.CoreModule.Rect rect = Imgproc.boundingRect (prevTrackPtsMat);
                 double diffDlib = this.diffDlib * rect.area () / 40000.0 * diffCheckSensitivity;
 
                 // if the face is moving so fast, use dlib to detect the face
@@ -174,8 +176,8 @@ namespace DlibFaceLandmarkDetectorExample
 
             // Reset Kalman Filter
             for (int i = 0; i < numberOfElements; i++) {
-                predict_points[i].x = 0.0;
-                predict_points[i].y = 0.0;
+                predict_points [i].x = 0.0;
+                predict_points [i].y = 0.0;
             }
         }
 

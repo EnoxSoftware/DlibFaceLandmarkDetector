@@ -74,6 +74,16 @@ namespace DlibFaceLandmarkDetectorExample
 
         private void Run ()
         {
+            if (string.IsNullOrEmpty (frontal_cat_face_svm_filepath)) {
+                Debug.LogError ("object detecter file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+            }
+            if (string.IsNullOrEmpty (sp_cat_face_68_dat_filepath)) {
+                Debug.LogError ("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+            }
+
+            Texture2D dstTexture2D = new Texture2D (texture2D.width, texture2D.height, texture2D.format, false);
+            Graphics.CopyTexture (texture2D, dstTexture2D);
+
             gameObject.transform.localScale = new Vector3 (texture2D.width, texture2D.height, 1);
             Debug.Log ("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
             
@@ -106,15 +116,15 @@ namespace DlibFaceLandmarkDetectorExample
                 }
 
                 //draw landmark points
-                faceLandmarkDetector.DrawDetectLandmarkResult (texture2D, 0, 255, 0, 255);
+                faceLandmarkDetector.DrawDetectLandmarkResult (dstTexture2D, 0, 255, 0, 255);
             }
 
             //draw face rects
-            faceLandmarkDetector.DrawDetectResult (texture2D, 255, 0, 0, 255, 3);
+            faceLandmarkDetector.DrawDetectResult (dstTexture2D, 255, 0, 0, 255, 3);
 
             faceLandmarkDetector.Dispose ();
 
-            gameObject.GetComponent<Renderer> ().material.mainTexture = texture2D;
+            gameObject.GetComponent<Renderer> ().material.mainTexture = dstTexture2D;
 
             if (fpsMonitor != null) {
                 fpsMonitor.Add ("dlib object detector", "frontal_cat_face.svm");

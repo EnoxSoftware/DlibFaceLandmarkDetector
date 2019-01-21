@@ -72,7 +72,7 @@ namespace DlibFaceLandmarkDetectorExample
             StartCoroutine (getFilePath_Coroutine);
             #else
             dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath (dlibShapePredictorFileName);
-            couple_avi_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath ("couple.avi");
+            couple_avi_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath ("couple_mjpeg.mjpeg");
             Run ();
             #endif
         }
@@ -98,6 +98,10 @@ namespace DlibFaceLandmarkDetectorExample
         
         private void Run ()
         {
+            if (string.IsNullOrEmpty (dlibShapePredictorFilePath)) {
+                Debug.LogError ("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+            }
+
             faceLandmarkDetector = new FaceLandmarkDetector (dlibShapePredictorFilePath);
             
             rgbMat = new Mat ();
@@ -105,10 +109,8 @@ namespace DlibFaceLandmarkDetectorExample
             capture = new VideoCapture ();
             capture.open (couple_avi_filepath);
             
-            if (capture.isOpened ()) {
-                Debug.Log ("capture.isOpened() true");
-            } else {
-                Debug.Log ("capture.isOpened() false");
+            if (!capture.isOpened ()) {
+                Debug.LogError ("capture.isOpened() is false. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
             }
 
 
@@ -120,6 +122,8 @@ namespace DlibFaceLandmarkDetectorExample
             Debug.Log ("CAP_PROP_FPS: " + capture.get (Videoio.CAP_PROP_FPS));
             Debug.Log ("CAP_PROP_FRAME_WIDTH: " + capture.get (Videoio.CAP_PROP_FRAME_WIDTH));
             Debug.Log ("CAP_PROP_FRAME_HEIGHT: " + capture.get (Videoio.CAP_PROP_FRAME_HEIGHT));
+            double ext = capture.get (Videoio.CAP_PROP_FOURCC);
+            Debug.Log ("CAP_PROP_FOURCC: " + (char)((int)ext & 0XFF) + (char)(((int)ext & 0XFF00) >> 8) + (char)(((int)ext & 0XFF0000) >> 16) + (char)(((int)ext & 0XFF000000) >> 24));
 
             capture.grab ();
             capture.retrieve (rgbMat, 0);

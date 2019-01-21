@@ -133,6 +133,10 @@ namespace DlibFaceLandmarkDetectorExample
 
         private void Run ()
         {
+            if (string.IsNullOrEmpty (dlibShapePredictorFilePath)) {
+                Debug.LogError ("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+            }
+
             faceLandmarkDetector = new FaceLandmarkDetector (dlibShapePredictorFilePath);
 
             lowPassFilter = new LowPassPointsFilter ((int)faceLandmarkDetector.GetShapePredictorNumParts ());

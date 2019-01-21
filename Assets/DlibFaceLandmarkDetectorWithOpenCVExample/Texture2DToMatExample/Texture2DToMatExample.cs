@@ -60,6 +60,10 @@ namespace DlibFaceLandmarkDetectorExample
 
         private void Run ()
         {
+            if (string.IsNullOrEmpty (dlibShapePredictorFilePath)) {
+                Debug.LogError ("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+            }
+
             Mat imgMat = new Mat (imgTexture.height, imgTexture.width, CvType.CV_8UC4);
 
             // Convert Unity Texture2D to OpenCV Mat.

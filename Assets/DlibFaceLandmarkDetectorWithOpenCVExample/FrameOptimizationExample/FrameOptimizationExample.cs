@@ -14,7 +14,7 @@ namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
     /// Frame Optimization Example
-    /// An example of frame resizing and skipping using the OptimizationWebCamTextureToMatHelper.
+    /// An example of frame downscaling and skipping using the OptimizationWebCamTextureToMatHelper.
     /// http://www.learnopencv.com/speeding-up-dlib-facial-landmark-detector/
     /// </summary>
     [RequireComponent (typeof(WebCamTextureToMatHelper), typeof(ImageOptimizationHelper))]
@@ -153,11 +153,16 @@ namespace DlibFaceLandmarkDetectorExample
 
         private void Run ()
         {
-            cascade = new CascadeClassifier (haarcascade_frontalface_alt_xml_filepath);
-            //            if (cascade.empty ()) {
-            //                Debug.LogError ("cascade file is not loaded.Please copy from “FaceTrackerExample/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
-            //            }
+            if (string.IsNullOrEmpty (dlibShapePredictorFilePath)) {
+                Debug.LogError ("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+            }
 
+            cascade = new CascadeClassifier (haarcascade_frontalface_alt_xml_filepath);
+            #if !UNITY_WSA_10_0
+            if (cascade.empty ()) {
+                Debug.LogError ("cascade file is not loaded. Please copy from “OpenCVForUnity/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+            }
+            #endif
 
             faceLandmarkDetector = new FaceLandmarkDetector (dlibShapePredictorFilePath);
 
@@ -256,11 +261,11 @@ namespace DlibFaceLandmarkDetectorExample
                     downScaleRgbaMat = rgbaMat;
                     DOWNSCALE_RATIO = 1.0f;
                 }
-
-
+                    
+                // set the downscale mat
                 OpenCVForUnityUtils.SetImage (faceLandmarkDetector, downScaleRgbaMat);
 
-                // Detect faces on resize image
+                // detect faces on the downscale image
                 if (!enableSkipFrame || !imageOptimizationHelper.IsCurrentFrameSkipped ()) {
                     //detect face rects
                     if (useOpenCVFaceDetector) {
@@ -281,31 +286,36 @@ namespace DlibFaceLandmarkDetectorExample
                                 detectionResult.Add (new UnityEngine.Rect ((float)opencvRect.x, (float)opencvRect.y + (float)(opencvRect.height * 0.1f), (float)opencvRect.width, (float)opencvRect.height));
                             }
                         }
-                            
+
                     } else {
-
+                        // Dlib's face detection processing time increases in proportion to the image size.
                         detectionResult = faceLandmarkDetector.Detect ();
+                    }
 
+                    if (enableDownScale) {
+                        for (int i = 0; i < detectionResult.Count; ++i) {
+                            var rect = detectionResult [i];
+                            detectionResult [i] = new UnityEngine.Rect (
+                                rect.x * DOWNSCALE_RATIO, 
+                                rect.y * DOWNSCALE_RATIO, 
+                                rect.width * DOWNSCALE_RATIO, 
+                                rect.height * DOWNSCALE_RATIO); 
+                        }
                     }
                 }
 
-                
+                // set the original scale image
+                OpenCVForUnityUtils.SetImage (faceLandmarkDetector, rgbaMat);
+                // detect face landmarks on the original image
                 foreach (var rect in detectionResult) {
 
                     //detect landmark points
                     List<Vector2> points = faceLandmarkDetector.DetectLandmark (rect);
 
-                    List<Vector2> originalPoints = new List<Vector2> (points.Count);
-                    foreach (var point in points) {
-                        originalPoints.Add (new Vector2 (point.x * DOWNSCALE_RATIO, point.y * DOWNSCALE_RATIO));
-                    }
-
                     //draw landmark points
-                    OpenCVForUnityUtils.DrawFaceLandmark (rgbaMat, originalPoints, new Scalar (0, 255, 0, 255), 2);
-
-                    UnityEngine.Rect originalRect = new UnityEngine.Rect (rect.x * DOWNSCALE_RATIO, rect.y * DOWNSCALE_RATIO, rect.width * DOWNSCALE_RATIO, rect.height * DOWNSCALE_RATIO);
+                    OpenCVForUnityUtils.DrawFaceLandmark (rgbaMat, points, new Scalar (0, 255, 0, 255), 2);
                     //draw face rect
-                    OpenCVForUnityUtils.DrawFaceRect (rgbaMat, originalRect, new Scalar (255, 0, 0, 255), 2);
+                    OpenCVForUnityUtils.DrawFaceRect (rgbaMat, rect, new Scalar (255, 0, 0, 255), 2);
                 }
 
                 //Imgproc.putText (rgbaMat, "Original:(" + rgbaMat.width () + "," + rgbaMat.height () + ") DownScale:(" + downScaleRgbaMat.width () + "," + downScaleRgbaMat.height () + ") FrameSkipping: " + imageOptimizationHelper.frameSkippingRatio, new Point (5, rgbaMat.rows () - 10), Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar (255, 255, 255, 255), 2, Imgproc.LINE_AA, false);

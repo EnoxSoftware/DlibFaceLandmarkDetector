@@ -17,7 +17,9 @@ namespace DlibFaceLandmarkDetectorExample
         {
             sp_human_face_68,
             sp_human_face_68_for_mobile,
-            shape_predictor_5_face_landmarks,
+            sp_human_face_17,
+            sp_human_face_17_for_mobile,
+            sp_human_face_6,
         }
 
         public Dropdown dlibShapePredictorNameDropdown;
@@ -101,6 +103,11 @@ namespace DlibFaceLandmarkDetectorExample
         public void OnCatDetectionExampleButtonClick ()
         {
             SceneManager.LoadScene ("CatDetectionExample");
+        }
+
+        public void OnBenchmarkExampleButtonClick ()
+        {
+            SceneManager.LoadScene ("BenchmarkExample");
         }
 
 

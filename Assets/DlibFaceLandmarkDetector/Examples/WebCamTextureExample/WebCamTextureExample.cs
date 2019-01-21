@@ -159,6 +159,10 @@ namespace DlibFaceLandmarkDetectorExample
 
         private void Run ()
         {
+            if (string.IsNullOrEmpty (dlibShapePredictorFilePath)) {
+                Debug.LogError ("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+            }
+
             faceLandmarkDetector = new FaceLandmarkDetector (dlibShapePredictorFilePath);
     
             Initialize ();
@@ -362,13 +366,13 @@ namespace DlibFaceLandmarkDetectorExample
                 }
             }
 
-           
+
             if (hasInitDone && webCamTexture.isPlaying && webCamTexture.didUpdateThisFrame) {
 
                 Color32[] colors = GetColors ();
 
                 if (colors != null) {
-
+                    
                     faceLandmarkDetector.SetImage<Color32> (colors, texture.width, texture.height, 4, true);
 
                     //detect face rects
@@ -386,7 +390,7 @@ namespace DlibFaceLandmarkDetectorExample
 
                     //draw face rect
                     faceLandmarkDetector.DrawDetectResult<Color32> (colors, texture.width, texture.height, 4, true, 255, 0, 0, 255, 2);
-                    
+
                     texture.SetPixels32 (colors);
                     texture.Apply (false);
                 }

@@ -74,6 +74,10 @@ namespace DlibFaceLandmarkDetectorExample
 
         private void Run ()
         {
+            if (string.IsNullOrEmpty (dlibShapePredictorFilePath)) {
+                Debug.LogError ("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+            }
+
             faceLandmarkDetector = new FaceLandmarkDetector (dlibShapePredictorFilePath);
 
             #if UNITY_ANDROID && !UNITY_EDITOR

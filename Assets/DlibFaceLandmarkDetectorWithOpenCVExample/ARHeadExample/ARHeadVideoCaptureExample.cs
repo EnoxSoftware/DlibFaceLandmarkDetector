@@ -175,6 +175,16 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// The 3d face object points.
         /// </summary>
+        MatOfPoint3f objectPoints17;
+
+        /// <summary>
+        /// The 3d face object points.
+        /// </summary>
+        MatOfPoint3f objectPoints6;
+
+        /// <summary>
+        /// The 3d face object points.
+        /// </summary>
         MatOfPoint3f objectPoints5;
         
         /// <summary>
@@ -253,7 +263,7 @@ namespace DlibFaceLandmarkDetectorExample
             StartCoroutine (getFilePath_Coroutine);
             #else
             dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath (dlibShapePredictorFileName);
-            dance_avi_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath ("dance.avi");
+            dance_avi_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath ("dance_mjpeg.mjpeg");
             Run ();
             #endif
         }
@@ -279,23 +289,44 @@ namespace DlibFaceLandmarkDetectorExample
         
         private void Run ()
         {
+            if (string.IsNullOrEmpty (dlibShapePredictorFilePath)) {
+                Debug.LogError ("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+            }
+
             //set 3d face object points.
             objectPoints68 = new MatOfPoint3f (
                 new Point3 (-34, 90, 83),//l eye (Interpupillary breadth)
                 new Point3 (34, 90, 83),//r eye (Interpupillary breadth)
-                new Point3 (0.0, 50, 120),//nose (Nose top)
-                new Point3 (-26, 15, 83),//l mouse (Mouth breadth)
-                new Point3 (26, 15, 83),//r mouse (Mouth breadth)
-                new Point3 (-79, 90, 0.0),//l ear (Bitragion breadth)
-                new Point3 (79, 90, 0.0)//r ear (Bitragion breadth)
+                new Point3 (0.0, 50, 117),//nose (Tip)
+                new Point3 (0.0, 32, 97),//nose (Subnasale)
+                new Point3 (-79, 90, 10),//l ear (Bitragion breadth)
+                new Point3 (79, 90, 10)//r ear (Bitragion breadth)
             );
+
+            objectPoints17 = new MatOfPoint3f (
+                new Point3 (-34, 90, 83),//l eye (Interpupillary breadth)
+                new Point3 (34, 90, 83),//r eye (Interpupillary breadth)
+                new Point3 (0.0, 50, 117),//nose (Tip)
+                new Point3 (0.0, 32, 97),//nose (Subnasale)
+                new Point3 (-79, 90, 10),//l ear (Bitragion breadth)
+                new Point3 (79, 90, 10)//r ear (Bitragion breadth)
+            );
+
+            objectPoints6 = new MatOfPoint3f (
+                new Point3 (-34, 90, 83),//l eye (Interpupillary breadth)
+                new Point3 (34, 90, 83),//r eye (Interpupillary breadth)
+                new Point3 (0.0, 50, 117),//nose (Tip)
+                new Point3 (0.0, 32, 97)//nose (Subnasale)
+            );
+
             objectPoints5 = new MatOfPoint3f (
                 new Point3 (-23, 90, 83),//l eye (Inner corner of the eye)
                 new Point3 (23, 90, 83),//r eye (Inner corner of the eye)
                 new Point3 (-50, 90, 80),//l eye (Tail of the eye)
                 new Point3 (50, 90, 80),//r eye (Tail of the eye)
-                new Point3 (0.0, 50, 120)//nose (Nose top)
+                new Point3 (0.0, 32, 97)//nose (Subnasale)
             );
+
             imagePoints = new MatOfPoint2f ();
             
             faceLandmarkDetector = new FaceLandmarkDetector (dlibShapePredictorFilePath);
@@ -304,11 +335,9 @@ namespace DlibFaceLandmarkDetectorExample
             
             capture = new VideoCapture ();
             capture.open (dance_avi_filepath);
-            
-            if (capture.isOpened ()) {
-                Debug.Log ("capture.isOpened() true");
-            } else {
-                Debug.Log ("capture.isOpened() false");
+
+            if (!capture.isOpened ()) {
+                Debug.LogError ("capture.isOpened() is false. Please copy from “OpenCVForUnity/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
             }
             
             
@@ -474,13 +503,11 @@ namespace DlibFaceLandmarkDetectorExample
                         imagePoints.fromArray (
                             new Point ((points [38].x + points [41].x) / 2, (points [38].y + points [41].y) / 2),//l eye (Interpupillary breadth)
                             new Point ((points [43].x + points [46].x) / 2, (points [43].y + points [46].y) / 2),//r eye (Interpupillary breadth)
-                            new Point (points [30].x, points [30].y),//nose (Nose top)
-                            new Point (points [48].x, points [48].y),//l mouth (Mouth breadth)
-                            new Point (points [54].x, points [54].y), //r mouth (Mouth breadth)
+                            new Point (points [30].x, points [30].y),//nose (Tip)
+                            new Point (points [33].x, points [33].y),//nose (Subnasale)
                             new Point (points [0].x, points [0].y),//l ear (Bitragion breadth)
                             new Point (points [16].x, points [16].y)//r ear (Bitragion breadth)
                         );
-
 
                         if (Mathf.Abs ((float)(points [43].y - points [46].y)) > Mathf.Abs ((float)(points [42].x - points [45].x)) / 5.0) {
                             isRightEyeOpen = true;
@@ -497,6 +524,46 @@ namespace DlibFaceLandmarkDetectorExample
                         } else {
                             isMouthOpen = false;
                         }
+
+                    } else if (points.Count == 17) {
+
+                        objectPoints = objectPoints17;
+
+                        imagePoints.fromArray (
+                            new Point ((points [2].x + points [3].x) / 2, (points [2].y + points [3].y) / 2),//l eye (Interpupillary breadth)
+                            new Point ((points [4].x + points [5].x) / 2, (points [4].y + points [5].y) / 2),//r eye (Interpupillary breadth)
+                            new Point (points [0].x, points [0].y),//nose (Tip)
+                            new Point (points [1].x, points [1].y),//nose (Subnasale)
+                            new Point (points [6].x, points [6].y),//l ear (Bitragion breadth)
+                            new Point (points [8].x, points [8].y)//r ear (Bitragion breadth)
+                        );
+
+                        if (Mathf.Abs ((float)(points [11].y - points [12].y)) > Mathf.Abs ((float)(points [4].x - points [5].x)) / 5.0) {
+                            isRightEyeOpen = true;
+                        }
+
+                        if (Mathf.Abs ((float)(points [9].y - points [10].y)) > Mathf.Abs ((float)(points [2].x - points [3].x)) / 5.0) {
+                            isLeftEyeOpen = true;
+                        }
+
+                        float noseDistance = Mathf.Abs ((float)(points [3].y - points [1].y));
+                        float mouseDistance = Mathf.Abs ((float)(points [14].y - points [16].y));
+                        if (mouseDistance > noseDistance / 2.0) {
+                            isMouthOpen = true;
+                        } else {
+                            isMouthOpen = false;
+                        }
+
+                    } else if (points.Count == 6) {
+
+                        objectPoints = objectPoints6;
+
+                        imagePoints.fromArray (
+                            new Point ((points [2].x + points [3].x) / 2, (points [2].y + points [3].y) / 2),//l eye (Interpupillary breadth)
+                            new Point ((points [4].x + points [5].x) / 2, (points [4].y + points [5].y) / 2),//r eye (Interpupillary breadth)
+                            new Point (points [0].x, points [0].y),//nose (Tip)
+                            new Point (points [1].x, points [1].y)//nose (Subnasale)
+                        );
 
                     } else if (points.Count == 5) {
 
@@ -515,16 +582,25 @@ namespace DlibFaceLandmarkDetectorExample
                         }
                     }
 
-                    // Estimate head pose.
+                    // estimate head pose
                     if (rvec == null || tvec == null) {
                         rvec = new Mat (3, 1, CvType.CV_64FC1);
                         tvec = new Mat (3, 1, CvType.CV_64FC1);
                         Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec);
                     }
 
-                    double tvec_z = tvec.get (2, 0) [0];
+                    double tvec_x = tvec.get (0, 0) [0], tvec_y = tvec.get (1, 0) [0], tvec_z = tvec.get (2, 0) [0];
 
-                    if (double.IsNaN (tvec_z) || tvec_z < 0) { // if tvec is wrong data, do not use extrinsic guesses.
+                    bool isNotInViewport = false;
+                    Matrix4x4 VP = ARCamera.projectionMatrix * ARCamera.worldToCameraMatrix;
+                    Vector4 pos = VP * new Vector4 ((float)tvec_x, (float)tvec_y, (float)tvec_z, 1.0f);
+                    if (pos.w != 0) {
+                        float x = pos.x / pos.w, y = pos.y / pos.w, z = pos.z / pos.w;
+                        if (x < -1.0f || x > 1.0f || y < -1.0f || y > 1.0f || z < -1.0f || z > 1.0f)
+                            isNotInViewport = true;
+                    }
+
+                    if (double.IsNaN (tvec_z) || isNotInViewport) { // if tvec is wrong data, do not use extrinsic guesses. (the estimated object is not in the camera field of view)
                         Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec);
                     } else {
                         Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec, true, Calib3d.SOLVEPNP_ITERATIVE);

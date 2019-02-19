@@ -156,6 +156,11 @@ namespace DlibFaceLandmarkDetectorExample
         /// The matrix that inverts the Z-axis.
         /// </summary>
         Matrix4x4 invertZM;
+
+        /// <summary>
+        /// The matrix that AR camera P * V.
+        /// </summary>
+        Matrix4x4 VP;
         
         /// <summary>
         /// The transformation matrix.
@@ -236,11 +241,16 @@ namespace DlibFaceLandmarkDetectorExample
         /// The dlib shape predictor file path.
         /// </summary>
         string dlibShapePredictorFilePath;
+
+        /// <summary>
+        /// VIDEO_FILENAME
+        /// </summary>
+        protected static readonly string VIDEO_FILENAME = "dance_mjpeg.mjpeg";
         
         /// <summary>
-        /// The dance_avi_filepath.
+        /// video_filepath.
         /// </summary>
-        string dance_avi_filepath;
+        string video_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
         IEnumerator getFilePath_Coroutine;
@@ -263,7 +273,7 @@ namespace DlibFaceLandmarkDetectorExample
             StartCoroutine (getFilePath_Coroutine);
             #else
             dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath (dlibShapePredictorFileName);
-            dance_avi_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath ("dance_mjpeg.mjpeg");
+            video_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath (VIDEO_FILENAME);
             Run ();
             #endif
         }
@@ -276,8 +286,8 @@ namespace DlibFaceLandmarkDetectorExample
             });
             yield return getFilePathAsync_dlibShapePredictorFilePath_Coroutine;
 
-            var getFilePathAsync_dance_avi_filepath_Coroutine = OpenCVForUnity.UnityUtils.Utils.getFilePathAsync ("dance.avi", (result) => {
-                dance_avi_filepath = result;
+            var getFilePathAsync_dance_avi_filepath_Coroutine = OpenCVForUnity.UnityUtils.Utils.getFilePathAsync (VIDEO_FILENAME, (result) => {
+                video_filepath = result;
             });
             yield return getFilePathAsync_dance_avi_filepath_Coroutine;
 
@@ -334,7 +344,7 @@ namespace DlibFaceLandmarkDetectorExample
             rgbMat = new Mat ();
             
             capture = new VideoCapture ();
-            capture.open (dance_avi_filepath);
+            capture.open (video_filepath);
 
             if (!capture.isOpened ()) {
                 Debug.LogError ("capture.isOpened() is false. Please copy from “OpenCVForUnity/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
@@ -405,7 +415,11 @@ namespace DlibFaceLandmarkDetectorExample
             
             distCoeffs = new MatOfDouble (0, 0, 0, 0);
             Debug.Log ("distCoeffs " + distCoeffs.dump ());
-            
+
+            // create AR camera P * V Matrix
+            Matrix4x4 P = ARUtils.CalculateProjectionMatrixFromCameraMatrixValues ((float)fx, (float)fy, (float)cx, (float)cy, width, height, 0.3f, 2000f);
+            Matrix4x4 V = Matrix4x4.TRS (Vector3.zero, Quaternion.identity, new Vector3 (1, 1, -1));
+            VP = P * V;
             
             //calibration camera
             Size imageSize = new Size (width * imageSizeScale, height * imageSizeScale);
@@ -589,10 +603,10 @@ namespace DlibFaceLandmarkDetectorExample
                         Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec);
                     }
 
+
                     double tvec_x = tvec.get (0, 0) [0], tvec_y = tvec.get (1, 0) [0], tvec_z = tvec.get (2, 0) [0];
 
                     bool isNotInViewport = false;
-                    Matrix4x4 VP = ARCamera.projectionMatrix * ARCamera.worldToCameraMatrix;
                     Vector4 pos = VP * new Vector4 ((float)tvec_x, (float)tvec_y, (float)tvec_z, 1.0f);
                     if (pos.w != 0) {
                         float x = pos.x / pos.w, y = pos.y / pos.w, z = pos.z / pos.w;
@@ -605,10 +619,11 @@ namespace DlibFaceLandmarkDetectorExample
                     } else {
                         Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec, true, Calib3d.SOLVEPNP_ITERATIVE);
                     }
+
                     //Debug.Log (tvec.dump());
 
-                    if (!double.IsNaN (tvec_z)) {
-
+                    if (!isNotInViewport) {
+                        
                         // Display effects.
                         if (displayHead)
                             head.SetActive (true);

@@ -100,9 +100,14 @@ namespace DlibFaceLandmarkDetectorExample
         string dlibShapePredictorFilePath;
 
         /// <summary>
-        /// The dance_avi_filepath.
+        /// VIDEO_FILENAME
         /// </summary>
-        string dance_avi_filepath;
+        protected static readonly string VIDEO_FILENAME = "dance_mjpeg.mjpeg";
+
+        /// <summary>
+        /// The video_filepath.
+        /// </summary>
+        string video_filepath;
 
         /// <summary>
         /// The mean points filter.
@@ -154,7 +159,7 @@ namespace DlibFaceLandmarkDetectorExample
             StartCoroutine (getFilePath_Coroutine);
             #else
             dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath (dlibShapePredictorFileName);
-            dance_avi_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath ("dance_mjpeg.mjpeg");
+            video_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath (VIDEO_FILENAME);
             Run ();
             #endif
         }
@@ -167,8 +172,8 @@ namespace DlibFaceLandmarkDetectorExample
             });
             yield return getFilePathAsync_dlibShapePredictorFilePath_Coroutine;
 
-            var getFilePathAsync_dance_avi_filepath_Coroutine = OpenCVForUnity.UnityUtils.Utils.getFilePathAsync ("dance.avi", (result) => {
-                dance_avi_filepath = result;
+            var getFilePathAsync_dance_avi_filepath_Coroutine = OpenCVForUnity.UnityUtils.Utils.getFilePathAsync (VIDEO_FILENAME, (result) => {
+                video_filepath = result;
             });
             yield return getFilePathAsync_dance_avi_filepath_Coroutine;
 
@@ -193,7 +198,7 @@ namespace DlibFaceLandmarkDetectorExample
             rgbMat = new Mat ();
 
             capture = new VideoCapture ();
-            capture.open (dance_avi_filepath);
+            capture.open (video_filepath);
 
             if (!capture.isOpened ()) {
                 Debug.LogError ("capture.isOpened() is false. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");

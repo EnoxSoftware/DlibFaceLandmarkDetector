@@ -53,9 +53,14 @@ namespace DlibFaceLandmarkDetectorExample
         string dlibShapePredictorFilePath;
 
         /// <summary>
-        /// The couple_avi_filepath.
+        /// VIDEO_FILENAME
         /// </summary>
-        string couple_avi_filepath;
+        protected static readonly string VIDEO_FILENAME = "couple_mjpeg.mjpeg";
+
+        /// <summary>
+        /// The video_filepath.
+        /// </summary>
+        string video_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
         IEnumerator getFilePath_Coroutine;
@@ -72,7 +77,7 @@ namespace DlibFaceLandmarkDetectorExample
             StartCoroutine (getFilePath_Coroutine);
             #else
             dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath (dlibShapePredictorFileName);
-            couple_avi_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath ("couple_mjpeg.mjpeg");
+            video_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath (VIDEO_FILENAME);
             Run ();
             #endif
         }
@@ -85,8 +90,8 @@ namespace DlibFaceLandmarkDetectorExample
             });
             yield return getFilePathAsync_dlibShapePredictorFilePath_Coroutine;
 
-            var getFilePathAsync_couple_avi_filepath_Coroutine = OpenCVForUnity.UnityUtils.Utils.getFilePathAsync ("couple.avi", (result) => {
-                couple_avi_filepath = result;
+            var getFilePathAsync_couple_avi_filepath_Coroutine = OpenCVForUnity.UnityUtils.Utils.getFilePathAsync (VIDEO_FILENAME, (result) => {
+                video_filepath = result;
             });
             yield return getFilePathAsync_couple_avi_filepath_Coroutine;
 
@@ -107,7 +112,7 @@ namespace DlibFaceLandmarkDetectorExample
             rgbMat = new Mat ();
             
             capture = new VideoCapture ();
-            capture.open (couple_avi_filepath);
+            capture.open (video_filepath);
             
             if (!capture.isOpened ()) {
                 Debug.LogError ("capture.isOpened() is false. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");

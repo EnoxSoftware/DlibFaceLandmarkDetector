@@ -25,14 +25,24 @@ namespace DlibFaceLandmarkDetectorExample
         FpsMonitor fpsMonitor;
 
         /// <summary>
-        /// The frontal_cat_face_svm_filepath.
+        /// OBJECT_DETECTOR_FILENAME
         /// </summary>
-        string frontal_cat_face_svm_filepath;
+        protected static readonly string OBJECT_DETECTOR_FILENAME = "frontal_cat_face.svm";
 
         /// <summary>
-        /// The sp_cat_face_68_dat_filepath.
+        /// The object_detector_filepath.
         /// </summary>
-        string sp_cat_face_68_dat_filepath;
+        string object_detector_filepath;
+
+        /// <summary>
+        /// SHAPE_PREDICTOR_FILENAME
+        /// </summary>
+        protected static readonly string SHAPE_PREDICTOR_FILENAME = "sp_cat_face_68.dat";
+
+        /// <summary>
+        /// The shape_predictor_filepath.
+        /// </summary>
+        string shape_predictor_filepath;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
         IEnumerator getFilePath_Coroutine;
@@ -47,8 +57,8 @@ namespace DlibFaceLandmarkDetectorExample
             getFilePath_Coroutine = GetFilePath ();
             StartCoroutine (getFilePath_Coroutine);
             #else
-            frontal_cat_face_svm_filepath = Utils.getFilePath ("frontal_cat_face.svm");
-            sp_cat_face_68_dat_filepath = Utils.getFilePath ("sp_cat_face_68.dat");
+            object_detector_filepath = Utils.getFilePath (OBJECT_DETECTOR_FILENAME);
+            shape_predictor_filepath = Utils.getFilePath (SHAPE_PREDICTOR_FILENAME);
             Run ();
             #endif
         }
@@ -56,13 +66,13 @@ namespace DlibFaceLandmarkDetectorExample
         #if UNITY_WEBGL && !UNITY_EDITOR
         private IEnumerator GetFilePath ()
         {
-            var getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine = Utils.getFilePathAsync ("frontal_cat_face.svm", (result) => {
-                frontal_cat_face_svm_filepath = result;
+            var getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine = Utils.getFilePathAsync (OBJECT_DETECTOR_FILENAME, (result) => {
+                object_detector_filepath = result;
             });
             yield return getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine;
 
-            var getFilePathAsync_sp_cat_face_68_dat_filepath_Coroutine = Utils.getFilePathAsync ("sp_cat_face_68.dat", (result) => {
-                sp_cat_face_68_dat_filepath = result;
+            var getFilePathAsync_sp_cat_face_68_dat_filepath_Coroutine = Utils.getFilePathAsync (SHAPE_PREDICTOR_FILENAME, (result) => {
+                shape_predictor_filepath = result;
             });
             yield return getFilePathAsync_sp_cat_face_68_dat_filepath_Coroutine;
 
@@ -74,10 +84,10 @@ namespace DlibFaceLandmarkDetectorExample
 
         private void Run ()
         {
-            if (string.IsNullOrEmpty (frontal_cat_face_svm_filepath)) {
+            if (string.IsNullOrEmpty (object_detector_filepath)) {
                 Debug.LogError ("object detecter file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
             }
-            if (string.IsNullOrEmpty (sp_cat_face_68_dat_filepath)) {
+            if (string.IsNullOrEmpty (shape_predictor_filepath)) {
                 Debug.LogError ("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
             }
 
@@ -98,7 +108,7 @@ namespace DlibFaceLandmarkDetectorExample
                 Camera.main.orthographicSize = height / 2;
             }
 
-            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (frontal_cat_face_svm_filepath, sp_cat_face_68_dat_filepath);
+            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (object_detector_filepath, shape_predictor_filepath);
             faceLandmarkDetector.SetImage (texture2D);
 
             //detect face rects

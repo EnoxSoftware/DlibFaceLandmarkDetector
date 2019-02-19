@@ -168,6 +168,11 @@ namespace DlibFaceLandmarkDetectorExample
         /// The matrix that inverts the Z-axis.
         /// </summary>
         Matrix4x4 invertZM;
+
+        /// <summary>
+        /// The matrix that AR camera P * V.
+        /// </summary>
+        Matrix4x4 VP;
         
         /// <summary>
         /// The transformation matrix.
@@ -377,7 +382,11 @@ namespace DlibFaceLandmarkDetectorExample
             
             distCoeffs = new MatOfDouble (0, 0, 0, 0);
             Debug.Log ("distCoeffs " + distCoeffs.dump ());
-            
+
+            // create AR camera P * V Matrix
+            Matrix4x4 P = ARUtils.CalculateProjectionMatrixFromCameraMatrixValues ((float)fx, (float)fy, (float)cx, (float)cy, width, height, 0.3f, 2000f);
+            Matrix4x4 V = Matrix4x4.TRS (Vector3.zero, Quaternion.identity, new Vector3 (1, 1, -1));
+            VP = P * V;
             
             //calibration camera
             Size imageSize = new Size (width * imageSizeScale, height * imageSizeScale);
@@ -576,10 +585,10 @@ namespace DlibFaceLandmarkDetectorExample
                         Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec);
                     }
 
+
                     double tvec_x = tvec.get (0, 0) [0], tvec_y = tvec.get (1, 0) [0], tvec_z = tvec.get (2, 0) [0];
 
                     bool isNotInViewport = false;
-                    Matrix4x4 VP = ARCamera.projectionMatrix * ARCamera.worldToCameraMatrix;
                     Vector4 pos = VP * new Vector4 ((float)tvec_x, (float)tvec_y, (float)tvec_z, 1.0f);
                     if (pos.w != 0) {
                         float x = pos.x / pos.w, y = pos.y / pos.w, z = pos.z / pos.w;
@@ -592,9 +601,10 @@ namespace DlibFaceLandmarkDetectorExample
                     } else {
                         Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec, true, Calib3d.SOLVEPNP_ITERATIVE);
                     }
+
                     //Debug.Log (tvec.dump());
 
-                    if (!double.IsNaN (tvec_z)) {
+                    if (!isNotInViewport) {
 
                         if (displayHead)
                             head.SetActive (true);

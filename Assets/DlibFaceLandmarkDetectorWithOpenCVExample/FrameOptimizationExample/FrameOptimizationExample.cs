@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !(PLATFORM_LUMIN && !UNITY_EDITOR)
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -426,3 +428,5 @@ namespace DlibFaceLandmarkDetectorExample
         }
     }
 }
+
+#endif

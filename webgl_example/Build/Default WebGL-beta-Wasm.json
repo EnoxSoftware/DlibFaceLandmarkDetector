@@ -1,7 +1,7 @@
 {
 "companyName": "Enox Software",
-"productName": "2019.1.2f1_Il2CPP_DlibFaceLandmarkDetectorExample",
-"productVersion": "1.2.8",
+"productName": "2019.2.6f1_Il2CPP_DlibFaceLandmarkDetectorExample",
+"productVersion": "1.2.9",
 "dataUrl": "Default WebGL-beta-Wasm.data.unityweb",
 "wasmCodeUrl": "Default WebGL-beta-Wasm.wasm.code.unityweb",
 "wasmFrameworkUrl": "Default WebGL-beta-Wasm.wasm.framework.unityweb",
@@ -16,5 +16,5 @@
 "cacheControl": {"default": "must-revalidate"},
 "developmentBuild": false,
 "multithreading": false,
-"unityVersion": "2019.1.2f1"
+"unityVersion": "2019.2.6f1"
 }

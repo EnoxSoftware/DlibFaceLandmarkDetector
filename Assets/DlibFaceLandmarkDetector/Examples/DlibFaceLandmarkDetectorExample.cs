@@ -29,44 +29,46 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// The name of dlib shape predictor file to use in the example scenes.
         /// </summary>
-        public static string dlibShapePredictorFileName {
-            get {
-                return dlibShapePredictorName.ToString () + ".dat";
+        public static string dlibShapePredictorFileName
+        {
+            get
+            {
+                return dlibShapePredictorName.ToString() + ".dat";
             }
         }
 
         // Use this for initialization
-        void Start ()
+        void Start()
         {
-            versionInfo.text = "dlibfacelandmarkdetector" + " " + Utils.getVersion ();
+            versionInfo.text = "dlibfacelandmarkdetector" + " " + Utils.getVersion();
             versionInfo.text += " / UnityEditor " + Application.unityVersion;
             versionInfo.text += " / ";
 
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             versionInfo.text += "Editor";
-            #elif UNITY_STANDALONE_WIN
+#elif UNITY_STANDALONE_WIN
             versionInfo.text += "Windows";
-            #elif UNITY_STANDALONE_OSX
+#elif UNITY_STANDALONE_OSX
             versionInfo.text += "Mac OSX";
-            #elif UNITY_STANDALONE_LINUX
+#elif UNITY_STANDALONE_LINUX
             versionInfo.text += "Linux";
-            #elif UNITY_ANDROID
+#elif UNITY_ANDROID
             versionInfo.text += "Android";
-            #elif UNITY_IOS
+#elif UNITY_IOS
             versionInfo.text += "iOS";
-            #elif UNITY_WSA
+#elif UNITY_WSA
             versionInfo.text += "WSA";
-            #elif UNITY_WEBGL
+#elif UNITY_WEBGL
             versionInfo.text += "WebGL";
-            #endif
+#endif
             versionInfo.text += " ";
-            #if ENABLE_MONO
+#if ENABLE_MONO
             versionInfo.text += "Mono";
-            #elif ENABLE_IL2CPP
+#elif ENABLE_IL2CPP
             versionInfo.text += "IL2CPP";
-            #elif ENABLE_DOTNET
+#elif ENABLE_DOTNET
             versionInfo.text += ".NET";
-            #endif
+#endif
 
             scrollRect.verticalNormalizedPosition = verticalNormalizedPosition;
 
@@ -74,94 +76,94 @@ namespace DlibFaceLandmarkDetectorExample
         }
 
         // Update is called once per frame
-        void Update ()
+        void Update()
         {
 
         }
 
-        public void OnScrollRectValueChanged ()
+        public void OnScrollRectValueChanged()
         {
             verticalNormalizedPosition = scrollRect.verticalNormalizedPosition;
         }
 
 
-        public void OnShowSystemInfoButtonClick ()
+        public void OnShowSystemInfoButtonClick()
         {
-            SceneManager.LoadScene ("ShowSystemInfo");
+            SceneManager.LoadScene("ShowSystemInfo");
         }
 
-        public void OnTexture2DExampleButtonClick ()
+        public void OnTexture2DExampleButtonClick()
         {
-            SceneManager.LoadScene ("Texture2DExample");
+            SceneManager.LoadScene("Texture2DExample");
         }
 
-        public void OnWebCamTextureExampleButtonClick ()
+        public void OnWebCamTextureExampleButtonClick()
         {
-            SceneManager.LoadScene ("WebCamTextureExample");
+            SceneManager.LoadScene("WebCamTextureExample");
         }
 
-        public void OnCatDetectionExampleButtonClick ()
+        public void OnCatDetectionExampleButtonClick()
         {
-            SceneManager.LoadScene ("CatDetectionExample");
+            SceneManager.LoadScene("CatDetectionExample");
         }
 
-        public void OnBenchmarkExampleButtonClick ()
+        public void OnBenchmarkExampleButtonClick()
         {
-            SceneManager.LoadScene ("BenchmarkExample");
+            SceneManager.LoadScene("BenchmarkExample");
         }
 
 
 
-        public void OnShowLicenseButtonClick ()
+        public void OnShowLicenseButtonClick()
         {
-            SceneManager.LoadScene ("ShowLicense");
+            SceneManager.LoadScene("ShowLicense");
         }
 
-        public void OnTexture2DToMatExampleButtonClick ()
+        public void OnTexture2DToMatExampleButtonClick()
         {
-            SceneManager.LoadScene ("Texture2DToMatExample");
+            SceneManager.LoadScene("Texture2DToMatExample");
         }
 
-        public void OnWebCamTextureToMatHelperExampleButtonClick ()
+        public void OnWebCamTextureToMatHelperExampleButtonClick()
         {
-            SceneManager.LoadScene ("WebCamTextureToMatHelperExample");
+            SceneManager.LoadScene("WebCamTextureToMatHelperExample");
         }
 
-        public void OnVideoCaptureExampleButtonClick ()
+        public void OnVideoCaptureExampleButtonClick()
         {
-            SceneManager.LoadScene ("VideoCaptureExample");
+            SceneManager.LoadScene("VideoCaptureExample");
         }
 
-        public void OnARHeadWebCamTextureExampleButtonClick ()
+        public void OnARHeadWebCamTextureExampleButtonClick()
         {
-            SceneManager.LoadScene ("ARHeadWebCamTextureExample");
+            SceneManager.LoadScene("ARHeadWebCamTextureExample");
         }
 
-        public void OnARHeadVideoCaptureExampleButtonClick ()
+        public void OnARHeadVideoCaptureExampleButtonClick()
         {
-            SceneManager.LoadScene ("ARHeadVideoCaptureExample");
+            SceneManager.LoadScene("ARHeadVideoCaptureExample");
         }
 
-        public void OnFrameOptimizationExampleButtonClick ()
+        public void OnFrameOptimizationExampleButtonClick()
         {
-            SceneManager.LoadScene ("FrameOptimizationExample");
+            SceneManager.LoadScene("FrameOptimizationExample");
         }
 
-        public void OnNoiseFilterWebCamTextureExampleButtonClick ()
+        public void OnNoiseFilterWebCamTextureExampleButtonClick()
         {
-            SceneManager.LoadScene ("NoiseFilterWebCamTextureExample");
+            SceneManager.LoadScene("NoiseFilterWebCamTextureExample");
         }
 
-        public void OnNoiseFilterVideoCaptureExampleButtonClick ()
+        public void OnNoiseFilterVideoCaptureExampleButtonClick()
         {
-            SceneManager.LoadScene ("NoiseFilterVideoCaptureExample");
+            SceneManager.LoadScene("NoiseFilterVideoCaptureExample");
         }
 
 
         /// <summary>
         /// Raises the dlib shape predictor name dropdown value changed event.
         /// </summary>
-        public void OnDlibShapePredictorNameDropdownValueChanged (int result)
+        public void OnDlibShapePredictorNameDropdownValueChanged(int result)
         {
             dlibShapePredictorName = (DlibShapePredictorNamePreset)result;
         }

@@ -303,7 +303,7 @@ namespace DlibFaceLandmarkDetectorExample
                 Debug.LogError ("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
             }
 
-            //set 3d face object points.
+            //set 3d face object points. (right-handed coordinates system)
             objectPoints68 = new MatOfPoint3f (
                 new Point3 (-34, 90, 83),//l eye (Interpupillary breadth)
                 new Point3 (34, 90, 83),//r eye (Interpupillary breadth)
@@ -673,10 +673,11 @@ namespace DlibFaceLandmarkDetectorExample
 
 
                     // right-handed coordinates system (OpenCV) to left-handed one (Unity)
-                    ARM = invertYM * transformationM;
+                    // https://stackoverflow.com/questions/30234945/change-handedness-of-a-row-major-4x4-transformation-matrix
+                    ARM = invertYM * transformationM * invertYM;
 
-                    // Apply Z-axis inverted matrix.
-                    ARM = ARM * invertZM;
+                    // Apply Y-axis and Z-axis refletion matrix. (Adjust the posture of the AR object)
+                    ARM = ARM * invertYM * invertZM;
 
                     if (shouldMoveARCamera) {
                         ARM = ARGameObject.transform.localToWorldMatrix * ARM.inverse;

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace DlibFaceLandmarkDetectorExample
@@ -7,23 +6,23 @@ namespace DlibFaceLandmarkDetectorExample
     public class ShowLicense : MonoBehaviour
     {
         // Use this for initialization
-        void Start ()
+        void Start()
         {
-    
+
         }
-    
+
         // Update is called once per frame
-        void Update ()
+        void Update()
         {
-    
+
         }
 
         /// <summary>
         /// Raises the back button click event.
         /// </summary>
-        public void OnBackButtonClick ()
+        public void OnBackButtonClick()
         {
-            SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");
+            SceneManager.LoadScene("DlibFaceLandmarkDetectorExample");
         }
     }
 }

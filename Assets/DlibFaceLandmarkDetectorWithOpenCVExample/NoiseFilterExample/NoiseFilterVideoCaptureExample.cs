@@ -22,7 +22,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         public bool isDebugMode = false;
 
-        [Space (10)]
+        [Space(10)]
 
         /// <summary>
         /// The draw low pass filter toggle.
@@ -124,10 +124,10 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         OFPointsFilter opticalFlowFilter;
 
-        List<Vector2> lowPassFilteredPoints = new List<Vector2> ();
-        List<Vector2> kalmanFilteredPoints = new List<Vector2> ();
-        List<Vector2> opticalFlowFilteredPoints = new List<Vector2> ();
-        List<Vector2> ofAndLPFilteredPoints = new List<Vector2> ();
+        List<Vector2> lowPassFilteredPoints = new List<Vector2>();
+        List<Vector2> kalmanFilteredPoints = new List<Vector2>();
+        List<Vector2> opticalFlowFilteredPoints = new List<Vector2>();
+        List<Vector2> ofAndLPFilteredPoints = new List<Vector2>();
 
         /// <summary>
         /// The number of skipped frames.
@@ -139,14 +139,14 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         const int maximumAllowedSkippedFrames = 8;
 
-        #if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
         IEnumerator getFilePath_Coroutine;
-        #endif
+#endif
 
         // Use this for initialization
-        void Start ()
+        void Start()
         {
-            fpsMonitor = GetComponent<FpsMonitor> ();
+            fpsMonitor = GetComponent<FpsMonitor>();
 
             drawLowPassFilterToggle.isOn = drawLowPassFilter;
             drawKalmanFilterToggle.isOn = drawKalmanFilter;
@@ -154,17 +154,17 @@ namespace DlibFaceLandmarkDetectorExample
             drawOFAndLPFilterToggle.isOn = drawOFAndLPFilter;
 
             dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
-            #if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
             getFilePath_Coroutine = GetFilePath ();
             StartCoroutine (getFilePath_Coroutine);
-            #else
-            dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath (dlibShapePredictorFileName);
-            video_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath (VIDEO_FILENAME);
-            Run ();
-            #endif
+#else
+            dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath(dlibShapePredictorFileName);
+            video_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath(VIDEO_FILENAME);
+            Run();
+#endif
         }
 
-        #if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
         private IEnumerator GetFilePath ()
         {
             var getFilePathAsync_dlibShapePredictorFilePath_Coroutine = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
@@ -181,208 +181,229 @@ namespace DlibFaceLandmarkDetectorExample
 
             Run ();
         }
-        #endif
+#endif
 
-        private void Run ()
+        private void Run()
         {
-            if (string.IsNullOrEmpty (dlibShapePredictorFilePath)) {
-                Debug.LogError ("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+            if (string.IsNullOrEmpty(dlibShapePredictorFilePath))
+            {
+                Debug.LogError("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
             }
 
-            faceLandmarkDetector = new FaceLandmarkDetector (dlibShapePredictorFilePath);
+            faceLandmarkDetector = new FaceLandmarkDetector(dlibShapePredictorFilePath);
 
-            lowPassFilter = new LowPassPointsFilter ((int)faceLandmarkDetector.GetShapePredictorNumParts ());
-            kalmanFilter = new KFPointsFilter ((int)faceLandmarkDetector.GetShapePredictorNumParts ());
-            opticalFlowFilter = new OFPointsFilter ((int)faceLandmarkDetector.GetShapePredictorNumParts ());
+            lowPassFilter = new LowPassPointsFilter((int)faceLandmarkDetector.GetShapePredictorNumParts());
+            kalmanFilter = new KFPointsFilter((int)faceLandmarkDetector.GetShapePredictorNumParts());
+            opticalFlowFilter = new OFPointsFilter((int)faceLandmarkDetector.GetShapePredictorNumParts());
 
-            rgbMat = new Mat ();
+            rgbMat = new Mat();
 
-            capture = new VideoCapture ();
-            capture.open (video_filepath);
+            capture = new VideoCapture();
+            capture.open(video_filepath);
 
-            if (!capture.isOpened ()) {
-                Debug.LogError ("capture.isOpened() is false. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+            if (!capture.isOpened())
+            {
+                Debug.LogError("capture.isOpened() is false. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
             }
 
 
-            Debug.Log ("CAP_PROP_FORMAT: " + capture.get (Videoio.CAP_PROP_FORMAT));
-            Debug.Log ("CAP_PROP_POS_MSEC: " + capture.get (Videoio.CAP_PROP_POS_MSEC));
-            Debug.Log ("CAP_PROP_POS_FRAMES: " + capture.get (Videoio.CAP_PROP_POS_FRAMES));
-            Debug.Log ("CAP_PROP_POS_AVI_RATIO: " + capture.get (Videoio.CAP_PROP_POS_AVI_RATIO));
-            Debug.Log ("CAP_PROP_FRAME_COUNT: " + capture.get (Videoio.CAP_PROP_FRAME_COUNT));
-            Debug.Log ("CAP_PROP_FPS: " + capture.get (Videoio.CAP_PROP_FPS));
-            Debug.Log ("CAP_PROP_FRAME_WIDTH: " + capture.get (Videoio.CAP_PROP_FRAME_WIDTH));
-            Debug.Log ("CAP_PROP_FRAME_HEIGHT: " + capture.get (Videoio.CAP_PROP_FRAME_HEIGHT));
-            double ext = capture.get (Videoio.CAP_PROP_FOURCC);
-            Debug.Log ("CAP_PROP_FOURCC: " + (char)((int)ext & 0XFF) + (char)(((int)ext & 0XFF00) >> 8) + (char)(((int)ext & 0XFF0000) >> 16) + (char)(((int)ext & 0XFF000000) >> 24));
+            Debug.Log("CAP_PROP_FORMAT: " + capture.get(Videoio.CAP_PROP_FORMAT));
+            Debug.Log("CAP_PROP_POS_MSEC: " + capture.get(Videoio.CAP_PROP_POS_MSEC));
+            Debug.Log("CAP_PROP_POS_FRAMES: " + capture.get(Videoio.CAP_PROP_POS_FRAMES));
+            Debug.Log("CAP_PROP_POS_AVI_RATIO: " + capture.get(Videoio.CAP_PROP_POS_AVI_RATIO));
+            Debug.Log("CAP_PROP_FRAME_COUNT: " + capture.get(Videoio.CAP_PROP_FRAME_COUNT));
+            Debug.Log("CAP_PROP_FPS: " + capture.get(Videoio.CAP_PROP_FPS));
+            Debug.Log("CAP_PROP_FRAME_WIDTH: " + capture.get(Videoio.CAP_PROP_FRAME_WIDTH));
+            Debug.Log("CAP_PROP_FRAME_HEIGHT: " + capture.get(Videoio.CAP_PROP_FRAME_HEIGHT));
+            double ext = capture.get(Videoio.CAP_PROP_FOURCC);
+            Debug.Log("CAP_PROP_FOURCC: " + (char)((int)ext & 0XFF) + (char)(((int)ext & 0XFF00) >> 8) + (char)(((int)ext & 0XFF0000) >> 16) + (char)(((int)ext & 0XFF000000) >> 24));
 
-            capture.grab ();
-            capture.retrieve (rgbMat, 0);
-            int frameWidth = rgbMat.cols ();
-            int frameHeight = rgbMat.rows ();
-            texture = new Texture2D (frameWidth, frameHeight, TextureFormat.RGB24, false);
-            gameObject.transform.localScale = new Vector3 ((float)frameWidth, (float)frameHeight, 1);
+            capture.grab();
+            capture.retrieve(rgbMat, 0);
+            int frameWidth = rgbMat.cols();
+            int frameHeight = rgbMat.rows();
+            texture = new Texture2D(frameWidth, frameHeight, TextureFormat.RGB24, false);
+            gameObject.transform.localScale = new Vector3((float)frameWidth, (float)frameHeight, 1);
             float widthScale = (float)Screen.width / (float)frameWidth;
             float heightScale = (float)Screen.height / (float)frameHeight;
-            if (widthScale < heightScale) {
+            if (widthScale < heightScale)
+            {
                 Camera.main.orthographicSize = ((float)frameWidth * (float)Screen.height / (float)Screen.width) / 2;
-            } else {
+            }
+            else
+            {
                 Camera.main.orthographicSize = (float)frameHeight / 2;
             }
-            capture.set (Videoio.CAP_PROP_POS_FRAMES, 0);
+            capture.set(Videoio.CAP_PROP_POS_FRAMES, 0);
 
-            gameObject.GetComponent<Renderer> ().material.mainTexture = texture;
+            gameObject.GetComponent<Renderer>().material.mainTexture = texture;
 
-            if (fpsMonitor != null) {
-                fpsMonitor.Add ("dlib shape predictor", dlibShapePredictorFileName);
-                fpsMonitor.Add ("width", frameWidth.ToString ());
-                fpsMonitor.Add ("height", frameHeight.ToString ());
-                fpsMonitor.Add ("orientation", Screen.orientation.ToString ());
+            if (fpsMonitor != null)
+            {
+                fpsMonitor.Add("dlib shape predictor", dlibShapePredictorFileName);
+                fpsMonitor.Add("width", frameWidth.ToString());
+                fpsMonitor.Add("height", frameHeight.ToString());
+                fpsMonitor.Add("orientation", Screen.orientation.ToString());
             }
         }
 
         // Update is called once per frame
-        void Update ()
+        void Update()
         {
             if (capture == null)
                 return;
 
             //Loop play
-            if (capture.get (Videoio.CAP_PROP_POS_FRAMES) >= capture.get (Videoio.CAP_PROP_FRAME_COUNT))
-                capture.set (Videoio.CAP_PROP_POS_FRAMES, 0);
+            if (capture.get(Videoio.CAP_PROP_POS_FRAMES) >= capture.get(Videoio.CAP_PROP_FRAME_COUNT))
+                capture.set(Videoio.CAP_PROP_POS_FRAMES, 0);
 
             //error PlayerLoop called recursively! on iOS.reccomend WebCamTexture.
-            if (capture.grab ()) {
+            if (capture.grab())
+            {
 
-                capture.retrieve (rgbMat, 0);
+                capture.retrieve(rgbMat, 0);
 
-                Imgproc.cvtColor (rgbMat, rgbMat, Imgproc.COLOR_BGR2RGB);
+                Imgproc.cvtColor(rgbMat, rgbMat, Imgproc.COLOR_BGR2RGB);
                 //Debug.Log ("Mat toString " + rgbMat.ToString ());
 
 
-                OpenCVForUnityUtils.SetImage (faceLandmarkDetector, rgbMat);
+                OpenCVForUnityUtils.SetImage(faceLandmarkDetector, rgbMat);
 
                 //detect face rects
-                List<UnityEngine.Rect> detectResult = faceLandmarkDetector.Detect ();
+                List<UnityEngine.Rect> detectResult = faceLandmarkDetector.Detect();
 
-                UnityEngine.Rect rect = new UnityEngine.Rect ();
+                UnityEngine.Rect rect = new UnityEngine.Rect();
                 List<Vector2> points = null;
-                if (detectResult.Count > 0) {
+                if (detectResult.Count > 0)
+                {
 
-                    rect = detectResult [0];
+                    rect = detectResult[0];
 
                     //detect landmark points
-                    points = faceLandmarkDetector.DetectLandmark (rect);
+                    points = faceLandmarkDetector.DetectLandmark(rect);
 
                     skippedFrames = 0;
-                } else {
+                }
+                else
+                {
                     skippedFrames++;
-                    if (skippedFrames == maximumAllowedSkippedFrames) {
+                    if (skippedFrames == maximumAllowedSkippedFrames)
+                    {
                         if (drawLowPassFilter)
-                            lowPassFilter.Reset ();
+                            lowPassFilter.Reset();
                         if (drawKalmanFilter)
-                            kalmanFilter.Reset ();
+                            kalmanFilter.Reset();
                         if (drawOpticalFlowFilter)
-                            opticalFlowFilter.Reset ();
+                            opticalFlowFilter.Reset();
                         if (drawOFAndLPFilter)
-                            opticalFlowFilter.Reset ();
-                        lowPassFilter.Reset ();
+                            opticalFlowFilter.Reset();
+                        lowPassFilter.Reset();
                     }
                 }
 
-                if (drawLowPassFilter) {
-                    lowPassFilter.Process (rgbMat, points, lowPassFilteredPoints, isDebugMode);
+                if (drawLowPassFilter)
+                {
+                    lowPassFilter.Process(rgbMat, points, lowPassFilteredPoints, isDebugMode);
                 }
-                if (drawKalmanFilter) {
-                    kalmanFilter.Process (rgbMat, points, kalmanFilteredPoints, isDebugMode);
+                if (drawKalmanFilter)
+                {
+                    kalmanFilter.Process(rgbMat, points, kalmanFilteredPoints, isDebugMode);
                 }
-                if (drawOpticalFlowFilter) {
-                    opticalFlowFilter.Process (rgbMat, points, opticalFlowFilteredPoints, isDebugMode);
+                if (drawOpticalFlowFilter)
+                {
+                    opticalFlowFilter.Process(rgbMat, points, opticalFlowFilteredPoints, isDebugMode);
                 }
-                if (drawOFAndLPFilter) {
-                    opticalFlowFilter.Process (rgbMat, points, points, false);
-                    lowPassFilter.Process (rgbMat, points, ofAndLPFilteredPoints, isDebugMode);
+                if (drawOFAndLPFilter)
+                {
+                    opticalFlowFilter.Process(rgbMat, points, points, false);
+                    lowPassFilter.Process(rgbMat, points, ofAndLPFilteredPoints, isDebugMode);
                 }
 
 
-                if (points != null && !isDebugMode) {
+                if (points != null && !isDebugMode)
+                {
                     // draw raw landmark points.
-                    OpenCVForUnityUtils.DrawFaceLandmark (rgbMat, points, new Scalar (0, 255, 0), 2);
+                    OpenCVForUnityUtils.DrawFaceLandmark(rgbMat, points, new Scalar(0, 255, 0), 2);
                 }
 
                 // draw face rect.
                 //OpenCVForUnityUtils.DrawFaceRect (rgbMat, rect, new Scalar (255, 0, 0), 2);
 
                 // draw filtered lam points. 
-                if (points != null && !isDebugMode) {
+                if (points != null && !isDebugMode)
+                {
                     if (drawLowPassFilter)
-                        OpenCVForUnityUtils.DrawFaceLandmark (rgbMat, lowPassFilteredPoints, new Scalar (0, 255, 255), 2);
+                        OpenCVForUnityUtils.DrawFaceLandmark(rgbMat, lowPassFilteredPoints, new Scalar(0, 255, 255), 2);
                     if (drawKalmanFilter)
-                        OpenCVForUnityUtils.DrawFaceLandmark (rgbMat, kalmanFilteredPoints, new Scalar (0, 0, 255), 2);
+                        OpenCVForUnityUtils.DrawFaceLandmark(rgbMat, kalmanFilteredPoints, new Scalar(0, 0, 255), 2);
                     if (drawOpticalFlowFilter)
-                        OpenCVForUnityUtils.DrawFaceLandmark (rgbMat, opticalFlowFilteredPoints, new Scalar (255, 0, 0), 2);
+                        OpenCVForUnityUtils.DrawFaceLandmark(rgbMat, opticalFlowFilteredPoints, new Scalar(255, 0, 0), 2);
                     if (drawOFAndLPFilter)
-                        OpenCVForUnityUtils.DrawFaceLandmark (rgbMat, ofAndLPFilteredPoints, new Scalar (255, 0, 255), 2);
+                        OpenCVForUnityUtils.DrawFaceLandmark(rgbMat, ofAndLPFilteredPoints, new Scalar(255, 0, 255), 2);
                 }
 
                 //Imgproc.putText (rgbMat, "W:" + rgbMat.width () + " H:" + rgbMat.height () + " SO:" + Screen.orientation, new Point (5, rgbMat.rows () - 10), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255), 1, Imgproc.LINE_AA, false);
 
-                OpenCVForUnity.UnityUtils.Utils.fastMatToTexture2D (rgbMat, texture);
+                OpenCVForUnity.UnityUtils.Utils.fastMatToTexture2D(rgbMat, texture);
             }
         }
 
         /// <summary>
         /// Raises the destroy event.
         /// </summary>
-        void OnDestroy ()
+        void OnDestroy()
         {
             if (capture != null)
-                capture.release ();
+                capture.release();
 
             if (rgbMat != null)
-                rgbMat.Dispose ();
+                rgbMat.Dispose();
 
-            if (texture != null) {
-                Texture2D.Destroy (texture);
+            if (texture != null)
+            {
+                Texture2D.Destroy(texture);
                 texture = null;
             }
 
             if (faceLandmarkDetector != null)
-                faceLandmarkDetector.Dispose ();
+                faceLandmarkDetector.Dispose();
 
             if (lowPassFilter != null)
-                lowPassFilter.Dispose ();
+                lowPassFilter.Dispose();
             if (kalmanFilter != null)
-                kalmanFilter.Dispose ();
+                kalmanFilter.Dispose();
             if (opticalFlowFilter != null)
-                opticalFlowFilter.Dispose ();
+                opticalFlowFilter.Dispose();
 
-            #if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
             if (getFilePath_Coroutine != null) {
                 StopCoroutine (getFilePath_Coroutine);
                 ((IDisposable)getFilePath_Coroutine).Dispose ();
             }
-            #endif
+#endif
         }
 
         /// <summary>
         /// Raises the back button click event.
         /// </summary>
-        public void OnBackButtonClick ()
+        public void OnBackButtonClick()
         {
-            SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");
+            SceneManager.LoadScene("DlibFaceLandmarkDetectorExample");
         }
 
         /// <summary>
         /// Raises the draw low pass filter toggle value changed event.
         /// </summary>
-        public void OnDrawLowPassFilterToggleValueChanged ()
+        public void OnDrawLowPassFilterToggleValueChanged()
         {
-            if (drawLowPassFilterToggle.isOn) {
+            if (drawLowPassFilterToggle.isOn)
+            {
                 drawLowPassFilter = true;
                 if (lowPassFilter != null)
-                    lowPassFilter.Reset ();
-            } else {
+                    lowPassFilter.Reset();
+            }
+            else
+            {
                 drawLowPassFilter = false;
             }
         }
@@ -390,13 +411,16 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// Raises the draw kalman filter toggle value changed event.
         /// </summary>
-        public void OnDrawKalmanFilterToggleValueChanged ()
+        public void OnDrawKalmanFilterToggleValueChanged()
         {
-            if (drawKalmanFilterToggle.isOn) {
+            if (drawKalmanFilterToggle.isOn)
+            {
                 drawKalmanFilter = true;
                 if (kalmanFilter != null)
-                    kalmanFilter.Reset ();
-            } else {
+                    kalmanFilter.Reset();
+            }
+            else
+            {
                 drawKalmanFilter = false;
             }
         }
@@ -404,13 +428,16 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// Raises the draw optical flow filter toggle value changed event.
         /// </summary>
-        public void OnDrawOpticalFlowFilterToggleValueChanged ()
+        public void OnDrawOpticalFlowFilterToggleValueChanged()
         {
-            if (drawOpticalFlowFilterToggle.isOn) {
+            if (drawOpticalFlowFilterToggle.isOn)
+            {
                 drawOpticalFlowFilter = true;
                 if (opticalFlowFilter != null)
-                    opticalFlowFilter.Reset ();
-            } else {
+                    opticalFlowFilter.Reset();
+            }
+            else
+            {
                 drawOpticalFlowFilter = false;
             }
         }
@@ -418,15 +445,18 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// Raises the draw OF and LP filter toggle value changed event.
         /// </summary>
-        public void OnDrawOFAndLPFilterToggleValueChanged ()
+        public void OnDrawOFAndLPFilterToggleValueChanged()
         {
-            if (drawOFAndLPFilterToggle.isOn) {
+            if (drawOFAndLPFilterToggle.isOn)
+            {
                 drawOFAndLPFilter = true;
                 if (opticalFlowFilter != null)
-                    opticalFlowFilter.Reset ();
+                    opticalFlowFilter.Reset();
                 if (lowPassFilter != null)
-                    lowPassFilter.Reset ();
-            } else {
+                    lowPassFilter.Reset();
+            }
+            else
+            {
                 drawOFAndLPFilter = false;
             }
         }

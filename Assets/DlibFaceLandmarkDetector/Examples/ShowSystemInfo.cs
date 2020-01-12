@@ -18,7 +18,7 @@ namespace DlibFaceLandmarkDetectorExample
 
         // Use this for initialization
         void Start()
-        {         
+        {
 
             StringBuilder sb = new StringBuilder();
             sb.Append("###### Build Info ######\n");

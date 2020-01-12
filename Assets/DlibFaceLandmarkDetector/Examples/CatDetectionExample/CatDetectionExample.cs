@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,26 +44,26 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         string shape_predictor_filepath;
 
-        #if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
         IEnumerator getFilePath_Coroutine;
-        #endif
+#endif
 
         // Use this for initialization
-        void Start ()
+        void Start()
         {
-            fpsMonitor = GetComponent<FpsMonitor> ();
+            fpsMonitor = GetComponent<FpsMonitor>();
 
-            #if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
             getFilePath_Coroutine = GetFilePath ();
             StartCoroutine (getFilePath_Coroutine);
-            #else
-            object_detector_filepath = Utils.getFilePath (OBJECT_DETECTOR_FILENAME);
-            shape_predictor_filepath = Utils.getFilePath (SHAPE_PREDICTOR_FILENAME);
-            Run ();
-            #endif
+#else
+            object_detector_filepath = Utils.getFilePath(OBJECT_DETECTOR_FILENAME);
+            shape_predictor_filepath = Utils.getFilePath(SHAPE_PREDICTOR_FILENAME);
+            Run();
+#endif
         }
 
-        #if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
         private IEnumerator GetFilePath ()
         {
             var getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine = Utils.getFilePathAsync (OBJECT_DETECTOR_FILENAME, (result) => {
@@ -80,73 +80,81 @@ namespace DlibFaceLandmarkDetectorExample
 
             Run ();
         }
-        #endif
+#endif
 
-        private void Run ()
+        private void Run()
         {
-            if (string.IsNullOrEmpty (object_detector_filepath)) {
-                Debug.LogError ("object detecter file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+            if (string.IsNullOrEmpty(object_detector_filepath))
+            {
+                Debug.LogError("object detecter file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
             }
-            if (string.IsNullOrEmpty (shape_predictor_filepath)) {
-                Debug.LogError ("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+            if (string.IsNullOrEmpty(shape_predictor_filepath))
+            {
+                Debug.LogError("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
             }
 
-            Texture2D dstTexture2D = new Texture2D (texture2D.width, texture2D.height, texture2D.format, false);
-            Graphics.CopyTexture (texture2D, dstTexture2D);
+            Texture2D dstTexture2D = new Texture2D(texture2D.width, texture2D.height, texture2D.format, false);
+            Graphics.CopyTexture(texture2D, dstTexture2D);
 
-            gameObject.transform.localScale = new Vector3 (texture2D.width, texture2D.height, 1);
-            Debug.Log ("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
-            
+            gameObject.transform.localScale = new Vector3(texture2D.width, texture2D.height, 1);
+            Debug.Log("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
+
             float width = gameObject.transform.localScale.x;
             float height = gameObject.transform.localScale.y;
-            
+
             float widthScale = (float)Screen.width / width;
             float heightScale = (float)Screen.height / height;
-            if (widthScale < heightScale) {
+            if (widthScale < heightScale)
+            {
                 Camera.main.orthographicSize = (width * (float)Screen.height / (float)Screen.width) / 2;
-            } else {
+            }
+            else
+            {
                 Camera.main.orthographicSize = height / 2;
             }
 
-            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (object_detector_filepath, shape_predictor_filepath);
-            faceLandmarkDetector.SetImage (texture2D);
+            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector(object_detector_filepath, shape_predictor_filepath);
+            faceLandmarkDetector.SetImage(texture2D);
 
             //detect face rects
-            List<Rect> detectResult = faceLandmarkDetector.Detect ();
+            List<Rect> detectResult = faceLandmarkDetector.Detect();
 
-            foreach (var rect in detectResult) {
-                Debug.Log ("face : " + rect);
+            foreach (var rect in detectResult)
+            {
+                Debug.Log("face : " + rect);
 
                 //detect landmark points
-                List<Vector2> points = faceLandmarkDetector.DetectLandmark (rect);
-                
-                Debug.Log ("face points count : " + points.Count);
-                foreach (var point in points) {
-                    Debug.Log ("face point : x " + point.x + " y " + point.y);
+                List<Vector2> points = faceLandmarkDetector.DetectLandmark(rect);
+
+                Debug.Log("face points count : " + points.Count);
+                foreach (var point in points)
+                {
+                    Debug.Log("face point : x " + point.x + " y " + point.y);
                 }
 
                 //draw landmark points
-                faceLandmarkDetector.DrawDetectLandmarkResult (dstTexture2D, 0, 255, 0, 255);
+                faceLandmarkDetector.DrawDetectLandmarkResult(dstTexture2D, 0, 255, 0, 255);
             }
 
             //draw face rects
-            faceLandmarkDetector.DrawDetectResult (dstTexture2D, 255, 0, 0, 255, 3);
+            faceLandmarkDetector.DrawDetectResult(dstTexture2D, 255, 0, 0, 255, 3);
 
-            faceLandmarkDetector.Dispose ();
+            faceLandmarkDetector.Dispose();
 
-            gameObject.GetComponent<Renderer> ().material.mainTexture = dstTexture2D;
+            gameObject.GetComponent<Renderer>().material.mainTexture = dstTexture2D;
 
-            if (fpsMonitor != null) {
-                fpsMonitor.Add ("dlib object detector", "frontal_cat_face.svm");
-                fpsMonitor.Add ("dlib shape predictor", "sp_cat_face_68.dat");
-                fpsMonitor.Add ("width", width.ToString ());
-                fpsMonitor.Add ("height", height.ToString ());
-                fpsMonitor.Add ("orientation", Screen.orientation.ToString ());
+            if (fpsMonitor != null)
+            {
+                fpsMonitor.Add("dlib object detector", "frontal_cat_face.svm");
+                fpsMonitor.Add("dlib shape predictor", "sp_cat_face_68.dat");
+                fpsMonitor.Add("width", width.ToString());
+                fpsMonitor.Add("height", height.ToString());
+                fpsMonitor.Add("orientation", Screen.orientation.ToString());
             }
         }
 
         // Update is called once per frame
-        void Update ()
+        void Update()
         {
 
         }
@@ -154,22 +162,22 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// Raises the destroy event.
         /// </summary>
-        void OnDestroy ()
+        void OnDestroy()
         {
-            #if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
             if (getFilePath_Coroutine != null) {
                 StopCoroutine (getFilePath_Coroutine);
                 ((IDisposable)getFilePath_Coroutine).Dispose ();
             }
-            #endif
+#endif
         }
 
         /// <summary>
         /// Raises the back button click event.
         /// </summary>
-        public void OnBackButtonClick ()
+        public void OnBackButtonClick()
         {
-            SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");
+            SceneManager.LoadScene("DlibFaceLandmarkDetectorExample");
         }
     }
 }

@@ -34,17 +34,17 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         string dlibShapePredictorFilePath;
 
-        #if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
         IEnumerator getFilePath_Coroutine;
-        #endif
+#endif
 
         // Use this for initialization
-        void Start ()
+        void Start()
         {
-            fpsMonitor = GetComponent<FpsMonitor> ();
+            fpsMonitor = GetComponent<FpsMonitor>();
 
             dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
-            #if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
             getFilePath_Coroutine = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
                 getFilePath_Coroutine = null;
 
@@ -52,105 +52,111 @@ namespace DlibFaceLandmarkDetectorExample
                 Run ();
             });
             StartCoroutine (getFilePath_Coroutine);
-            #else
-            dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath (dlibShapePredictorFileName);
-            Run ();
-            #endif
+#else
+            dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath(dlibShapePredictorFileName);
+            Run();
+#endif
         }
 
-        private void Run ()
+        private void Run()
         {
-            if (string.IsNullOrEmpty (dlibShapePredictorFilePath)) {
-                Debug.LogError ("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+            if (string.IsNullOrEmpty(dlibShapePredictorFilePath))
+            {
+                Debug.LogError("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
             }
 
-            Mat imgMat = new Mat (imgTexture.height, imgTexture.width, CvType.CV_8UC4);
+            Mat imgMat = new Mat(imgTexture.height, imgTexture.width, CvType.CV_8UC4);
 
             // Convert Unity Texture2D to OpenCV Mat.
-            OpenCVForUnity.UnityUtils.Utils.texture2DToMat (imgTexture, imgMat);
-            Debug.Log ("imgMat dst ToString " + imgMat.ToString ());
+            OpenCVForUnity.UnityUtils.Utils.texture2DToMat(imgTexture, imgMat);
+            Debug.Log("imgMat dst ToString " + imgMat.ToString());
 
-            gameObject.transform.localScale = new Vector3 (imgTexture.width, imgTexture.height, 1);
-            Debug.Log ("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
-            
-            float width = imgMat.width ();
-            float height = imgMat.height ();
-            
+            gameObject.transform.localScale = new Vector3(imgTexture.width, imgTexture.height, 1);
+            Debug.Log("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
+
+            float width = imgMat.width();
+            float height = imgMat.height();
+
             float widthScale = (float)Screen.width / width;
             float heightScale = (float)Screen.height / height;
-            if (widthScale < heightScale) {
+            if (widthScale < heightScale)
+            {
                 Camera.main.orthographicSize = (width * (float)Screen.height / (float)Screen.width) / 2;
-            } else {
+            }
+            else
+            {
                 Camera.main.orthographicSize = height / 2;
             }
 
 
-            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector (dlibShapePredictorFilePath);
+            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector(dlibShapePredictorFilePath);
 
-            OpenCVForUnityUtils.SetImage (faceLandmarkDetector, imgMat);
+            OpenCVForUnityUtils.SetImage(faceLandmarkDetector, imgMat);
 
-        
+
             //detect face rectdetecton
-            List<FaceLandmarkDetector.RectDetection> detectResult = faceLandmarkDetector.DetectRectDetection ();
+            List<FaceLandmarkDetector.RectDetection> detectResult = faceLandmarkDetector.DetectRectDetection();
 
-            foreach (var result in detectResult) {
-                Debug.Log ("rect : " + result.rect);
-                Debug.Log ("detection_confidence : " + result.detection_confidence);
-                Debug.Log ("weight_index : " + result.weight_index);
+            foreach (var result in detectResult)
+            {
+                Debug.Log("rect : " + result.rect);
+                Debug.Log("detection_confidence : " + result.detection_confidence);
+                Debug.Log("weight_index : " + result.weight_index);
 
                 //detect landmark points
-                List<Vector2> points = faceLandmarkDetector.DetectLandmark (result.rect);
+                List<Vector2> points = faceLandmarkDetector.DetectLandmark(result.rect);
 
-                Debug.Log ("face points count : " + points.Count);
+                Debug.Log("face points count : " + points.Count);
                 //draw landmark points
-                OpenCVForUnityUtils.DrawFaceLandmark (imgMat, points, new Scalar (0, 255, 0, 255), 2, true);
+                OpenCVForUnityUtils.DrawFaceLandmark(imgMat, points, new Scalar(0, 255, 0, 255), 2, true);
 
                 //draw face rect
-                OpenCVForUnityUtils.DrawFaceRect (imgMat, result, new Scalar (255, 0, 0, 255), 2);
+                OpenCVForUnityUtils.DrawFaceRect(imgMat, result, new Scalar(255, 0, 0, 255), 2);
             }
 
-            faceLandmarkDetector.Dispose ();
+            faceLandmarkDetector.Dispose();
 
-            Texture2D texture = new Texture2D (imgMat.cols (), imgMat.rows (), TextureFormat.RGBA32, false);
+            Texture2D texture = new Texture2D(imgMat.cols(), imgMat.rows(), TextureFormat.RGBA32, false);
 
             // Convert OpenCV Mat to Unity Texture2D.
-            OpenCVForUnity.UnityUtils.Utils.matToTexture2D (imgMat, texture);
+            OpenCVForUnity.UnityUtils.Utils.matToTexture2D(imgMat, texture);
 
-            gameObject.GetComponent<Renderer> ().material.mainTexture = texture;
+            gameObject.GetComponent<Renderer>().material.mainTexture = texture;
 
-            if (fpsMonitor != null) {                
-                fpsMonitor.Add ("dlib shape predictor", dlibShapePredictorFileName);
-                fpsMonitor.Add ("width", width.ToString ());
-                fpsMonitor.Add ("height", height.ToString ());
-                fpsMonitor.Add ("orientation", Screen.orientation.ToString ());
+            if (fpsMonitor != null)
+            {
+                fpsMonitor.Add("dlib shape predictor", dlibShapePredictorFileName);
+                fpsMonitor.Add("width", width.ToString());
+                fpsMonitor.Add("height", height.ToString());
+                fpsMonitor.Add("orientation", Screen.orientation.ToString());
             }
         }
 
         // Update is called once per frame
-        void Update ()
+        void Update()
         {
-    
+
         }
 
         /// <summary>
         /// Raises the destroy event.
         /// </summary>
-        void OnDestroy ()
+        void OnDestroy()
         {
-            #if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
             if (getFilePath_Coroutine != null) {
                 StopCoroutine (getFilePath_Coroutine);
                 ((IDisposable)getFilePath_Coroutine).Dispose ();
             }
-            #endif
+#endif
         }
 
         /// <summary>
         /// Raises the back button click event.
         /// </summary>
-        public void OnBackButtonClick ()
+        public void OnBackButtonClick()
         {
-            SceneManager.LoadScene ("DlibFaceLandmarkDetectorExample");
+            SceneManager.LoadScene("DlibFaceLandmarkDetectorExample");
         }
     }
 }

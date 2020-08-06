@@ -54,6 +54,9 @@ namespace DlibFaceLandmarkDetectorExample
             StartCoroutine (getFilePath_Coroutine);
 #else
             dlibShapePredictorFilePath = Utils.getFilePath(dlibShapePredictorFileName);
+            //You can set the relative file path from the project folder.
+            //dlibShapePredictorFilePath = "./Assets/StreamingAssets/"+dlibShapePredictorFileName;
+
             Run();
 #endif
         }
@@ -69,7 +72,8 @@ namespace DlibFaceLandmarkDetectorExample
             Utils.setDebugMode(true);
 
             Texture2D dstTexture2D = new Texture2D(texture2D.width, texture2D.height, texture2D.format, false);
-            Graphics.CopyTexture(texture2D, dstTexture2D);
+            dstTexture2D.SetPixels32(texture2D.GetPixels32());
+            dstTexture2D.Apply();
 
             gameObject.transform.localScale = new Vector3(texture2D.width, texture2D.height, 1);
             Debug.Log("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);

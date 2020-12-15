@@ -1,10 +1,11 @@
-﻿using OpenCVForUnity.CoreModule;
+﻿using DlibFaceLandmarkDetector;
+using OpenCVForUnity.CoreModule;
 using OpenCVForUnity.ImgprocModule;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DlibFaceLandmarkDetector
+namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
     /// Utility class for the integration of DlibFaceLandmarkDetector and OpenCVForUnity.

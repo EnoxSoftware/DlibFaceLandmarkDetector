@@ -1,10 +1,10 @@
-﻿using System;
+﻿using DlibFaceLandmarkDetector;
+using DlibFaceLandmarkDetector.UnityUtils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using DlibFaceLandmarkDetector.UnityUtils;
-using DlibFaceLandmarkDetector;
 
 namespace DlibFaceLandmarkDetectorExample
 {
@@ -44,7 +44,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         string shape_predictor_filepath;
 
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL
         IEnumerator getFilePath_Coroutine;
 #endif
 
@@ -53,9 +53,9 @@ namespace DlibFaceLandmarkDetectorExample
         {
             fpsMonitor = GetComponent<FpsMonitor>();
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-            getFilePath_Coroutine = GetFilePath ();
-            StartCoroutine (getFilePath_Coroutine);
+#if UNITY_WEBGL
+            getFilePath_Coroutine = GetFilePath();
+            StartCoroutine(getFilePath_Coroutine);
 #else
             object_detector_filepath = Utils.getFilePath(OBJECT_DETECTOR_FILENAME);
             shape_predictor_filepath = Utils.getFilePath(SHAPE_PREDICTOR_FILENAME);
@@ -63,22 +63,24 @@ namespace DlibFaceLandmarkDetectorExample
 #endif
         }
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-        private IEnumerator GetFilePath ()
+#if UNITY_WEBGL
+        private IEnumerator GetFilePath()
         {
-            var getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine = Utils.getFilePathAsync (OBJECT_DETECTOR_FILENAME, (result) => {
+            var getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine = Utils.getFilePathAsync(OBJECT_DETECTOR_FILENAME, (result) =>
+            {
                 object_detector_filepath = result;
             });
             yield return getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine;
 
-            var getFilePathAsync_sp_cat_face_68_dat_filepath_Coroutine = Utils.getFilePathAsync (SHAPE_PREDICTOR_FILENAME, (result) => {
+            var getFilePathAsync_sp_cat_face_68_dat_filepath_Coroutine = Utils.getFilePathAsync(SHAPE_PREDICTOR_FILENAME, (result) =>
+            {
                 shape_predictor_filepath = result;
             });
             yield return getFilePathAsync_sp_cat_face_68_dat_filepath_Coroutine;
 
             getFilePath_Coroutine = null;
 
-            Run ();
+            Run();
         }
 #endif
 
@@ -165,10 +167,11 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         void OnDestroy()
         {
-#if UNITY_WEBGL && !UNITY_EDITOR
-            if (getFilePath_Coroutine != null) {
-                StopCoroutine (getFilePath_Coroutine);
-                ((IDisposable)getFilePath_Coroutine).Dispose ();
+#if UNITY_WEBGL
+            if (getFilePath_Coroutine != null)
+            {
+                StopCoroutine(getFilePath_Coroutine);
+                ((IDisposable)getFilePath_Coroutine).Dispose();
             }
 #endif
         }

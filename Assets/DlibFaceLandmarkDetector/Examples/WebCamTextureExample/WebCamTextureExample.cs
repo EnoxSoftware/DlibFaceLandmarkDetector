@@ -133,7 +133,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         string dlibShapePredictorFilePath;
 
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL
         IEnumerator getFilePath_Coroutine;
 #endif
 
@@ -145,7 +145,7 @@ namespace DlibFaceLandmarkDetectorExample
             adjustPixelsDirectionToggle.isOn = adjustPixelsDirection;
 
             dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL
             getFilePath_Coroutine = Utils.getFilePathAsync(dlibShapePredictorFileName, (result) =>
             {
                 getFilePath_Coroutine = null;
@@ -546,7 +546,7 @@ namespace DlibFaceLandmarkDetectorExample
             if (faceLandmarkDetector != null)
                 faceLandmarkDetector.Dispose();
 
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL
             if (getFilePath_Coroutine != null)
             {
                 StopCoroutine(getFilePath_Coroutine);

@@ -1,8 +1,7 @@
-﻿using UnityEngine;
+﻿using DlibFaceLandmarkDetector.UnityUtils;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Collections;
-using DlibFaceLandmarkDetector.UnityUtils;
 
 namespace DlibFaceLandmarkDetectorExample
 {

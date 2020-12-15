@@ -3,6 +3,7 @@
 using DlibFaceLandmarkDetector;
 using OpenCVForUnity.Calib3dModule;
 using OpenCVForUnity.CoreModule;
+using OpenCVForUnity.ImgprocModule;
 using OpenCVForUnity.UnityUtils;
 using OpenCVForUnity.UnityUtils.Helper;
 using System;
@@ -270,7 +271,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         string dlibShapePredictorFilePath;
 
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL
         IEnumerator getFilePath_Coroutine;
 #endif
 
@@ -292,14 +293,15 @@ namespace DlibFaceLandmarkDetectorExample
 
 
             dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
-#if UNITY_WEBGL && !UNITY_EDITOR
-            getFilePath_Coroutine = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
+#if UNITY_WEBGL
+            getFilePath_Coroutine = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsync(dlibShapePredictorFileName, (result) =>
+            {
                 getFilePath_Coroutine = null;
 
                 dlibShapePredictorFilePath = result;
-                Run ();
+                Run();
             });
-            StartCoroutine (getFilePath_Coroutine);
+            StartCoroutine(getFilePath_Coroutine);
 #else
             dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath(dlibShapePredictorFileName);
             Run();
@@ -351,10 +353,6 @@ namespace DlibFaceLandmarkDetectorExample
 
             faceLandmarkDetector = new FaceLandmarkDetector(dlibShapePredictorFilePath);
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-            // Avoids the front camera low light issue that occurs in only some Android devices (e.g. Google Pixel, Pixel2).
-            webCamTextureToMatHelper.avoidAndroidFrontCameraLowLightIssue = true;
-#endif
             webCamTextureToMatHelper.Initialize();
         }
 
@@ -368,7 +366,7 @@ namespace DlibFaceLandmarkDetectorExample
             Mat webCamTextureMat = webCamTextureToMatHelper.GetMat();
 
             texture = new Texture2D(webCamTextureMat.cols(), webCamTextureMat.rows(), TextureFormat.RGBA32, false);
-            OpenCVForUnity.UnityUtils.Utils.fastMatToTexture2D(webCamTextureMat, texture);
+            Utils.fastMatToTexture2D(webCamTextureMat, texture);
 
             gameObject.GetComponent<Renderer>().material.mainTexture = texture;
 
@@ -509,6 +507,11 @@ namespace DlibFaceLandmarkDetectorExample
         public void OnWebCamTextureToMatHelperErrorOccurred(WebCamTextureToMatHelper.ErrorCode errorCode)
         {
             Debug.Log("OnWebCamTextureToMatHelperErrorOccurred " + errorCode);
+
+            if (fpsMonitor != null)
+            {
+                fpsMonitor.consoleText = "ErrorCode: " + errorCode;
+            }
         }
 
         // Update is called once per frame
@@ -516,8 +519,6 @@ namespace DlibFaceLandmarkDetectorExample
         {
             if (webCamTextureToMatHelper.IsPlaying() && webCamTextureToMatHelper.DidUpdateThisFrame())
             {
-
-
                 Mat rgbaMat = webCamTextureToMatHelper.GetMat();
 
                 // detect faces on the downscale image
@@ -786,7 +787,7 @@ namespace DlibFaceLandmarkDetectorExample
                 }
                 //Imgproc.putText (rgbaMat, "W:" + rgbaMat.width () + " H:" + rgbaMat.height () + " SO:" + Screen.orientation, new Point (5, rgbaMat.rows () - 10), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255, 255), 1, Imgproc.LINE_AA, false);
 
-                OpenCVForUnity.UnityUtils.Utils.fastMatToTexture2D(rgbaMat, texture);
+                Utils.fastMatToTexture2D(rgbaMat, texture);
             }
         }
 
@@ -795,19 +796,20 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         void OnDestroy()
         {
-            if (imageOptimizationHelper != null)
-                imageOptimizationHelper.Dispose();
-
             if (webCamTextureToMatHelper != null)
                 webCamTextureToMatHelper.Dispose();
+
+            if (imageOptimizationHelper != null)
+                imageOptimizationHelper.Dispose();
 
             if (faceLandmarkDetector != null)
                 faceLandmarkDetector.Dispose();
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-            if (getFilePath_Coroutine != null) {
-                StopCoroutine (getFilePath_Coroutine);
-                ((IDisposable)getFilePath_Coroutine).Dispose ();
+#if UNITY_WEBGL
+            if (getFilePath_Coroutine != null)
+            {
+                StopCoroutine(getFilePath_Coroutine);
+                ((IDisposable)getFilePath_Coroutine).Dispose();
             }
 #endif
         }

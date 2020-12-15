@@ -1,10 +1,10 @@
-﻿using System;
+﻿using DlibFaceLandmarkDetector;
+using DlibFaceLandmarkDetector.UnityUtils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using DlibFaceLandmarkDetector.UnityUtils;
-using DlibFaceLandmarkDetector;
 
 namespace DlibFaceLandmarkDetectorExample
 {
@@ -44,7 +44,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         FpsMonitor fpsMonitor;
 
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL
         IEnumerator getFilePath_Coroutine;
 #endif
 
@@ -54,14 +54,15 @@ namespace DlibFaceLandmarkDetectorExample
             fpsMonitor = GetComponent<FpsMonitor>();
 
             dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
-#if UNITY_WEBGL && !UNITY_EDITOR
-            getFilePath_Coroutine = Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
+#if UNITY_WEBGL
+            getFilePath_Coroutine = Utils.getFilePathAsync(dlibShapePredictorFileName, (result) =>
+            {
                 getFilePath_Coroutine = null;
 
                 dlibShapePredictorFilePath = result;
-                Run ();
+                Run();
             });
-            StartCoroutine (getFilePath_Coroutine);
+            StartCoroutine(getFilePath_Coroutine);
 #else
             dlibShapePredictorFilePath = Utils.getFilePath(dlibShapePredictorFileName);
             Run();
@@ -186,10 +187,11 @@ namespace DlibFaceLandmarkDetectorExample
             if (faceLandmarkDetector != null)
                 faceLandmarkDetector.Dispose();
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-            if (getFilePath_Coroutine != null) {
-                StopCoroutine (getFilePath_Coroutine);
-                ((IDisposable)getFilePath_Coroutine).Dispose ();
+#if UNITY_WEBGL
+            if (getFilePath_Coroutine != null)
+            {
+                StopCoroutine(getFilePath_Coroutine);
+                ((IDisposable)getFilePath_Coroutine).Dispose();
             }
 #endif
         }

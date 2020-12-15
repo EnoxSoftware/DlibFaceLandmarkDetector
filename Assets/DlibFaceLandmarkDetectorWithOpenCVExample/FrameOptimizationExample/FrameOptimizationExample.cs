@@ -107,7 +107,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         string dlibShapePredictorFilePath;
 
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL
         IEnumerator getFilePath_Coroutine;
 #endif
 
@@ -124,9 +124,9 @@ namespace DlibFaceLandmarkDetectorExample
             webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper>();
 
             dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
-#if UNITY_WEBGL && !UNITY_EDITOR
-            getFilePath_Coroutine = GetFilePath ();
-            StartCoroutine (getFilePath_Coroutine);
+#if UNITY_WEBGL
+            getFilePath_Coroutine = GetFilePath();
+            StartCoroutine(getFilePath_Coroutine);
 #else
             haarcascade_frontalface_alt_xml_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath("haarcascade_frontalface_alt.xml");
             dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath(dlibShapePredictorFileName);
@@ -134,22 +134,24 @@ namespace DlibFaceLandmarkDetectorExample
 #endif
         }
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-        private IEnumerator GetFilePath ()
+#if UNITY_WEBGL
+        private IEnumerator GetFilePath()
         {
-            var getFilePathAsync_0_Coroutine = OpenCVForUnity.UnityUtils.Utils.getFilePathAsync ("haarcascade_frontalface_alt.xml", (result) => {
+            var getFilePathAsync_0_Coroutine = OpenCVForUnity.UnityUtils.Utils.getFilePathAsync("haarcascade_frontalface_alt.xml", (result) =>
+            {
                 haarcascade_frontalface_alt_xml_filepath = result;
             });
             yield return getFilePathAsync_0_Coroutine;
 
-            var getFilePathAsync_1_Coroutine = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
+            var getFilePathAsync_1_Coroutine = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsync(dlibShapePredictorFileName, (result) =>
+            {
                 dlibShapePredictorFilePath = result;
             });
             yield return getFilePathAsync_1_Coroutine;
 
             getFilePath_Coroutine = null;
 
-            Run ();
+            Run();
         }
 #endif
 
@@ -170,10 +172,6 @@ namespace DlibFaceLandmarkDetectorExample
 
             faceLandmarkDetector = new FaceLandmarkDetector(dlibShapePredictorFilePath);
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-            // Avoids the front camera low light issue that occurs in only some Android devices (e.g. Google Pixel, Pixel2).
-            webCamTextureToMatHelper.avoidAndroidFrontCameraLowLightIssue = true;
-#endif
             webCamTextureToMatHelper.Initialize();
         }
 
@@ -254,6 +252,11 @@ namespace DlibFaceLandmarkDetectorExample
         public void OnWebCamTextureToMatHelperErrorOccurred(WebCamTextureToMatHelper.ErrorCode errorCode)
         {
             Debug.Log("OnWebCamTextureToMatHelperErrorOccurred " + errorCode);
+
+            if (fpsMonitor != null)
+            {
+                fpsMonitor.consoleText = "ErrorCode: " + errorCode;
+            }
         }
 
         // Update is called once per frame
@@ -366,10 +369,11 @@ namespace DlibFaceLandmarkDetectorExample
             if (cascade != null)
                 cascade.Dispose();
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-            if (getFilePath_Coroutine != null) {
-                StopCoroutine (getFilePath_Coroutine);
-                ((IDisposable)getFilePath_Coroutine).Dispose ();
+#if UNITY_WEBGL
+            if (getFilePath_Coroutine != null)
+            {
+                StopCoroutine(getFilePath_Coroutine);
+                ((IDisposable)getFilePath_Coroutine).Dispose();
             }
 #endif
         }

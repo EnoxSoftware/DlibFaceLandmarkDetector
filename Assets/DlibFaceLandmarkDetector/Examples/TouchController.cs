@@ -10,15 +10,12 @@ namespace DlibFaceLandmarkDetectorExample
 
         void Update()
         {
-
 #if ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR)
-            
             //Touch
             int touchCount = Input.touchCount;
             
             if (touchCount == 1)
             {
-                
                 Touch t = Input.GetTouch(0);
                 switch (t.phase)
                 {
@@ -32,9 +29,7 @@ namespace DlibFaceLandmarkDetectorExample
                     
                     break;
                 }
-                
             }
-
 #else
             //Mouse
             if (Input.GetMouseButton(0))

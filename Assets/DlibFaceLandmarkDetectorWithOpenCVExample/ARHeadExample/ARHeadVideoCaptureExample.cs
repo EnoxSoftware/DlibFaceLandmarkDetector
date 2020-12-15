@@ -1,16 +1,15 @@
-﻿using System;
+﻿using DlibFaceLandmarkDetector;
+using OpenCVForUnity.Calib3dModule;
+using OpenCVForUnity.CoreModule;
+using OpenCVForUnity.ImgprocModule;
+using OpenCVForUnity.UnityUtils;
+using OpenCVForUnity.UnityUtils.Helper;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using DlibFaceLandmarkDetector;
-using OpenCVForUnity.CoreModule;
-using OpenCVForUnity.VideoioModule;
-using OpenCVForUnity.Calib3dModule;
-using OpenCVForUnity.ImgprocModule;
-using OpenCVForUnity.UnityUtils;
-using VideoCapture = OpenCVForUnity.VideoioModule.VideoCapture;
+using UnityEngine.UI;
 
 namespace DlibFaceLandmarkDetectorExample
 {
@@ -19,6 +18,7 @@ namespace DlibFaceLandmarkDetectorExample
     /// This example was referring to http://www.morethantechnical.com/2012/10/17/head-pose-estimation-with-opencv-opengl-revisited-w-code/
     /// and use effect asset from http://ktk-kumamoto.hatenablog.com/entry/2014/09/14/092400.
     /// </summary>
+    [RequireComponent(typeof(VideoCaptureToMatHelper))]
     public class ARHeadVideoCaptureExample : MonoBehaviour
     {
         /// <summary>
@@ -208,16 +208,6 @@ namespace DlibFaceLandmarkDetectorExample
         Mat tvec;
 
         /// <summary>
-        /// The video capture.
-        /// </summary>
-        VideoCapture capture;
-
-        /// <summary>
-        /// The rgb mat.
-        /// </summary>
-        Mat rgbMat;
-
-        /// <summary>
         /// The texture.
         /// </summary>
         Texture2D texture;
@@ -243,16 +233,16 @@ namespace DlibFaceLandmarkDetectorExample
         string dlibShapePredictorFilePath;
 
         /// <summary>
+        /// The video capture to mat helper.
+        /// </summary>
+        VideoCaptureToMatHelper sourceToMatHelper;
+
+        /// <summary>
         /// VIDEO_FILENAME
         /// </summary>
         protected static readonly string VIDEO_FILENAME = "dance_mjpeg.mjpeg";
 
-        /// <summary>
-        /// video_filepath.
-        /// </summary>
-        string video_filepath;
-
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL
         IEnumerator getFilePath_Coroutine;
 #endif
 
@@ -261,6 +251,8 @@ namespace DlibFaceLandmarkDetectorExample
         {
             fpsMonitor = GetComponent<FpsMonitor>();
 
+            sourceToMatHelper = gameObject.GetComponent<VideoCaptureToMatHelper>();
+
             displayFacePointsToggle.isOn = displayFacePoints;
             displayAxesToggle.isOn = displayAxes;
             displayHeadToggle.isOn = displayHead;
@@ -268,32 +260,27 @@ namespace DlibFaceLandmarkDetectorExample
 
 
             dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
-#if UNITY_WEBGL && !UNITY_EDITOR
-            getFilePath_Coroutine = GetFilePath ();
-            StartCoroutine (getFilePath_Coroutine);
+#if UNITY_WEBGL
+            getFilePath_Coroutine = GetFilePath();
+            StartCoroutine(getFilePath_Coroutine);
 #else
             dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath(dlibShapePredictorFileName);
-            video_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath(VIDEO_FILENAME);
             Run();
 #endif
         }
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-        private IEnumerator GetFilePath ()
+#if UNITY_WEBGL
+        private IEnumerator GetFilePath()
         {
-            var getFilePathAsync_dlibShapePredictorFilePath_Coroutine = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsync (dlibShapePredictorFileName, (result) => {
+            var getFilePathAsync_dlibShapePredictorFilePath_Coroutine = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsync(dlibShapePredictorFileName, (result) =>
+            {
                 dlibShapePredictorFilePath = result;
             });
             yield return getFilePathAsync_dlibShapePredictorFilePath_Coroutine;
 
-            var getFilePathAsync_dance_avi_filepath_Coroutine = OpenCVForUnity.UnityUtils.Utils.getFilePathAsync (VIDEO_FILENAME, (result) => {
-                video_filepath = result;
-            });
-            yield return getFilePathAsync_dance_avi_filepath_Coroutine;
-
             getFilePath_Coroutine = null;
-            
-            Run ();
+
+            Run();
         }
 #endif
 
@@ -340,51 +327,43 @@ namespace DlibFaceLandmarkDetectorExample
 
             imagePoints = new MatOfPoint2f();
 
+
             faceLandmarkDetector = new FaceLandmarkDetector(dlibShapePredictorFilePath);
 
-            rgbMat = new Mat();
+            if (string.IsNullOrEmpty(sourceToMatHelper.requestedVideoFilePath))
+                sourceToMatHelper.requestedVideoFilePath = VIDEO_FILENAME;
+            sourceToMatHelper.outputColorFormat = VideoCaptureToMatHelper.ColorFormat.RGB;
+            sourceToMatHelper.Initialize();
+        }
 
-            capture = new VideoCapture();
-            capture.open(video_filepath);
+        /// <summary>
+        /// Raises the video capture to mat helper initialized event.
+        /// </summary>
+        public void OnVideoCaptureToMatHelperInitialized()
+        {
+            Debug.Log("OnVideoCaptureToMatHelperInitialized");
 
-            if (!capture.isOpened())
-            {
-                Debug.LogError("capture.isOpened() is false. Please copy from “OpenCVForUnity/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
-            }
+            Mat rgbMat = sourceToMatHelper.GetMat();
 
-
-            Debug.Log("CAP_PROP_FORMAT: " + capture.get(Videoio.CAP_PROP_FORMAT));
-            Debug.Log("CAP_PROP_POS_MSEC: " + capture.get(Videoio.CAP_PROP_POS_MSEC));
-            Debug.Log("CAP_PROP_POS_FRAMES: " + capture.get(Videoio.CAP_PROP_POS_FRAMES));
-            Debug.Log("CAP_PROP_POS_AVI_RATIO: " + capture.get(Videoio.CAP_PROP_POS_AVI_RATIO));
-            Debug.Log("CAP_PROP_FRAME_COUNT: " + capture.get(Videoio.CAP_PROP_FRAME_COUNT));
-            Debug.Log("CAP_PROP_FPS: " + capture.get(Videoio.CAP_PROP_FPS));
-            Debug.Log("CAP_PROP_FRAME_WIDTH: " + capture.get(Videoio.CAP_PROP_FRAME_WIDTH));
-            Debug.Log("CAP_PROP_FRAME_HEIGHT: " + capture.get(Videoio.CAP_PROP_FRAME_HEIGHT));
-
-            capture.grab();
-            capture.retrieve(rgbMat, 0);
-            int frameWidth = rgbMat.cols();
-            int frameHeight = rgbMat.rows();
-            texture = new Texture2D(frameWidth, frameHeight, TextureFormat.RGB24, false);
-            gameObject.transform.localScale = new Vector3((float)frameWidth, (float)frameHeight, 1);
-            capture.set(Videoio.CAP_PROP_POS_FRAMES, 0);
+            texture = new Texture2D(rgbMat.cols(), rgbMat.rows(), TextureFormat.RGB24, false);
+            Utils.fastMatToTexture2D(rgbMat, texture);
 
             gameObject.GetComponent<Renderer>().material.mainTexture = texture;
 
+            gameObject.transform.localScale = new Vector3(rgbMat.cols(), rgbMat.rows(), 1);
             Debug.Log("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
 
             if (fpsMonitor != null)
             {
                 fpsMonitor.Add("dlib shape predictor", dlibShapePredictorFileName);
-                fpsMonitor.Add("width", frameWidth.ToString());
-                fpsMonitor.Add("height", frameHeight.ToString());
+                fpsMonitor.Add("width", sourceToMatHelper.GetWidth().ToString());
+                fpsMonitor.Add("height", sourceToMatHelper.GetHeight().ToString());
                 fpsMonitor.Add("orientation", Screen.orientation.ToString());
             }
 
 
-            float width = (float)frameWidth;
-            float height = (float)frameHeight;
+            float width = rgbMat.width();
+            float height = rgbMat.height();
 
             float imageSizeScale = 1.0f;
             float widthScale = (float)Screen.width / width;
@@ -484,24 +463,43 @@ namespace DlibFaceLandmarkDetectorExample
             mouthParticleSystem = mouth.GetComponentsInChildren<ParticleSystem>(true);
         }
 
+        /// <summary>
+        /// Raises the video capture to mat helper disposed event.
+        /// </summary>
+        public void OnVideoCaptureToMatHelperDisposed()
+        {
+            Debug.Log("OnVideoCaptureToMatHelperDisposed");
+
+            if (texture != null)
+            {
+                Texture2D.Destroy(texture);
+                texture = null;
+            }
+
+            camMatrix.Dispose();
+            distCoeffs.Dispose();
+        }
+
+        /// <summary>
+        /// Raises the video capture to mat helper error occurred event.
+        /// </summary>
+        /// <param name="errorCode">Error code.</param>
+        public void OnVideoCaptureToMatHelperErrorOccurred(VideoCaptureToMatHelper.ErrorCode errorCode)
+        {
+            Debug.Log("OnVideoCaptureToMatHelperErrorOccurred " + errorCode);
+
+            if (fpsMonitor != null)
+            {
+                fpsMonitor.consoleText = "ErrorCode: " + errorCode;
+            }
+        }
+
         // Update is called once per frame
         void Update()
         {
-            if (capture == null)
-                return;
-
-            //Loop play
-            if (capture.get(Videoio.CAP_PROP_POS_FRAMES) >= capture.get(Videoio.CAP_PROP_FRAME_COUNT))
-                capture.set(Videoio.CAP_PROP_POS_FRAMES, 0);
-
-            if (capture.grab())
+            if (sourceToMatHelper.IsPlaying() && sourceToMatHelper.DidUpdateThisFrame())
             {
-
-                capture.retrieve(rgbMat, 0);
-
-                Imgproc.cvtColor(rgbMat, rgbMat, Imgproc.COLOR_BGR2RGB);
-                //Debug.Log ("Mat toString " + rgbMat.ToString ());
-
+                Mat rgbMat = sourceToMatHelper.GetMat();
 
                 OpenCVForUnityUtils.SetImage(faceLandmarkDetector, rgbMat);
 
@@ -732,19 +730,12 @@ namespace DlibFaceLandmarkDetectorExample
                         ARUtils.SetTransformFromMatrix(ARGameObject.transform, ref ARM);
                     }
                 }
-            }
-            else
-            {
-                rightEye.SetActive(false);
-                leftEye.SetActive(false);
-                head.SetActive(false);
-                mouth.SetActive(false);
-                axes.SetActive(false);
-            }
 
-            //Imgproc.putText (rgbMat, "W:" + rgbMat.width () + " H:" + rgbMat.height () + " SO:" + Screen.orientation, new Point (5, rgbMat.rows () - 10), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255), 1, Imgproc.LINE_AA, false);
+                //Imgproc.putText (rgbMat, "W:" + rgbMat.width () + " H:" + rgbMat.height () + " SO:" + Screen.orientation, new Point (5, rgbMat.rows () - 10), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar (255, 255, 255), 1, Imgproc.LINE_AA, false);
 
-            OpenCVForUnity.UnityUtils.Utils.fastMatToTexture2D(rgbMat, texture);
+                Utils.fastMatToTexture2D(rgbMat, texture);
+
+            }
         }
 
         /// <summary>
@@ -752,30 +743,17 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         void OnDestroy()
         {
-            if (camMatrix != null)
-                camMatrix.Dispose();
-            if (distCoeffs != null)
-                distCoeffs.Dispose();
-
-            if (capture != null)
-                capture.release();
-
-            if (rgbMat != null)
-                rgbMat.Dispose();
-
-            if (texture != null)
-            {
-                Texture2D.Destroy(texture);
-                texture = null;
-            }
+            if (sourceToMatHelper != null)
+                sourceToMatHelper.Dispose();
 
             if (faceLandmarkDetector != null)
                 faceLandmarkDetector.Dispose();
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-            if (getFilePath_Coroutine != null) {
-                StopCoroutine (getFilePath_Coroutine);
-                ((IDisposable)getFilePath_Coroutine).Dispose ();
+#if UNITY_WEBGL
+            if (getFilePath_Coroutine != null)
+            {
+                StopCoroutine(getFilePath_Coroutine);
+                ((IDisposable)getFilePath_Coroutine).Dispose();
             }
 #endif
         }

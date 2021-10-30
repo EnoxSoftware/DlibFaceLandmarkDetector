@@ -16,7 +16,7 @@ Demo
 - WebGL
 <https://enoxsoftware.github.io/DlibFaceLandmarkDetector/webgl_example/index.html>
 - Android
-<https://play.google.com/store/apps/details?id=com.enoxsoftware.dlibfacelandmarkdetectorexample>
+<https://github.com/EnoxSoftware/OpenCVForUnity/releases>
 
 Manual
 -----

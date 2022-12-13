@@ -1,4 +1,4 @@
-﻿#if !(PLATFORM_LUMIN && !UNITY_EDITOR)
+#if !(PLATFORM_LUMIN && !UNITY_EDITOR)
 
 using DlibFaceLandmarkDetector;
 using OpenCVForUnity.CoreModule;
@@ -100,7 +100,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// The dlib shape predictor file name.
         /// </summary>
-        string dlibShapePredictorFileName = "sp_human_face_68.dat";
+        string dlibShapePredictorFileName = "DlibFaceLandmarkDetector/sp_human_face_68.dat";
 
         /// <summary>
         /// The dlib shape predictor file path.
@@ -128,7 +128,7 @@ namespace DlibFaceLandmarkDetectorExample
             getFilePath_Coroutine = GetFilePath();
             StartCoroutine(getFilePath_Coroutine);
 #else
-            haarcascade_frontalface_alt_xml_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath("haarcascade_frontalface_alt.xml");
+            haarcascade_frontalface_alt_xml_filepath = OpenCVForUnity.UnityUtils.Utils.getFilePath("DlibFaceLandmarkDetector/haarcascade_frontalface_alt.xml");
             dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath(dlibShapePredictorFileName);
             Run();
 #endif
@@ -137,7 +137,7 @@ namespace DlibFaceLandmarkDetectorExample
 #if UNITY_WEBGL
         private IEnumerator GetFilePath()
         {
-            var getFilePathAsync_0_Coroutine = OpenCVForUnity.UnityUtils.Utils.getFilePathAsync("haarcascade_frontalface_alt.xml", (result) =>
+            var getFilePathAsync_0_Coroutine = OpenCVForUnity.UnityUtils.Utils.getFilePathAsync("DlibFaceLandmarkDetector/haarcascade_frontalface_alt.xml", (result) =>
             {
                 haarcascade_frontalface_alt_xml_filepath = result;
             });
@@ -159,14 +159,14 @@ namespace DlibFaceLandmarkDetectorExample
         {
             if (string.IsNullOrEmpty(dlibShapePredictorFilePath))
             {
-                Debug.LogError("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+                Debug.LogError("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/DlibFaceLandmarkDetector/” to “Assets/StreamingAssets/DlibFaceLandmarkDetector/” folder. ");
             }
 
             cascade = new CascadeClassifier(haarcascade_frontalface_alt_xml_filepath);
 #if !UNITY_WSA_10_0
             if (cascade.empty())
             {
-                Debug.LogError("cascade file is not loaded. Please copy from “OpenCVForUnity/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+                Debug.LogError("cascade file is not loaded. Please copy from “OpenCVForUnity/StreamingAssets/DlibFaceLandmarkDetector/” to “Assets/StreamingAssets/DlibFaceLandmarkDetector/” folder. ");
             }
 #endif
 

@@ -1,4 +1,4 @@
-﻿using DlibFaceLandmarkDetector.UnityUtils;
+using DlibFaceLandmarkDetector.UnityUtils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -32,7 +32,7 @@ namespace DlibFaceLandmarkDetectorExample
         {
             get
             {
-                return dlibShapePredictorName.ToString() + ".dat";
+                return "DlibFaceLandmarkDetector/" + dlibShapePredictorName.ToString() + ".dat";
             }
         }
 

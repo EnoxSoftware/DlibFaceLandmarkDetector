@@ -1,4 +1,4 @@
-﻿using DlibFaceLandmarkDetector;
+using DlibFaceLandmarkDetector;
 using OpenCVForUnity.Calib3dModule;
 using OpenCVForUnity.CoreModule;
 using OpenCVForUnity.ImgprocModule;
@@ -225,7 +225,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// The dlib shape predictor file name.
         /// </summary>
-        string dlibShapePredictorFileName = "sp_human_face_68.dat";
+        string dlibShapePredictorFileName = "DlibFaceLandmarkDetector/sp_human_face_68.dat";
 
         /// <summary>
         /// The dlib shape predictor file path.
@@ -240,7 +240,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// VIDEO_FILENAME
         /// </summary>
-        protected static readonly string VIDEO_FILENAME = "dance_mjpeg.mjpeg";
+        protected static readonly string VIDEO_FILENAME = "DlibFaceLandmarkDetector/dance_mjpeg.mjpeg";
 
 #if UNITY_WEBGL
         IEnumerator getFilePath_Coroutine;
@@ -288,7 +288,7 @@ namespace DlibFaceLandmarkDetectorExample
         {
             if (string.IsNullOrEmpty(dlibShapePredictorFilePath))
             {
-                Debug.LogError("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+                Debug.LogError("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/DlibFaceLandmarkDetector/” to “Assets/StreamingAssets/DlibFaceLandmarkDetector/” folder. ");
             }
 
             //set 3d face object points. (right-handed coordinates system)
@@ -402,7 +402,7 @@ namespace DlibFaceLandmarkDetectorExample
             Debug.Log("distCoeffs " + distCoeffs.dump());
 
             // create AR camera P * V Matrix
-            Matrix4x4 P = ARUtils.CalculateProjectionMatrixFromCameraMatrixValues((float)fx, (float)fy, (float)cx, (float)cy, width, height, 0.3f, 2000f);
+            Matrix4x4 P = ARUtils.CalculateProjectionMatrixFromCameraMatrixValues((float)fx, (float)fy, (float)cx, (float)cy, width, height, ARCamera.nearClipPlane, ARCamera.farClipPlane);
             Matrix4x4 V = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1, 1, -1));
             VP = P * V;
 

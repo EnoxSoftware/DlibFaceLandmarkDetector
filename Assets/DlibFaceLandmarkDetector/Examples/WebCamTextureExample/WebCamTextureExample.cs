@@ -1,4 +1,4 @@
-﻿#if !(PLATFORM_LUMIN && !UNITY_EDITOR)
+#if !(PLATFORM_LUMIN && !UNITY_EDITOR)
 
 using DlibFaceLandmarkDetector;
 using DlibFaceLandmarkDetector.UnityUtils;
@@ -126,7 +126,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// The dlib shape predictor file name.
         /// </summary>
-        string dlibShapePredictorFileName = "sp_human_face_68.dat";
+        string dlibShapePredictorFileName = "DlibFaceLandmarkDetector/sp_human_face_68.dat";
 
         /// <summary>
         /// The dlib shape predictor file path.
@@ -164,12 +164,16 @@ namespace DlibFaceLandmarkDetectorExample
         {
             if (string.IsNullOrEmpty(dlibShapePredictorFilePath))
             {
-                Debug.LogError("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+                Debug.LogError("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/DlibFaceLandmarkDetector/” to “Assets/StreamingAssets/DlibFaceLandmarkDetector/” folder. ");
             }
 
             faceLandmarkDetector = new FaceLandmarkDetector(dlibShapePredictorFilePath);
 
             Initialize();
+
+            if (faceLandmarkDetector.GetShapePredictorNumParts() != 68)
+                Debug.LogWarning("The DrawDetectLandmarkResult method does not support ShapePredictorNumParts sizes other than 68 points, so the drawing will be incorrect."
+                    + " If you want to draw the result correctly, we recommend using the OpenCVForUnityUtils.DrawFaceLandmark method.");
         }
 
         /// <summary>

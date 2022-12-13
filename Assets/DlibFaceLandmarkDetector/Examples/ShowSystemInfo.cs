@@ -1,4 +1,4 @@
-﻿using DlibFaceLandmarkDetector.UnityUtils;
+using DlibFaceLandmarkDetector.UnityUtils;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

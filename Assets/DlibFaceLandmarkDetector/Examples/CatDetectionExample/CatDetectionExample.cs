@@ -1,4 +1,4 @@
-﻿using DlibFaceLandmarkDetector;
+using DlibFaceLandmarkDetector;
 using DlibFaceLandmarkDetector.UnityUtils;
 using System;
 using System.Collections;
@@ -27,7 +27,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// OBJECT_DETECTOR_FILENAME
         /// </summary>
-        protected static readonly string OBJECT_DETECTOR_FILENAME = "frontal_cat_face.svm";
+        protected static readonly string OBJECT_DETECTOR_FILENAME = "DlibFaceLandmarkDetector/frontal_cat_face.svm";
 
         /// <summary>
         /// The object_detector_filepath.
@@ -37,7 +37,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// SHAPE_PREDICTOR_FILENAME
         /// </summary>
-        protected static readonly string SHAPE_PREDICTOR_FILENAME = "sp_cat_face_68.dat";
+        protected static readonly string SHAPE_PREDICTOR_FILENAME = "DlibFaceLandmarkDetector/sp_cat_face_68.dat";
 
         /// <summary>
         /// The shape_predictor_filepath.
@@ -88,11 +88,11 @@ namespace DlibFaceLandmarkDetectorExample
         {
             if (string.IsNullOrEmpty(object_detector_filepath))
             {
-                Debug.LogError("object detecter file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+                Debug.LogError("object detecter file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/DlibFaceLandmarkDetector/” to “Assets/StreamingAssets/DlibFaceLandmarkDetector/” folder. ");
             }
             if (string.IsNullOrEmpty(shape_predictor_filepath))
             {
-                Debug.LogError("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/” to “Assets/StreamingAssets/” folder. ");
+                Debug.LogError("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/DlibFaceLandmarkDetector/” to “Assets/StreamingAssets/DlibFaceLandmarkDetector/” folder. ");
             }
 
             Texture2D dstTexture2D = new Texture2D(texture2D.width, texture2D.height, texture2D.format, false);

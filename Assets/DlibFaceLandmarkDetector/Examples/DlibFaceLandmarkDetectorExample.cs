@@ -128,9 +128,9 @@ namespace DlibFaceLandmarkDetectorExample
             SceneManager.LoadScene("WebCamTextureToMatHelperExample");
         }
 
-        public void OnVideoCaptureExampleButtonClick()
+        public void OnVideoCaptureToMatHelperExampleButtonClick()
         {
-            SceneManager.LoadScene("VideoCaptureExample");
+            SceneManager.LoadScene("VideoCaptureToMatHelperExample");
         }
 
         public void OnARHeadWebCamTextureExampleButtonClick()

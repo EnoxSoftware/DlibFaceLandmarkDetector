@@ -227,7 +227,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// Raises the pause button click event.
         /// </summary>
-        public void OnPauseButtonCkick()
+        public void OnPauseButtonClick()
         {
             webCamTextureToMatHelper.Pause();
         }

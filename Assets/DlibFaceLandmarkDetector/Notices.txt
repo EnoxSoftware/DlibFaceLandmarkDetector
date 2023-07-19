@@ -1,6 +1,6 @@
 Dlib FaceLandmark Detector is governed by the Asset Store EULA; however, the following components are governed by the licenses indicated below:
 
-1. Dlib [Boost Software License]
+- Dlib : Boost Software License
 
 Boost Software License - Version 1.0 - August 17th, 2003
 

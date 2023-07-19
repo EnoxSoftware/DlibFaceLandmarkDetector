@@ -16,7 +16,7 @@ namespace DlibFaceLandmarkDetectorExample
     /// An example of detecting face landmarks in VideoCapture images.
     /// </summary>
     [RequireComponent(typeof(VideoCaptureToMatHelper))]
-    public class VideoCaptureExample : MonoBehaviour
+    public class VideoCaptureToMatHelperExample : MonoBehaviour
     {
         /// <summary>
         /// The texture.

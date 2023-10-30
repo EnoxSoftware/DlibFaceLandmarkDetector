@@ -80,8 +80,6 @@ namespace DlibFaceLandmarkDetectorExample
             dict.Add("Build target", "WSA");
 #elif UNITY_WEBGL
             dict.Add("Build target", "WebGL");
-#elif PLATFORM_LUMIN
-            dict.Add("Build target", "LUMIN");
 #else
             dict.Add("Build target", "");
 #endif

@@ -1,5 +1,3 @@
-#if !(PLATFORM_LUMIN && !UNITY_EDITOR)
-
 using DlibFaceLandmarkDetector;
 using DlibFaceLandmarkDetector.UnityUtils;
 using System;
@@ -775,5 +773,3 @@ namespace DlibFaceLandmarkDetectorExample
         }
     }
 }
-
-#endif

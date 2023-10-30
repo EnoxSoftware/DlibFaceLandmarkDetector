@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Dlib FaceLandmark Detector<span id="projectnumber">&#160;1.3.5</span>
+   <div id="projectname">Dlib FaceLandmark Detector<span id="projectnumber">&#160;1.3.6</span>
    </div>
    <div id="projectbrief">Enox Software</div>
   </td>
@@ -111,8 +111,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5948c6f8c6a457b74b65c550d386ab57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a953aa423012f5958443cd86c14b52c64"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#a953aa423012f5958443cd86c14b52c64">SetImage</a> (WebCamTexture webCamTexture)</td></tr>
 <tr class="separator:a953aa423012f5958443cd86c14b52c64"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e1e21492a45be6f0ecd4a8daffa10e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#a9e1e21492a45be6f0ecd4a8daffa10e5">SetImage</a> (WebCamTexture webCamTexture, Color32[] bufferColors)</td></tr>
-<tr class="separator:a9e1e21492a45be6f0ecd4a8daffa10e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0584e1edff51ee88f9df3bd7d7a621d6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#a0584e1edff51ee88f9df3bd7d7a621d6">SetImage</a> (WebCamTexture webCamTexture, Color32[] pixels32Buffer)</td></tr>
+<tr class="separator:a0584e1edff51ee88f9df3bd7d7a621d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a180419f8ab5643c4cf7509ab516f456f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#a180419f8ab5643c4cf7509ab516f456f">SetImage</a> (IntPtr intPtr, int width, int height, int bytesPerPixel)</td></tr>
 <tr class="separator:a180419f8ab5643c4cf7509ab516f456f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45d92bff4700ffebff454654674415ea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#a45d92bff4700ffebff454654674415ea">SetImage</a> (IntPtr intPtr, int width, int height, int bytesPerPixel, bool flip)</td></tr>
@@ -149,6 +149,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a7f80df65d948942d62e833b571038f49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a544a4ad794bd44d5f00e067178f89014"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#a544a4ad794bd44d5f00e067178f89014">DrawDetectResult</a> (Texture2D texture2D, int r, int g, int b, int a, int thickness, bool updateMipmaps=false, bool makeNoLongerReadable=false)</td></tr>
 <tr class="separator:a544a4ad794bd44d5f00e067178f89014"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9ec7719e0bdec1d7baa0433fee61e85"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#ae9ec7719e0bdec1d7baa0433fee61e85">DrawDetectResult</a> (Texture2D texture2D, int r, int g, int b, int a, int thickness, Color32[] pixels32Buffer, byte[] rawTextureDataBuffer=null, bool updateMipmaps=false, bool makeNoLongerReadable=false)</td></tr>
+<tr class="separator:ae9ec7719e0bdec1d7baa0433fee61e85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebff92d37754fff9c801ef9ef06db922"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#aebff92d37754fff9c801ef9ef06db922">DrawDetectResult</a> (IntPtr intPtr, int width, int height, int bytesPerPixel, int r, int g, int b, int a, int thickness)</td></tr>
 <tr class="separator:aebff92d37754fff9c801ef9ef06db922"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa42107c49e8b6335efb90f9371761404"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#aa42107c49e8b6335efb90f9371761404">DrawDetectResult</a> (IntPtr intPtr, int width, int height, int bytesPerPixel, bool flip, int r, int g, int b, int a, int thickness)</td></tr>
@@ -159,6 +161,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4c5f766a00dae867962d0ca4500ad405"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a409fcf28dff50d37c6f542dba3e51c6e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#a409fcf28dff50d37c6f542dba3e51c6e">DrawDetectLandmarkResult</a> (Texture2D texture2D, int r, int g, int b, int a, bool updateMipmaps=false, bool makeNoLongerReadable=false)</td></tr>
 <tr class="separator:a409fcf28dff50d37c6f542dba3e51c6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39a4d67b59debef724b5d08f10a72999"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#a39a4d67b59debef724b5d08f10a72999">DrawDetectLandmarkResult</a> (Texture2D texture2D, int r, int g, int b, int a, Color32[] pixels32Buffer, byte[] rawTextureDataBuffer=null, bool updateMipmaps=false, bool makeNoLongerReadable=false)</td></tr>
+<tr class="separator:a39a4d67b59debef724b5d08f10a72999"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ad64022ee18c8d3672d71ff2e9eec1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#a4ad64022ee18c8d3672d71ff2e9eec1b">DrawDetectLandmarkResult</a> (IntPtr intPtr, int width, int height, int bytesPerPixel, int r, int g, int b, int a)</td></tr>
 <tr class="separator:a4ad64022ee18c8d3672d71ff2e9eec1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a46b38bdd91c9453f4c46200b95a49cc0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#a46b38bdd91c9453f4c46200b95a49cc0">DrawDetectLandmarkResult</a> (IntPtr intPtr, int width, int height, int bytesPerPixel, bool flip, int r, int g, int b, int a)</td></tr>
@@ -593,7 +597,7 @@ This instance uses default frontal face detector.</p>
 </div>
 </div>
 <a id="a46b38bdd91c9453f4c46200b95a49cc0" name="a46b38bdd91c9453f4c46200b95a49cc0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a46b38bdd91c9453f4c46200b95a49cc0">&#9670;&#160;</a></span>DrawDetectLandmarkResult() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a46b38bdd91c9453f4c46200b95a49cc0">&#9670;&#160;</a></span>DrawDetectLandmarkResult() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -678,7 +682,7 @@ This instance uses default frontal face detector.</p>
 </div>
 </div>
 <a id="a4ad64022ee18c8d3672d71ff2e9eec1b" name="a4ad64022ee18c8d3672d71ff2e9eec1b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4ad64022ee18c8d3672d71ff2e9eec1b">&#9670;&#160;</a></span>DrawDetectLandmarkResult() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ad64022ee18c8d3672d71ff2e9eec1b">&#9670;&#160;</a></span>DrawDetectLandmarkResult() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -756,7 +760,7 @@ This instance uses default frontal face detector.</p>
 </div>
 </div>
 <a id="a409fcf28dff50d37c6f542dba3e51c6e" name="a409fcf28dff50d37c6f542dba3e51c6e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a409fcf28dff50d37c6f542dba3e51c6e">&#9670;&#160;</a></span>DrawDetectLandmarkResult() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a409fcf28dff50d37c6f542dba3e51c6e">&#9670;&#160;</a></span>DrawDetectLandmarkResult() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -816,8 +820,94 @@ This instance uses default frontal face detector.</p>
     <tr><td class="paramname">texture2D</td><td></td></tr>
     <tr><td class="paramname">r</td><td></td></tr>
     <tr><td class="paramname">g</td><td></td></tr>
+    <tr><td class="paramname">a</td><td></td></tr>
+    <tr><td class="paramname">updateMipmaps</td><td>when set to true, mipmap levels are recalculated. </td></tr>
+    <tr><td class="paramname">makeNoLongerReadable</td><td>when set to true, system memory copy of a texture is released. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a39a4d67b59debef724b5d08f10a72999" name="a39a4d67b59debef724b5d08f10a72999"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39a4d67b59debef724b5d08f10a72999">&#9670;&#160;</a></span>DrawDetectLandmarkResult() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DlibFaceLandmarkDetector.FaceLandmarkDetector.DrawDetectLandmarkResult </td>
+          <td>(</td>
+          <td class="paramtype">Texture2D&#160;</td>
+          <td class="paramname"><em>texture2D</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>g</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Color32[]&#160;</td>
+          <td class="paramname"><em>pixels32Buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">byte[]&#160;</td>
+          <td class="paramname"><em>rawTextureDataBuffer</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>updateMipmaps</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>makeNoLongerReadable</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Draws Detect Landmark Result.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">texture2D</td><td>Processing speed is fastest when TextureFormat is RGBA32, RGB24, or Alpha8. </td></tr>
+    <tr><td class="paramname">r</td><td></td></tr>
+    <tr><td class="paramname">g</td><td></td></tr>
     <tr><td class="paramname">b</td><td></td></tr>
     <tr><td class="paramname">a</td><td></td></tr>
+    <tr><td class="paramname">pixels32Buffer</td><td>the optional array to receive pixels32 data. You can optionally pass in an array of Color32s to avoid allocating new memory each frame. The array needs to be initialized to a length matching width * height of the texture. (<a href="http://docs.unity3d.com/ScriptReference/WebCamTexture.GetPixels32.html">http://docs.unity3d.com/ScriptReference/WebCamTexture.GetPixels32.html</a>) </td></tr>
+    <tr><td class="paramname">rawTextureDataBuffer</td><td>the optional array to receive raw texture data. You can optionally pass in an array of bytes to avoid allocating new memory each frame. The array needs to be initialized to a length matching raw data of the texture. (<a href="https://docs.unity3d.com/ScriptReference/Texture2D.GetRawTextureData.html">https://docs.unity3d.com/ScriptReference/Texture2D.GetRawTextureData.html</a>) </td></tr>
+    <tr><td class="paramname">updateMipmaps</td><td>when set to true, mipmap levels are recalculated. </td></tr>
+    <tr><td class="paramname">makeNoLongerReadable</td><td>when set to true, system memory copy of a texture is released. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1002,7 +1092,7 @@ This instance uses default frontal face detector.</p>
 </div>
 </div>
 <a id="aa42107c49e8b6335efb90f9371761404" name="aa42107c49e8b6335efb90f9371761404"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa42107c49e8b6335efb90f9371761404">&#9670;&#160;</a></span>DrawDetectResult() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa42107c49e8b6335efb90f9371761404">&#9670;&#160;</a></span>DrawDetectResult() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1094,7 +1184,7 @@ This instance uses default frontal face detector.</p>
 </div>
 </div>
 <a id="aebff92d37754fff9c801ef9ef06db922" name="aebff92d37754fff9c801ef9ef06db922"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aebff92d37754fff9c801ef9ef06db922">&#9670;&#160;</a></span>DrawDetectResult() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aebff92d37754fff9c801ef9ef06db922">&#9670;&#160;</a></span>DrawDetectResult() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1178,7 +1268,7 @@ This instance uses default frontal face detector.</p>
 </div>
 </div>
 <a id="a544a4ad794bd44d5f00e067178f89014" name="a544a4ad794bd44d5f00e067178f89014"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a544a4ad794bd44d5f00e067178f89014">&#9670;&#160;</a></span>DrawDetectResult() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a544a4ad794bd44d5f00e067178f89014">&#9670;&#160;</a></span>DrawDetectResult() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1247,6 +1337,100 @@ This instance uses default frontal face detector.</p>
     <tr><td class="paramname">b</td><td></td></tr>
     <tr><td class="paramname">a</td><td></td></tr>
     <tr><td class="paramname">thickness</td><td></td></tr>
+    <tr><td class="paramname">updateMipmaps</td><td>when set to true, mipmap levels are recalculated. </td></tr>
+    <tr><td class="paramname">makeNoLongerReadable</td><td>when set to true, system memory copy of a texture is released. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae9ec7719e0bdec1d7baa0433fee61e85" name="ae9ec7719e0bdec1d7baa0433fee61e85"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9ec7719e0bdec1d7baa0433fee61e85">&#9670;&#160;</a></span>DrawDetectResult() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DlibFaceLandmarkDetector.FaceLandmarkDetector.DrawDetectResult </td>
+          <td>(</td>
+          <td class="paramtype">Texture2D&#160;</td>
+          <td class="paramname"><em>texture2D</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>g</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>thickness</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Color32[]&#160;</td>
+          <td class="paramname"><em>pixels32Buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">byte[]&#160;</td>
+          <td class="paramname"><em>rawTextureDataBuffer</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>updateMipmaps</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>makeNoLongerReadable</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Draws Detect Result.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">texture2D</td><td>Processing speed is fastest when TextureFormat is RGBA32, RGB24, or Alpha8. </td></tr>
+    <tr><td class="paramname">r</td><td></td></tr>
+    <tr><td class="paramname">g</td><td></td></tr>
+    <tr><td class="paramname">b</td><td></td></tr>
+    <tr><td class="paramname">a</td><td></td></tr>
+    <tr><td class="paramname">thickness</td><td></td></tr>
+    <tr><td class="paramname">pixels32Buffer</td><td>the optional array to receive pixels32 data. You can optionally pass in an array of Color32s to avoid allocating new memory each frame. The array needs to be initialized to a length matching width * height of the texture. (<a href="http://docs.unity3d.com/ScriptReference/WebCamTexture.GetPixels32.html">http://docs.unity3d.com/ScriptReference/WebCamTexture.GetPixels32.html</a>) </td></tr>
+    <tr><td class="paramname">rawTextureDataBuffer</td><td>the optional array to receive raw texture data. You can optionally pass in an array of bytes to avoid allocating new memory each frame. The array needs to be initialized to a length matching raw data of the texture. (<a href="https://docs.unity3d.com/ScriptReference/Texture2D.GetRawTextureData.html">https://docs.unity3d.com/ScriptReference/Texture2D.GetRawTextureData.html</a>) </td></tr>
+    <tr><td class="paramname">updateMipmaps</td><td>when set to true, mipmap levels are recalculated. </td></tr>
+    <tr><td class="paramname">makeNoLongerReadable</td><td>when set to true, system memory copy of a texture is released. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1628,7 +1812,7 @@ This instance uses default frontal face detector.</p>
 <p>Sets Image from Texture2D.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">texture2D</td><td></td></tr>
+    <tr><td class="paramname">texture2D</td><td>Processing speed is fastest when TextureFormat is RGBA32, RGB24, or Alpha8. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1660,8 +1844,8 @@ This instance uses default frontal face detector.</p>
 
 </div>
 </div>
-<a id="a9e1e21492a45be6f0ecd4a8daffa10e5" name="a9e1e21492a45be6f0ecd4a8daffa10e5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9e1e21492a45be6f0ecd4a8daffa10e5">&#9670;&#160;</a></span>SetImage() <span class="overload">[5/5]</span></h2>
+<a id="a0584e1edff51ee88f9df3bd7d7a621d6" name="a0584e1edff51ee88f9df3bd7d7a621d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0584e1edff51ee88f9df3bd7d7a621d6">&#9670;&#160;</a></span>SetImage() <span class="overload">[5/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1676,7 +1860,7 @@ This instance uses default frontal face detector.</p>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">Color32[]&#160;</td>
-          <td class="paramname"><em>bufferColors</em>&#160;</td>
+          <td class="paramname"><em>pixels32Buffer</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1689,7 +1873,7 @@ This instance uses default frontal face detector.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">webCamTexture</td><td></td></tr>
-    <tr><td class="paramname">bufferColors</td><td>the optional array to receive pixel data. You can optionally pass in an array of Color32s to use in colors to avoid allocating new memory each frame. The array needs to be initialized to a length matching width * height of the texture.(<a href="http://docs.unity3d.com/ScriptReference/WebCamTexture.GetPixels32.html">http://docs.unity3d.com/ScriptReference/WebCamTexture.GetPixels32.html</a>) </td></tr>
+    <tr><td class="paramname">pixels32Buffer</td><td>the optional array to receive pixel data. You can optionally pass in an array of Color32s to avoid allocating new memory each frame. The array needs to be initialized to a length matching width * height of the texture.(<a href="http://docs.unity3d.com/ScriptReference/WebCamTexture.GetPixels32.html">http://docs.unity3d.com/ScriptReference/WebCamTexture.GetPixels32.html</a>) </td></tr>
   </table>
   </dd>
 </dl>
@@ -1825,7 +2009,7 @@ This instance uses default frontal face detector.</p>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 15 2023 03:30:21 for Dlib FaceLandmark Detector by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6
+Generated on Sat Oct 28 2023 23:31:34 for Dlib FaceLandmark Detector by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6
 </small></address>
 </body>
 </html>

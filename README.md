@@ -24,7 +24,7 @@ Manual
 
 API Reference
 -----
-<https://enoxsoftware.github.io/DlibFaceLandmarkDetector/doc/html/index.html>
+<https://enoxsoftware.github.io/DlibFaceLandmarkDetector/doc/html/annotated.html>
 
 Official Site
 -----

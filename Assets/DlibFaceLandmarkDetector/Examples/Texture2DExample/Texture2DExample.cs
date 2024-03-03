@@ -117,7 +117,7 @@ namespace DlibFaceLandmarkDetectorExample
             }
 
             if (faceLandmarkDetector.GetShapePredictorNumParts() != 68)
-                Debug.LogWarning("The DrawDetectLandmarkResult method does not support ShapePredictorNumParts sizes other than 68 points, so the drawing will be incorrect." 
+                Debug.LogWarning("The DrawDetectLandmarkResult method does not support ShapePredictorNumParts sizes other than 68 points, so the drawing will be incorrect."
                     + " If you want to draw the result correctly, we recommend using the OpenCVForUnityUtils.DrawFaceLandmark method.");
 
             //draw face rect

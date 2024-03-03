@@ -94,7 +94,7 @@ namespace DlibFaceLandmarkDetectorExample
             dict.Add("Scripting backend", "");
 #endif
 
-#if DLIB_USE_UNSAFE_CODE
+#if !DLIB_DONT_USE_UNSAFE_CODE
             dict.Add("Allow 'unsafe' Code", "Enabled");
 #else
             dict.Add("Allow 'unsafe' Code", "Disabled");

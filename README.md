@@ -13,8 +13,9 @@ Setup Tutorial & Demo Video
 
 Demo
 -----
-- WebGL
-<https://enoxsoftware.github.io/DlibFaceLandmarkDetector/webgl_example/index.html>
+- WebGL <https://enoxsoftware.github.io/DlibFaceLandmarkDetector/webgl_example/index.html>
+- WebGL (threads) <https://enoxsoftware.github.io/DlibFaceLandmarkDetector/webgl_example_threads/index.html>
+- WebGL (threads, simd) <https://enoxsoftware.github.io/DlibFaceLandmarkDetector/webgl_example_threads_simd/index.html>
 - Android
 <https://github.com/EnoxSoftware/DlibFaceLandmarkDetector/releases>
 

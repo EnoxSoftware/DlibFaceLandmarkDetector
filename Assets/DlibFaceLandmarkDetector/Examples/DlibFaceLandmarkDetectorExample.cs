@@ -1,5 +1,6 @@
 using DlibFaceLandmarkDetector.UnityUtils;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -135,12 +136,26 @@ namespace DlibFaceLandmarkDetectorExample
 
         public void OnARHeadWebCamTextureExampleButtonClick()
         {
-            SceneManager.LoadScene("ARHeadWebCamTextureExample");
+            if (GraphicsSettings.defaultRenderPipeline == null)
+            {
+                SceneManager.LoadScene("ARHeadWebCamTextureExample_Built-in");
+            }
+            else
+            {
+                SceneManager.LoadScene("ARHeadWebCamTextureExample_SRP");
+            }
         }
 
         public void OnARHeadVideoCaptureExampleButtonClick()
         {
-            SceneManager.LoadScene("ARHeadVideoCaptureExample");
+            if (GraphicsSettings.defaultRenderPipeline == null)
+            {
+                SceneManager.LoadScene("ARHeadVideoCaptureExample_Built-in");
+            }
+            else
+            {
+                SceneManager.LoadScene("ARHeadVideoCaptureExample_SRP");
+            }
         }
 
         public void OnFrameOptimizationExampleButtonClick()

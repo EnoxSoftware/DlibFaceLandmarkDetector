@@ -3,8 +3,10 @@ using DlibFaceLandmarkDetector.UnityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace DlibFaceLandmarkDetectorExample
 {
@@ -14,6 +16,14 @@ namespace DlibFaceLandmarkDetectorExample
     /// </summary>
     public class CatDetectionExample : MonoBehaviour
     {
+        [Header("Output")]
+        /// <summary>
+        /// The RawImage for previewing the result.
+        /// </summary>
+        public RawImage resultPreview;
+
+        [Space(10)]
+
         /// <summary>
         /// The texture2D.
         /// </summary>
@@ -44,45 +54,28 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         string shape_predictor_filepath;
 
-#if UNITY_WEBGL
-        IEnumerator getFilePath_Coroutine;
-#endif
+        /// <summary>
+        /// The CancellationTokenSource.
+        /// </summary>
+        CancellationTokenSource cts = new CancellationTokenSource();
 
         // Use this for initialization
-        void Start()
+        async void Start()
         {
             fpsMonitor = GetComponent<FpsMonitor>();
 
-#if UNITY_WEBGL
-            getFilePath_Coroutine = GetFilePath();
-            StartCoroutine(getFilePath_Coroutine);
-#else
-            object_detector_filepath = Utils.getFilePath(OBJECT_DETECTOR_FILENAME);
-            shape_predictor_filepath = Utils.getFilePath(SHAPE_PREDICTOR_FILENAME);
-            Run();
-#endif
-        }
+            // Asynchronously retrieves the readable file path from the StreamingAssets directory.
+            if (fpsMonitor != null)
+                fpsMonitor.consoleText = "Preparing file access...";
 
-#if UNITY_WEBGL
-        private IEnumerator GetFilePath()
-        {
-            var getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine = Utils.getFilePathAsync(OBJECT_DETECTOR_FILENAME, (result) =>
-            {
-                object_detector_filepath = result;
-            });
-            yield return getFilePathAsync_frontal_cat_face_svm_filepath_Coroutine;
+            object_detector_filepath = await Utils.getFilePathAsyncTask(OBJECT_DETECTOR_FILENAME, cancellationToken: cts.Token);
+            shape_predictor_filepath = await Utils.getFilePathAsyncTask(SHAPE_PREDICTOR_FILENAME, cancellationToken: cts.Token);
 
-            var getFilePathAsync_sp_cat_face_68_dat_filepath_Coroutine = Utils.getFilePathAsync(SHAPE_PREDICTOR_FILENAME, (result) =>
-            {
-                shape_predictor_filepath = result;
-            });
-            yield return getFilePathAsync_sp_cat_face_68_dat_filepath_Coroutine;
-
-            getFilePath_Coroutine = null;
+            if (fpsMonitor != null)
+                fpsMonitor.consoleText = "";
 
             Run();
         }
-#endif
 
         private void Run()
         {
@@ -98,23 +91,6 @@ namespace DlibFaceLandmarkDetectorExample
             Texture2D dstTexture2D = new Texture2D(texture2D.width, texture2D.height, texture2D.format, false);
             dstTexture2D.SetPixels32(texture2D.GetPixels32());
             dstTexture2D.Apply();
-
-            gameObject.transform.localScale = new Vector3(texture2D.width, texture2D.height, 1);
-            Debug.Log("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
-
-            float width = gameObject.transform.localScale.x;
-            float height = gameObject.transform.localScale.y;
-
-            float widthScale = (float)Screen.width / width;
-            float heightScale = (float)Screen.height / height;
-            if (widthScale < heightScale)
-            {
-                Camera.main.orthographicSize = (width * (float)Screen.height / (float)Screen.width) / 2;
-            }
-            else
-            {
-                Camera.main.orthographicSize = height / 2;
-            }
 
             FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector(object_detector_filepath, shape_predictor_filepath);
             faceLandmarkDetector.SetImage(texture2D);
@@ -144,14 +120,16 @@ namespace DlibFaceLandmarkDetectorExample
 
             faceLandmarkDetector.Dispose();
 
-            gameObject.GetComponent<Renderer>().material.mainTexture = dstTexture2D;
+            resultPreview.texture = dstTexture2D;
+            resultPreview.GetComponent<AspectRatioFitter>().aspectRatio = (float)dstTexture2D.width / dstTexture2D.height;
+
 
             if (fpsMonitor != null)
             {
                 fpsMonitor.Add("dlib object detector", "frontal_cat_face.svm");
                 fpsMonitor.Add("dlib shape predictor", "sp_cat_face_68.dat");
-                fpsMonitor.Add("width", width.ToString());
-                fpsMonitor.Add("height", height.ToString());
+                fpsMonitor.Add("width", dstTexture2D.width.ToString());
+                fpsMonitor.Add("height", dstTexture2D.height.ToString());
                 fpsMonitor.Add("orientation", Screen.orientation.ToString());
             }
         }
@@ -167,13 +145,8 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         void OnDestroy()
         {
-#if UNITY_WEBGL
-            if (getFilePath_Coroutine != null)
-            {
-                StopCoroutine(getFilePath_Coroutine);
-                ((IDisposable)getFilePath_Coroutine).Dispose();
-            }
-#endif
+            if (cts != null)
+                cts.Dispose();
         }
 
         /// <summary>

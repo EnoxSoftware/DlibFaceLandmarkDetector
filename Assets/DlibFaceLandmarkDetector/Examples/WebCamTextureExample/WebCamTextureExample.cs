@@ -3,6 +3,7 @@ using DlibFaceLandmarkDetector.UnityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -15,6 +16,14 @@ namespace DlibFaceLandmarkDetectorExample
     /// </summary>
     public class WebCamTextureExample : MonoBehaviour
     {
+        [Header("Output")]
+        /// <summary>
+        /// The RawImage for previewing the result.
+        /// </summary>
+        public RawImage resultPreview;
+
+        [Space(10)]
+
         /// <summary>
         /// Set the name of the device to use.
         /// </summary>
@@ -131,31 +140,28 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         string dlibShapePredictorFilePath;
 
-#if UNITY_WEBGL
-        IEnumerator getFilePath_Coroutine;
-#endif
+        /// <summary>
+        /// The CancellationTokenSource.
+        /// </summary>
+        CancellationTokenSource cts = new CancellationTokenSource();
 
         // Use this for initialization
-        void Start()
+        async void Start()
         {
             fpsMonitor = GetComponent<FpsMonitor>();
 
-            adjustPixelsDirectionToggle.isOn = adjustPixelsDirection;
-
             dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
-#if UNITY_WEBGL
-            getFilePath_Coroutine = Utils.getFilePathAsync(dlibShapePredictorFileName, (result) =>
-            {
-                getFilePath_Coroutine = null;
 
-                dlibShapePredictorFilePath = result;
-                Run();
-            });
-            StartCoroutine(getFilePath_Coroutine);
-#else
-            dlibShapePredictorFilePath = Utils.getFilePath(dlibShapePredictorFileName);
+            // Asynchronously retrieves the readable file path from the StreamingAssets directory.
+            if (fpsMonitor != null)
+                fpsMonitor.consoleText = "Preparing file access...";
+
+            dlibShapePredictorFilePath = await Utils.getFilePathAsyncTask(dlibShapePredictorFileName, cancellationToken: cts.Token);
+
+            if (fpsMonitor != null)
+                fpsMonitor.consoleText = "";
+
             Run();
-#endif
         }
 
         private void Run()
@@ -213,7 +219,7 @@ namespace DlibFaceLandmarkDetectorExample
             isInitWaiting = true;
 
             // Checks camera permission state.
-#if UNITY_IOS && UNITY_2018_1_OR_NEWER
+#if (UNITY_IOS || UNITY_WEBGL) && UNITY_2018_1_OR_NEWER
             UserAuthorization mode = UserAuthorization.WebCam;
             if (!Application.HasUserAuthorization(mode))
             {
@@ -275,10 +281,18 @@ namespace DlibFaceLandmarkDetectorExample
             }
 #endif
 
-            // Creates the camera
+            // Creates a WebCamTexture with settings closest to the requested name, resolution, and frame rate.
             var devices = WebCamTexture.devices;
+            if (devices.Length == 0)
+            {
+                Debug.LogError("Camera device does not exist.");
+                isInitWaiting = false;
+                yield break;
+            }
+
             if (!String.IsNullOrEmpty(requestedDeviceName))
             {
+                // Try to parse requestedDeviceName as an index
                 int requestedDeviceIndex = -1;
                 if (Int32.TryParse(requestedDeviceName, out requestedDeviceIndex))
                 {
@@ -290,6 +304,7 @@ namespace DlibFaceLandmarkDetectorExample
                 }
                 else
                 {
+                    // Search for a device with a matching name
                     for (int cameraIndex = 0; cameraIndex < devices.Length; cameraIndex++)
                     {
                         if (devices[cameraIndex].name == requestedDeviceName)
@@ -306,37 +321,35 @@ namespace DlibFaceLandmarkDetectorExample
 
             if (webCamTexture == null)
             {
-                // Checks how many and which cameras are available on the device
-                for (int cameraIndex = 0; cameraIndex < devices.Length; cameraIndex++)
+                var prioritizedKinds = new WebCamKind[]
                 {
-#if UNITY_2018_3_OR_NEWER
-                    if (devices[cameraIndex].kind != WebCamKind.ColorAndDepth && devices[cameraIndex].isFrontFacing == requestedIsFrontFacing)
-#else
-                    if (devices[cameraIndex].isFrontFacing == requestedIsFrontFacing)
-#endif
+                    WebCamKind.WideAngle,
+                    WebCamKind.Telephoto,
+                    WebCamKind.UltraWideAngle,
+                    WebCamKind.ColorAndDepth
+                };
+
+                // Checks how many and which cameras are available on the device
+                foreach (var kind in prioritizedKinds)
+                {
+                    foreach (var device in devices)
                     {
-                        webCamDevice = devices[cameraIndex];
-                        webCamTexture = new WebCamTexture(webCamDevice.name, requestedWidth, requestedHeight, requestedFPS);
-                        break;
+                        if (device.kind == kind && device.isFrontFacing == requestedIsFrontFacing)
+                        {
+                            webCamDevice = device;
+                            webCamTexture = new WebCamTexture(webCamDevice.name, requestedWidth, requestedHeight, requestedFPS);
+                            break;
+                        }
                     }
+                    if (webCamTexture != null) break;
                 }
             }
 
             if (webCamTexture == null)
             {
-                if (devices.Length > 0)
-                {
-                    webCamDevice = devices[0];
-                    webCamTexture = new WebCamTexture(webCamDevice.name, requestedWidth, requestedHeight, requestedFPS);
-                }
-                else
-                {
-                    Debug.LogError("Camera device does not exist.");
-                    isInitWaiting = false;
-                    yield break;
-                }
+                webCamDevice = devices[0];
+                webCamTexture = new WebCamTexture(webCamDevice.name, requestedWidth, requestedHeight, requestedFPS);
             }
-
 
             // Starts the camera
             webCamTexture.Play();
@@ -364,6 +377,18 @@ namespace DlibFaceLandmarkDetectorExample
                 }
             }
         }
+
+#if ((UNITY_IOS || UNITY_WEBGL) && UNITY_2018_1_OR_NEWER) || (UNITY_ANDROID && UNITY_2018_3_OR_NEWER)
+        bool isUserRequestingPermission;
+
+        IEnumerator OnApplicationFocus(bool hasFocus)
+        {
+            yield return null;
+
+            if (isUserRequestingPermission && hasFocus)
+                isUserRequestingPermission = false;
+        }
+#endif
 
         /// <summary>
         /// Releases all resource.
@@ -420,11 +445,9 @@ namespace DlibFaceLandmarkDetectorExample
                 texture = new Texture2D(webCamTexture.width, webCamTexture.height, TextureFormat.RGBA32, false);
             }
 
-            gameObject.GetComponent<Renderer>().material.mainTexture = texture;
+            resultPreview.texture = texture;
+            resultPreview.GetComponent<AspectRatioFitter>().aspectRatio = (float)texture.width / texture.height;
 
-
-            gameObject.transform.localScale = new Vector3(texture.width, texture.height, 1);
-            Debug.Log("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
 
             if (fpsMonitor != null)
             {
@@ -432,21 +455,6 @@ namespace DlibFaceLandmarkDetectorExample
                 fpsMonitor.Add("width", texture.width.ToString());
                 fpsMonitor.Add("height", texture.height.ToString());
                 fpsMonitor.Add("orientation", Screen.orientation.ToString());
-            }
-
-
-            float width = texture.width;
-            float height = texture.height;
-
-            float widthScale = (float)Screen.width / width;
-            float heightScale = (float)Screen.height / height;
-            if (widthScale < heightScale)
-            {
-                Camera.main.orthographicSize = (width * (float)Screen.height / (float)Screen.width) / 2;
-            }
-            else
-            {
-                Camera.main.orthographicSize = height / 2;
             }
         }
 
@@ -501,18 +509,6 @@ namespace DlibFaceLandmarkDetectorExample
             }
         }
 
-#if (UNITY_IOS && UNITY_2018_1_OR_NEWER) || (UNITY_ANDROID && UNITY_2018_3_OR_NEWER)
-        bool isUserRequestingPermission;
-
-        IEnumerator OnApplicationFocus(bool hasFocus)
-        {
-            yield return null;
-
-            if (isUserRequestingPermission && hasFocus)
-                isUserRequestingPermission = false;
-        }
-#endif
-
         /// <summary>
         /// Gets the current WebCameraTexture frame that converted to the correct direction.
         /// </summary>
@@ -548,13 +544,8 @@ namespace DlibFaceLandmarkDetectorExample
             if (faceLandmarkDetector != null)
                 faceLandmarkDetector.Dispose();
 
-#if UNITY_WEBGL
-            if (getFilePath_Coroutine != null)
-            {
-                StopCoroutine(getFilePath_Coroutine);
-                ((IDisposable)getFilePath_Coroutine).Dispose();
-            }
-#endif
+            if (cts != null)
+                cts.Dispose();
         }
 
         /// <summary>

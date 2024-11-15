@@ -124,37 +124,37 @@ namespace DlibFaceLandmarkDetectorExample
             SceneManager.LoadScene("Texture2DToMatExample");
         }
 
-        public void OnWebCamTextureToMatHelperExampleButtonClick()
+        public void OnWebCamTexture2MatHelperExampleButtonClick()
         {
-            SceneManager.LoadScene("WebCamTextureToMatHelperExample");
+            SceneManager.LoadScene("WebCamTexture2MatHelperExample");
         }
 
-        public void OnVideoCaptureToMatHelperExampleButtonClick()
+        public void OnVideoCapture2MatHelperExampleButtonClick()
         {
-            SceneManager.LoadScene("VideoCaptureToMatHelperExample");
+            SceneManager.LoadScene("VideoCapture2MatHelperExample");
         }
 
-        public void OnARHeadWebCamTextureExampleButtonClick()
+        public void OnWebCamTextureARHeadExampleButtonClick()
         {
             if (GraphicsSettings.defaultRenderPipeline == null)
             {
-                SceneManager.LoadScene("ARHeadWebCamTextureExample_Built-in");
+                SceneManager.LoadScene("WebCamTextureARHeadExample_Built-in");
             }
             else
             {
-                SceneManager.LoadScene("ARHeadWebCamTextureExample_SRP");
+                SceneManager.LoadScene("WebCamTextureARHeadExample_SRP");
             }
         }
 
-        public void OnARHeadVideoCaptureExampleButtonClick()
+        public void OnVideoCaptureARHeadExampleButtonClick()
         {
             if (GraphicsSettings.defaultRenderPipeline == null)
             {
-                SceneManager.LoadScene("ARHeadVideoCaptureExample_Built-in");
+                SceneManager.LoadScene("VideoCaptureARHeadExample_Built-in");
             }
             else
             {
-                SceneManager.LoadScene("ARHeadVideoCaptureExample_SRP");
+                SceneManager.LoadScene("VideoCaptureARHeadExample_SRP");
             }
         }
 
@@ -163,14 +163,14 @@ namespace DlibFaceLandmarkDetectorExample
             SceneManager.LoadScene("FrameOptimizationExample");
         }
 
-        public void OnNoiseFilterWebCamTextureExampleButtonClick()
+        public void OnWebCamTextureNoiseFilterExampleButtonClick()
         {
-            SceneManager.LoadScene("NoiseFilterWebCamTextureExample");
+            SceneManager.LoadScene("WebCamTextureNoiseFilterExample");
         }
 
-        public void OnNoiseFilterVideoCaptureExampleButtonClick()
+        public void OnVideoCaptureNoiseFilterExampleButtonClick()
         {
-            SceneManager.LoadScene("NoiseFilterVideoCaptureExample");
+            SceneManager.LoadScene("VideoCaptureNoiseFilterExample");
         }
 
 

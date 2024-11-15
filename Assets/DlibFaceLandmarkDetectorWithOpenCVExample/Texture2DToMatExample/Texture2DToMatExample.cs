@@ -1,10 +1,10 @@
 using DlibFaceLandmarkDetector;
 using OpenCVForUnity.CoreModule;
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace DlibFaceLandmarkDetectorExample
 {
@@ -14,6 +14,14 @@ namespace DlibFaceLandmarkDetectorExample
     /// </summary>
     public class Texture2DToMatExample : MonoBehaviour
     {
+        [Header("Output")]
+        /// <summary>
+        /// The RawImage for previewing the result.
+        /// </summary>
+        public RawImage resultPreview;
+
+        [Space(10)]
+
         /// <summary>
         /// The image texture.
         /// </summary>
@@ -34,29 +42,28 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         string dlibShapePredictorFilePath;
 
-#if UNITY_WEBGL
-        IEnumerator getFilePath_Coroutine;
-#endif
+        /// <summary>
+        /// The CancellationTokenSource.
+        /// </summary>
+        CancellationTokenSource cts = new CancellationTokenSource();
 
         // Use this for initialization
-        void Start()
+        async void Start()
         {
             fpsMonitor = GetComponent<FpsMonitor>();
 
             dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
-#if UNITY_WEBGL
-            getFilePath_Coroutine = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsync(dlibShapePredictorFileName, (result) =>
-            {
-                getFilePath_Coroutine = null;
 
-                dlibShapePredictorFilePath = result;
-                Run();
-            });
-            StartCoroutine(getFilePath_Coroutine);
-#else
-            dlibShapePredictorFilePath = DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePath(dlibShapePredictorFileName);
+            // Asynchronously retrieves the readable file path from the StreamingAssets directory.
+            if (fpsMonitor != null)
+                fpsMonitor.consoleText = "Preparing file access...";
+
+            dlibShapePredictorFilePath = await DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsyncTask(dlibShapePredictorFileName, cancellationToken: cts.Token);
+
+            if (fpsMonitor != null)
+                fpsMonitor.consoleText = "";
+
             Run();
-#endif
         }
 
         private void Run()
@@ -71,23 +78,6 @@ namespace DlibFaceLandmarkDetectorExample
             // Convert Unity Texture2D to OpenCV Mat.
             OpenCVForUnity.UnityUtils.Utils.texture2DToMat(imgTexture, imgMat);
             Debug.Log("imgMat dst ToString " + imgMat.ToString());
-
-            gameObject.transform.localScale = new Vector3(imgTexture.width, imgTexture.height, 1);
-            Debug.Log("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
-
-            float width = imgMat.width();
-            float height = imgMat.height();
-
-            float widthScale = (float)Screen.width / width;
-            float heightScale = (float)Screen.height / height;
-            if (widthScale < heightScale)
-            {
-                Camera.main.orthographicSize = (width * (float)Screen.height / (float)Screen.width) / 2;
-            }
-            else
-            {
-                Camera.main.orthographicSize = height / 2;
-            }
 
 
             FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector(dlibShapePredictorFilePath);
@@ -122,13 +112,15 @@ namespace DlibFaceLandmarkDetectorExample
             // Convert OpenCV Mat to Unity Texture2D.
             OpenCVForUnity.UnityUtils.Utils.matToTexture2D(imgMat, texture);
 
-            gameObject.GetComponent<Renderer>().material.mainTexture = texture;
+            resultPreview.texture = texture;
+            resultPreview.GetComponent<AspectRatioFitter>().aspectRatio = (float)texture.width / texture.height;
+
 
             if (fpsMonitor != null)
             {
                 fpsMonitor.Add("dlib shape predictor", dlibShapePredictorFileName);
-                fpsMonitor.Add("width", width.ToString());
-                fpsMonitor.Add("height", height.ToString());
+                fpsMonitor.Add("width", imgMat.width().ToString());
+                fpsMonitor.Add("height", imgMat.height().ToString());
                 fpsMonitor.Add("orientation", Screen.orientation.ToString());
             }
         }
@@ -144,13 +136,8 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         void OnDestroy()
         {
-#if UNITY_WEBGL
-            if (getFilePath_Coroutine != null)
-            {
-                StopCoroutine(getFilePath_Coroutine);
-                ((IDisposable)getFilePath_Coroutine).Dispose();
-            }
-#endif
+            if (cts != null)
+                cts.Dispose();
         }
 
         /// <summary>

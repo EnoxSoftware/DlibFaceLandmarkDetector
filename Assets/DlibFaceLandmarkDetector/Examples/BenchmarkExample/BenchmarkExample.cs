@@ -1,10 +1,11 @@
 using DlibFaceLandmarkDetector;
 using DlibFaceLandmarkDetector.UnityUtils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace DlibFaceLandmarkDetectorExample
 {
@@ -13,6 +14,14 @@ namespace DlibFaceLandmarkDetectorExample
     /// </summary>
     public class BenchmarkExample : MonoBehaviour
     {
+        [Header("Output")]
+        /// <summary>
+        /// The RawImage for previewing the result.
+        /// </summary>
+        public RawImage resultPreview;
+
+        [Space(10)]
+
         /// <summary>
         /// The number of benchmark times.
         /// </summary>
@@ -44,29 +53,35 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         FpsMonitor fpsMonitor;
 
-#if UNITY_WEBGL
-        IEnumerator getFilePath_Coroutine;
-#endif
+        /// <summary>
+        /// The CancellationTokenSource.
+        /// </summary>
+        CancellationTokenSource cts = new CancellationTokenSource();
+
+        public enum DetectMode
+        {
+            None,
+            ValueTuple,
+            NoAlloc
+        }
 
         // Use this for initialization
-        void Start()
+        async void Start()
         {
             fpsMonitor = GetComponent<FpsMonitor>();
 
             dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
-#if UNITY_WEBGL
-            getFilePath_Coroutine = Utils.getFilePathAsync(dlibShapePredictorFileName, (result) =>
-            {
-                getFilePath_Coroutine = null;
 
-                dlibShapePredictorFilePath = result;
-                Run();
-            });
-            StartCoroutine(getFilePath_Coroutine);
-#else
-            dlibShapePredictorFilePath = Utils.getFilePath(dlibShapePredictorFileName);
+            // Asynchronously retrieves the readable file path from the StreamingAssets directory.
+            if (fpsMonitor != null)
+                fpsMonitor.consoleText = "Preparing file access...";
+
+            dlibShapePredictorFilePath = await Utils.getFilePathAsyncTask(dlibShapePredictorFileName, cancellationToken: cts.Token);
+
+            if (fpsMonitor != null)
+                fpsMonitor.consoleText = "";
+
             Run();
-#endif
         }
 
         private void Run()
@@ -83,22 +98,33 @@ namespace DlibFaceLandmarkDetectorExample
                     + " If you want to draw the result correctly, we recommend using the OpenCVForUnityUtils.DrawFaceLandmark method.");
         }
 
-        private void StartBenchmark(Texture2D targetImg, FaceLandmarkDetector detector, int times = 100, bool noAlloc = false)
+        private void StartBenchmark(Texture2D targetImg, FaceLandmarkDetector detector, int times = 100, DetectMode detectMode = DetectMode.None)
         {
-            string result = noAlloc ? BenchmarkNoGCAlloc(targetImg, detector, times) : Benchmark(targetImg, detector, times);
-            Debug.Log(result);
+            string result = null;
+            switch (detectMode)
+            {
+                case DetectMode.None:
+                    result = Benchmark(targetImg, detector, times);
+                    Debug.Log(result);
+                    ShowImage(targetImg);
+                    break;
+                case DetectMode.ValueTuple:
+                    result = BenchmarkValueTuple(targetImg, detector, times);
+                    Debug.Log(result);
+                    ShowImageValueTuple(targetImg);
+                    break;
+                case DetectMode.NoAlloc:
+                    result = BenchmarkNoGCAlloc(targetImg, detector, times);
+                    Debug.Log(result);
+                    ShowImageNoGCAlloc(targetImg);
+                    break;
+                default:
+                    break;
+            }
+
             if (fpsMonitor != null)
             {
                 fpsMonitor.consoleText = result;
-            }
-
-            if (noAlloc)
-            {
-                ShowImageNoGCAlloc(targetImg);
-            }
-            else
-            {
-                ShowImage(targetImg);
             }
         }
 
@@ -125,6 +151,46 @@ namespace DlibFaceLandmarkDetectorExample
 
             // FaceLandmarkDetector.DetectLandmark() benchmark.
             List<Rect> detectResult = detector.Detect();
+            sw.Reset();
+            sw.Start();
+            UnityEngine.Profiling.Profiler.BeginSample("GCAllocTest: DetectLandmark()");
+            for (int i = 0; i < times; ++i)
+            {
+                foreach (var rect in detectResult)
+                {
+                    detector.DetectLandmark(rect);
+                }
+            }
+            UnityEngine.Profiling.Profiler.EndSample();
+            sw.Stop();
+            result += " DetectLandmark(): " + sw.ElapsedMilliseconds + "ms" + " Avg:" + sw.ElapsedMilliseconds / times + "ms";
+
+            return result;
+        }
+
+        private string BenchmarkValueTuple(Texture2D targetImg, FaceLandmarkDetector detector, int times = 100)
+        {
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+
+            string result = "sp_name: " + dlibShapePredictorFileName + "\n";
+            result += "times: " + times + " (size: " + targetImg.width + "*" + targetImg.height + ")" + "\n";
+
+            detector.SetImage(targetImg);
+
+            // FaceLandmarkDetector.Detect() benchmark.
+            sw.Start();
+            UnityEngine.Profiling.Profiler.BeginSample("GCAllocTest: DetectValueTuple()");
+            for (int i = 0; i < times; ++i)
+            {
+                detector.DetectValueTuple();
+            }
+            UnityEngine.Profiling.Profiler.EndSample();
+            sw.Stop();
+            result += " Detect(): " + sw.ElapsedMilliseconds + "ms" + " Avg:" + sw.ElapsedMilliseconds / times + "ms" + "\n";
+
+
+            // FaceLandmarkDetector.DetectLandmark() benchmark.
+            (double x, double y, double width, double height)[] detectResult = detector.DetectValueTuple();
             sw.Reset();
             sw.Start();
             UnityEngine.Profiling.Profiler.BeginSample("GCAllocTest: DetectLandmark()");
@@ -169,7 +235,7 @@ namespace DlibFaceLandmarkDetectorExample
             UnityEngine.Profiling.Profiler.EndSample();
             sw.Stop();
             result += " Detect(): " + sw.ElapsedMilliseconds + "ms" + " Avg:" + sw.ElapsedMilliseconds / times + "ms" + "\n";
-            
+
 
             // FaceLandmarkDetector.DetectLandmark() benchmark.
             int detectLandmarkCount = detector.DetectLandmarkOnly(detectResult[0], detectResult[1], detectResult[2], detectResult[3]);
@@ -205,22 +271,6 @@ namespace DlibFaceLandmarkDetectorExample
             dstTexture2D.SetPixels32(texture2D.GetPixels32());
             dstTexture2D.Apply();
 
-            gameObject.transform.localScale = new Vector3(texture2D.width, texture2D.height, 1);
-
-            float width = gameObject.transform.localScale.x;
-            float height = gameObject.transform.localScale.y;
-
-            float widthScale = (float)Screen.width / width;
-            float heightScale = (float)Screen.height / height;
-            if (widthScale < heightScale)
-            {
-                Camera.main.orthographicSize = (width * (float)Screen.height / (float)Screen.width) / 2;
-            }
-            else
-            {
-                Camera.main.orthographicSize = height / 2;
-            }
-
             faceLandmarkDetector.SetImage(texture2D);
 
             //detect face rects
@@ -237,7 +287,36 @@ namespace DlibFaceLandmarkDetectorExample
             // draw face rect
             faceLandmarkDetector.DrawDetectResult(dstTexture2D, 255, 0, 0, 255, 2);
 
-            gameObject.GetComponent<Renderer>().material.mainTexture = dstTexture2D;
+            resultPreview.texture = dstTexture2D;
+            resultPreview.GetComponent<AspectRatioFitter>().aspectRatio = (float)dstTexture2D.width / dstTexture2D.height;
+        }
+
+        private void ShowImageValueTuple(Texture2D texture2D)
+        {
+            if (dstTexture2D != null)
+                Texture2D.Destroy(dstTexture2D);
+            dstTexture2D = new Texture2D(texture2D.width, texture2D.height, texture2D.format, false);
+            dstTexture2D.SetPixels32(texture2D.GetPixels32());
+            dstTexture2D.Apply();
+
+            faceLandmarkDetector.SetImage(texture2D);
+
+            //detect face rects
+            (double x, double y, double width, double height)[] detectResult = faceLandmarkDetector.DetectValueTuple();
+
+            foreach (var rect in detectResult)
+            {
+                //detect landmark points
+                faceLandmarkDetector.DetectLandmark(rect);
+                // draw landmark points
+                faceLandmarkDetector.DrawDetectLandmarkResult(dstTexture2D, 0, 255, 0, 255);
+            }
+
+            // draw face rect
+            faceLandmarkDetector.DrawDetectResult(dstTexture2D, 255, 0, 0, 255, 2);
+
+            resultPreview.texture = dstTexture2D;
+            resultPreview.GetComponent<AspectRatioFitter>().aspectRatio = (float)dstTexture2D.width / dstTexture2D.height;
         }
 
         private void ShowImageNoGCAlloc(Texture2D texture2D)
@@ -247,22 +326,6 @@ namespace DlibFaceLandmarkDetectorExample
             dstTexture2D = new Texture2D(texture2D.width, texture2D.height, texture2D.format, false);
             dstTexture2D.SetPixels32(texture2D.GetPixels32());
             dstTexture2D.Apply();
-
-            gameObject.transform.localScale = new Vector3(texture2D.width, texture2D.height, 1);
-
-            float width = gameObject.transform.localScale.x;
-            float height = gameObject.transform.localScale.y;
-
-            float widthScale = (float)Screen.width / width;
-            float heightScale = (float)Screen.height / height;
-            if (widthScale < heightScale)
-            {
-                Camera.main.orthographicSize = (width * (float)Screen.height / (float)Screen.width) / 2;
-            }
-            else
-            {
-                Camera.main.orthographicSize = height / 2;
-            }
 
             faceLandmarkDetector.SetImage(texture2D);
 
@@ -294,7 +357,8 @@ namespace DlibFaceLandmarkDetectorExample
             // draw face rect
             faceLandmarkDetector.DrawDetectResult(dstTexture2D, 255, 0, 0, 255, 2);
 
-            gameObject.GetComponent<Renderer>().material.mainTexture = dstTexture2D;
+            resultPreview.texture = dstTexture2D;
+            resultPreview.GetComponent<AspectRatioFitter>().aspectRatio = (float)dstTexture2D.width / dstTexture2D.height;
         }
 
         // Update is called once per frame
@@ -314,13 +378,8 @@ namespace DlibFaceLandmarkDetectorExample
             if (faceLandmarkDetector != null)
                 faceLandmarkDetector.Dispose();
 
-#if UNITY_WEBGL
-            if (getFilePath_Coroutine != null)
-            {
-                StopCoroutine(getFilePath_Coroutine);
-                ((IDisposable)getFilePath_Coroutine).Dispose();
-            }
-#endif
+            if (cts != null)
+                cts.Dispose();
         }
 
         /// <summary>
@@ -348,12 +407,34 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// Raises the benchmark small mage button click event.
         /// </summary>
+        public void OnBenchmarkValueTupleSmallImageButtonClick()
+        {
+            if (faceLandmarkDetector == null)
+                return;
+
+            StartBenchmark(smallImage, faceLandmarkDetector, times, DetectMode.ValueTuple);
+        }
+
+        /// <summary>
+        /// Raises the benchmark large image button click event.
+        /// </summary>
+        public void OnBenchmarkValueTupleLargeImageButtonClick()
+        {
+            if (faceLandmarkDetector == null)
+                return;
+
+            StartBenchmark(largeImage, faceLandmarkDetector, times, DetectMode.ValueTuple);
+        }
+
+        /// <summary>
+        /// Raises the benchmark small mage button click event.
+        /// </summary>
         public void OnBenchmarkNoGCAllocSmallImageButtonClick()
         {
             if (faceLandmarkDetector == null)
                 return;
 
-            StartBenchmark(smallImage, faceLandmarkDetector, times, true);
+            StartBenchmark(smallImage, faceLandmarkDetector, times, DetectMode.NoAlloc);
         }
 
         /// <summary>
@@ -364,7 +445,7 @@ namespace DlibFaceLandmarkDetectorExample
             if (faceLandmarkDetector == null)
                 return;
 
-            StartBenchmark(largeImage, faceLandmarkDetector, times, true);
+            StartBenchmark(largeImage, faceLandmarkDetector, times, DetectMode.NoAlloc);
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['utils_2ecs',['Utils.cs',['../_utils_8cs.html',1,'']]]
+  ['opencvforunityutils_2ecs_0',['OpenCVForUnityUtils.cs',['../d7/dfd/OpenCVForUnityUtils_8cs.html',1,'']]]
 ];

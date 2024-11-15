@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['isallpartsinrect',['IsAllPartsInRect',['../class_dlib_face_landmark_detector_1_1_face_landmark_detector.html#a96a7d855c300517efccfb697c8d19489',1,'DlibFaceLandmarkDetector::FaceLandmarkDetector']]],
-  ['isdisposed',['IsDisposed',['../class_dlib_face_landmark_detector_1_1_disposable_object.html#a44686f4b32e2cc808efd614d57c770e7',1,'DlibFaceLandmarkDetector::DisposableObject']]],
-  ['isenableddispose',['IsEnabledDispose',['../class_dlib_face_landmark_detector_1_1_disposable_object.html#afdbe5ab2b343f4e0622ed181afee55d1',1,'DlibFaceLandmarkDetector::DisposableObject']]]
+  ['facelandmarkdetector_0',['FaceLandmarkDetector',['../d7/df6/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector.html',1,'DlibFaceLandmarkDetector.FaceLandmarkDetector'],['../d7/df6/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector.html#aef0e090ff04d7eb7a72ec94aa8cd2cba',1,'DlibFaceLandmarkDetector.FaceLandmarkDetector.FaceLandmarkDetector(string shapePredictorFilePath)'],['../d7/df6/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector.html#af719ebca6f440b5c3d091095aa3adae3',1,'DlibFaceLandmarkDetector.FaceLandmarkDetector.FaceLandmarkDetector(string objectDetectorFilePath, string shapePredictorFilePath)']]],
+  ['facelandmarkdetector_2ecs_1',['FaceLandmarkDetector.cs',['../de/d8b/FaceLandmarkDetector_8cs.html',1,'']]]
 ];

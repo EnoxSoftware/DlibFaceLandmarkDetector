@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['rectdetection',['RectDetection',['../class_dlib_face_landmark_detector_1_1_face_landmark_detector_1_1_rect_detection.html#a639ab1fdcd065d99a5dbb48074f91510',1,'DlibFaceLandmarkDetector::FaceLandmarkDetector::RectDetection']]]
+  ['isallpartsinrect_0',['IsAllPartsInRect',['../d7/df6/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector.html#a96a7d855c300517efccfb697c8d19489',1,'DlibFaceLandmarkDetector::FaceLandmarkDetector']]]
 ];

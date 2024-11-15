@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['dlibfacelandmarkdetector',['DlibFaceLandmarkDetector',['../namespace_dlib_face_landmark_detector.html',1,'']]],
-  ['unityutils',['UnityUtils',['../namespace_dlib_face_landmark_detector_1_1_unity_utils.html',1,'DlibFaceLandmarkDetector']]]
+  ['dlibfacelandmarkdetector_0',['DlibFaceLandmarkDetector',['../df/d13/namespaceDlibFaceLandmarkDetector.html',1,'']]],
+  ['dlibfacelandmarkdetector_3a_3aunityutils_1',['UnityUtils',['../de/d68/namespaceDlibFaceLandmarkDetector_1_1UnityUtils.html',1,'DlibFaceLandmarkDetector']]],
+  ['dlibfacelandmarkdetectorexample_2',['DlibFaceLandmarkDetectorExample',['../d4/d6a/namespaceDlibFaceLandmarkDetectorExample.html',1,'']]]
 ];

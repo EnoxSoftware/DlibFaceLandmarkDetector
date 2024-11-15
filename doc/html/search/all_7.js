@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['utils',['Utils',['../class_dlib_face_landmark_detector_1_1_unity_utils_1_1_utils.html',1,'DlibFaceLandmarkDetector::UnityUtils']]],
-  ['utils_2ecs',['Utils.cs',['../_utils_8cs.html',1,'']]]
+  ['rect_0',['rect',['../d3/d98/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector_1_1RectDetection.html#a99282a5ba07c98c6da9601ac89b0e233',1,'DlibFaceLandmarkDetector::FaceLandmarkDetector::RectDetection']]],
+  ['rectdetection_1',['RectDetection',['../d3/d98/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector_1_1RectDetection.html',1,'DlibFaceLandmarkDetector.FaceLandmarkDetector.RectDetection'],['../d3/d98/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector_1_1RectDetection.html#a639ab1fdcd065d99a5dbb48074f91510',1,'DlibFaceLandmarkDetector.FaceLandmarkDetector.RectDetection.RectDetection()']]]
 ];

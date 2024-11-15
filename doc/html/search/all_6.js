@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['throwifdisposed',['ThrowIfDisposed',['../class_dlib_face_landmark_detector_1_1_disposable_object.html#ad9256a96d9d433a1190dbffc716d21af',1,'DlibFaceLandmarkDetector::DisposableObject']]]
+  ['opencvforunityutils_0',['OpenCVForUnityUtils',['../d2/db7/classDlibFaceLandmarkDetectorExample_1_1OpenCVForUnityUtils.html',1,'DlibFaceLandmarkDetectorExample']]],
+  ['opencvforunityutils_2ecs_1',['OpenCVForUnityUtils.cs',['../d7/dfd/OpenCVForUnityUtils_8cs.html',1,'']]]
 ];

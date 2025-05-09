@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DlibFaceLandmarkDetectorExample
+namespace DlibFaceLandmarkDetectorWithOpenCVExample
 {
     /// <summary>
     /// Low Pass Points Filter.

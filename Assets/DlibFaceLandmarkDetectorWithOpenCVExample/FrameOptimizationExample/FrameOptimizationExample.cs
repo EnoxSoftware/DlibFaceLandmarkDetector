@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace DlibFaceLandmarkDetectorExample
+namespace DlibFaceLandmarkDetectorWithOpenCVExample
 {
     /// <summary>
     /// Frame Optimization Example
@@ -130,7 +130,7 @@ namespace DlibFaceLandmarkDetectorExample
             multiSource2MatHelper = gameObject.GetComponent<MultiSource2MatHelper>();
             multiSource2MatHelper.outputColorFormat = Source2MatHelperColorFormat.RGBA;
 
-            dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
+            dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
 
             // Asynchronously retrieves the readable file path from the StreamingAssets directory.
             if (fpsMonitor != null)

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-namespace DlibFaceLandmarkDetectorExample
+namespace DlibFaceLandmarkDetectorWithOpenCVExample
 {
     /// <summary>
     /// Utility class for the integration of DlibFaceLandmarkDetector and OpenCVForUnity.

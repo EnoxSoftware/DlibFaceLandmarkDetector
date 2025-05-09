@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace DlibFaceLandmarkDetectorExample
+namespace DlibFaceLandmarkDetectorWithOpenCVExample
 {
     /// <summary>
     /// Texture2DToMat Example
@@ -52,7 +52,7 @@ namespace DlibFaceLandmarkDetectorExample
         {
             fpsMonitor = GetComponent<FpsMonitor>();
 
-            dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
+            dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
 
             // Asynchronously retrieves the readable file path from the StreamingAssets directory.
             if (fpsMonitor != null)

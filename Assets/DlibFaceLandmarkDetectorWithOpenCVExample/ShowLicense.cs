@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace DlibFaceLandmarkDetectorExample
+namespace DlibFaceLandmarkDetectorWithOpenCVExample
 {
     public class ShowLicense : MonoBehaviour
     {

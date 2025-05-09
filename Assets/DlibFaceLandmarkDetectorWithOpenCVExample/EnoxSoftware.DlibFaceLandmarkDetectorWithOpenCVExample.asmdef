@@ -1,0 +1,19 @@
+{
+    "name": "EnoxSoftware.DlibFaceLandmarkDetectorWithOpenCVExample",
+    "rootNamespace": "",
+    "references": [
+        "EnoxSoftware.DlibFaceLandmarkDetector",
+        "EnoxSoftware.DlibFaceLandmarkDetectorExample",
+        "EnoxSoftware.OpenCVForUnity",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

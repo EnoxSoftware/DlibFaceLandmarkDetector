@@ -1,19 +1,20 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-#if  ENABLE_INPUT_SYSTEM
+#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
 #endif
 
 namespace DlibFaceLandmarkDetectorWithOpenCVExample
-
 {
     public class TouchController : MonoBehaviour
     {
+        // Public Fields
         public GameObject Cube;
         public float Speed = 0.1f;
 
-#if  ENABLE_INPUT_SYSTEM
+        // Unity Lifecycle Methods
+#if ENABLE_INPUT_SYSTEM
         private void OnEnable()
         {
             EnhancedTouchSupport.Enable();
@@ -25,9 +26,9 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         }
 #endif
 
-        void Update()
+        private void Update()
         {
-#if  ENABLE_INPUT_SYSTEM
+#if ENABLE_INPUT_SYSTEM
             // New Input System
 #if ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR)
             // Touch input for mobile platforms

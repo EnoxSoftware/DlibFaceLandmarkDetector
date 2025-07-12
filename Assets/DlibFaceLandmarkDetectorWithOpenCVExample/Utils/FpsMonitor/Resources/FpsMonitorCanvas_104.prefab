@@ -281,7 +281,7 @@ GameObject:
   - component: {fileID: 7224510997022796016}
   - component: {fileID: 6277097474618950544}
   m_Layer: 0
-  m_Name: FpsMonitorCanvas_103
+  m_Name: FpsMonitorCanvas_104
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-#if  ENABLE_INPUT_SYSTEM
+#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem.UI;
 #endif
 
@@ -12,18 +12,20 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
     [RequireComponent(typeof(EventSystem))]
     public class InputModuleSwitcher : MonoBehaviour
     {
+        // Unity Lifecycle Methods
         private void Awake()
         {
             SetupInputSystem();
         }
 
+        // Private Methods
         private void SetupInputSystem()
         {
             var eventSystem = GetComponent<EventSystem>();
             if (eventSystem == null)
                 return;
 
-#if  ENABLE_INPUT_SYSTEM
+#if ENABLE_INPUT_SYSTEM
             // Remove old Input Module if it exists
             var oldInput = eventSystem.GetComponent<StandaloneInputModule>();
             if (oldInput != null)

@@ -1,272 +1,359 @@
-using OpenCVForUnity.CoreModule;
-using OpenCVForUnity.ImgprocModule;
-using OpenCVForUnity.VideoModule;
 using System;
 using System.Collections.Generic;
+using OpenCVForUnity.CoreModule;
+using OpenCVForUnity.ImgprocModule;
+using OpenCVForUnity.UnityIntegration;
+using OpenCVForUnity.VideoModule;
 using UnityEngine;
 
 namespace DlibFaceLandmarkDetectorWithOpenCVExample
 {
     /// <summary>
     /// Kalman Filter Points Filter.
-    /// v 1.0.4
+    /// v 2.0.0
     /// </summary>
     public class KFPointsFilter : PointsFilterBase
     {
-        public double diffCheckSensitivity = 1;
+        // Constants
+        private const double DEFAULT_DIFF_CHECK_SENSITIVITY = 1;
+        private const double DEFAULT_DIFF_DLIB = 1;
+        private const int DEFAULT_STATE_NUM = 272;
+        private const int DEFAULT_MEASURE_NUM = 136;
 
-        bool flag = false;
-        double diffDlib = 1;
-        MatOfPoint prevTrackPtsMat;
+        // Adaptive threshold constants
+        private const double BASE_DIFF_THRESHOLD = 10.0; // Base threshold per point (increased)
+        private const double MIN_AREA_FACTOR = 0.01;     // Minimum area factor (increased)
+        private const double MAX_AREA_FACTOR = 1.0;      // Maximum area factor (increased)
+        private const double POINT_DENSITY_FACTOR = 1.0; // Point density compensation (increased)
 
-        List<Point> src_points;
-        List<Point> last_points;
+        // Color constants for debug drawing
+        private static readonly (double v0, double v1, double v2, double v3) DEBUG_COLOR_DLIB = new Scalar(255, 0, 0, 255).ToValueTuple();
+        private static readonly (double v0, double v1, double v2, double v3) DEBUG_COLOR_KALMAN = new Scalar(0, 255, 0, 255).ToValueTuple();
+
+        // Public Fields
+        public double DiffCheckSensitivity = DEFAULT_DIFF_CHECK_SENSITIVITY;
+
+        // Private Fields
+        private bool _flag = false;
+        private double _diffDlib = DEFAULT_DIFF_DLIB;
+        private MatOfPoint _prevTrackPtsMat;
+        private Vec2f[] _lastPoints;
 
         // Kalman Filter
-        List<Point> predict_points;
-        int stateNum = 272;
-        int measureNum = 136;
-        KalmanFilter KF;
-        Mat measurement;
+        private int _stateNum = DEFAULT_STATE_NUM;
+        private int _measureNum = DEFAULT_MEASURE_NUM;
+        private KalmanFilter _kf;
+        private Mat _statePreMat;
+        private Mat _statePreMat_32FC2;
+        private Mat _statePostMat;
+        private Mat _statePostMat_32FC2;
+        private Mat _measurement;
+        private Mat _measurement_32FC2;
 
         public KFPointsFilter(int numberOfElements) : base(numberOfElements)
         {
-            diffDlib = diffDlib * (double)numberOfElements / 68.0;
-            prevTrackPtsMat = new MatOfPoint();
+            // Calculate adaptive threshold based on number of elements
+            _diffDlib = CalculateAdaptiveThreshold(numberOfElements);
+            _prevTrackPtsMat = new MatOfPoint();
 
-            src_points = new List<Point>();
+            _lastPoints = new Vec2f[numberOfElements];
             for (int i = 0; i < numberOfElements; i++)
             {
-                src_points.Add(new Point(0.0, 0.0));
-            }
-            last_points = new List<Point>();
-            for (int i = 0; i < numberOfElements; i++)
-            {
-                last_points.Add(new Point(0.0, 0.0));
+                _lastPoints[i] = new Vec2f();
             }
 
             // Initialize Kalman Filter
-            stateNum = numberOfElements * 4;
-            measureNum = numberOfElements * 2;
+            _stateNum = numberOfElements * 4;
+            _measureNum = numberOfElements * 2;
             InitializeKalmanFilter();
         }
 
+#if NET_STANDARD_2_1
         /// <summary>
         /// Processes points by filter.
         /// </summary>
-        /// <param name="img">Image mat.</param>
-        /// <param name="srcPoints">Input points.</param>
-        /// <param name="dstPoints">Output points.</param>
-        /// <param name="drawDebugPoints">if true, draws debug points.</param>
-        /// <returns>Output points.</returns>
-        public override List<Vector2> Process(Mat img, List<Vector2> srcPoints, List<Vector2> dstPoints = null, bool drawDebugPoints = false)
+        /// <param name="img">Image mat for processing (used for optical flow, debug drawing, etc.).</param>
+        /// <param name="srcPoints">Input points. Can be empty when no detection is available (will use previous state for prediction).</param>
+        /// <param name="dstPoints">Output points span.</param>
+        /// <returns>Output points span. Returns predicted points from previous state when srcPoints is empty.</returns>
+        public override Span<Vec2f> Process(Mat img, ReadOnlySpan<Vec2f> srcPoints, Span<Vec2f> dstPoints)
+#else
+        /// <summary>
+        /// Processes points by filter.
+        /// </summary>
+        /// <param name="img">Image mat for processing (used for optical flow, debug drawing, etc.).</param>
+        /// <param name="srcPoints">Input points. Can be null when no detection is available (will use previous state for prediction).</param>
+        /// <param name="dstPoints">Output points. If null, a new array will be created.</param>
+        /// <returns>Output points. Returns predicted points from previous state when srcPoints is null.</returns>
+        public override Vec2f[] Process(Mat img, Vec2f[] srcPoints, Vec2f[] dstPoints = null)
+#endif
         {
-            if (srcPoints != null && srcPoints.Count != numberOfElements)
+            ThrowIfDisposed();
+
+            if (srcPoints != null && srcPoints.Length != _numberOfElements)
+                throw new ArgumentException("The number of srcPoints elements is different.");
+
+            if (dstPoints != null && dstPoints.Length != _numberOfElements)
+                throw new ArgumentException("The number of dstPoints elements is different.");
+
+            if (dstPoints == null)
             {
-                throw new ArgumentException("The number of elements is different.");
+                dstPoints = new Vec2f[_numberOfElements];
+                for (int i = 0; i < _numberOfElements; i++)
+                {
+                    dstPoints[i] = new Vec2f();
+                }
             }
 
-            if (srcPoints != null)
+            // If no detection, predict from previous state
+            if (srcPoints == null)
             {
+                if (_flag)
+                {
+                    // Kalman Prediction
+                    _kf.predict();
 
-                if (dstPoints == null)
-                {
-                    dstPoints = new List<Vector2>();
-                }
-                if (dstPoints != null && dstPoints.Count != numberOfElements)
-                {
-                    dstPoints.Clear();
-                    for (int i = 0; i < numberOfElements; i++)
+                    // Get predicted result
+                    using (Mat predicted = _kf.get_statePre())
+                    using (Mat predicted_32FC2 = predicted.reshape(2))
                     {
-                        dstPoints.Add(new Vector2());
-                    }
-                }
-
-                for (int i = 0; i < numberOfElements; i++)
-                {
-                    src_points[i].x = srcPoints[i].x;
-                    src_points[i].y = srcPoints[i].y;
-                }
-
-                // clac diffDlib
-                prevTrackPtsMat.fromList(src_points);
-                OpenCVForUnity.CoreModule.Rect rect = Imgproc.boundingRect(prevTrackPtsMat);
-                double diffDlib = this.diffDlib * rect.area() / 40000.0 * diffCheckSensitivity;
-
-                // if the face is moving so fast, use dlib to detect the face
-                double diff = calDistanceDiff(src_points, last_points);
-                if (drawDebugPoints)
-                    Debug.Log("variance:" + diff);
-                if (diff > diffDlib)
-                {
-                    for (int i = 0; i < numberOfElements; i++)
-                    {
-                        dstPoints[i] = srcPoints[i];
+                        predicted_32FC2.get(0, 0, dstPoints);
                     }
 
-                    if (drawDebugPoints)
+                    if (IsDebugMode)
                     {
-                        Debug.Log("DLIB");
-                        for (int i = 0; i < numberOfElements; i++)
+                        Debug.Log("Kalman Prediction (no detection)");
+                        for (int i = 0; i < _numberOfElements; i++)
                         {
-                            Imgproc.circle(img, new Point(srcPoints[i].x, srcPoints[i].y), 2, new Scalar(255, 0, 0, 255), -1);
+                            Imgproc.circle(img, (dstPoints[i].Item1, dstPoints[i].Item2), 2, DEBUG_COLOR_KALMAN, -1);
                         }
                     }
-
-                    flag = false;
                 }
                 else
                 {
-                    if (!flag)
-                    {
-                        // Set initial state estimate.
-                        Mat statePreMat = KF.get_statePre();
-                        float[] tmpStatePre = new float[statePreMat.total()];
-                        for (int i = 0; i < numberOfElements; i++)
-                        {
-                            tmpStatePre[i * 2] = (float)srcPoints[i].x;
-                            tmpStatePre[i * 2 + 1] = (float)srcPoints[i].y;
-                        }
-                        statePreMat.put(0, 0, tmpStatePre);
-                        Mat statePostMat = KF.get_statePost();
-                        float[] tmpStatePost = new float[statePostMat.total()];
-                        for (int i = 0; i < numberOfElements; i++)
-                        {
-                            tmpStatePost[i * 2] = (float)srcPoints[i].x;
-                            tmpStatePost[i * 2 + 1] = (float)srcPoints[i].y;
-                        }
-                        statePostMat.put(0, 0, tmpStatePost);
-
-                        flag = true;
-                    }
-
-                    // Kalman Prediction
-                    KF.predict();
-
-                    // Update Measurement
-                    float[] tmpMeasurement = new float[measurement.total()];
-                    for (int i = 0; i < numberOfElements; i++)
-                    {
-                        tmpMeasurement[i * 2] = (float)srcPoints[i].x;
-                        tmpMeasurement[i * 2 + 1] = (float)srcPoints[i].y;
-                    }
-                    measurement.put(0, 0, tmpMeasurement);
-
-                    // Correct Measurement
-                    Mat estimated = KF.correct(measurement);
-                    float[] tmpEstimated = new float[estimated.total()];
-                    estimated.get(0, 0, tmpEstimated);
-                    for (int i = 0; i < numberOfElements; i++)
-                    {
-                        predict_points[i].x = tmpEstimated[i * 2];
-                        predict_points[i].y = tmpEstimated[i * 2 + 1];
-                    }
-                    estimated.Dispose();
-
-                    for (int i = 0; i < numberOfElements; i++)
-                    {
-                        dstPoints[i] = new Vector2((float)predict_points[i].x, (float)predict_points[i].y);
-                    }
-
-                    if (drawDebugPoints)
-                    {
-                        Debug.Log("Kalman Filter");
-                        for (int i = 0; i < numberOfElements; i++)
-                        {
-                            Imgproc.circle(img, predict_points[i], 2, new Scalar(0, 255, 0, 255), -1);
-                        }
-                    }
-                }
-
-                for (int i = 0; i < numberOfElements; i++)
-                {
-                    last_points[i].x = src_points[i].x;
-                    last_points[i].y = src_points[i].y;
+#if NET_STANDARD_2_1
+                    _lastPoints.CopyTo(dstPoints);
+#else
+                    Array.Copy(_lastPoints, dstPoints, _numberOfElements);
+#endif
                 }
 
                 return dstPoints;
             }
+
+            // Calculate adaptive diffDlib threshold
+            var rect = CalculateBoundingRect(srcPoints);
+            double diffDlib = CalculateAdaptiveDiffThreshold(rect, DiffCheckSensitivity);
+
+            // if the face is moving so fast, use dlib to detect the face
+            double diff = CalDistanceDiff(srcPoints, _lastPoints);
+            if (IsDebugMode)
+                Debug.Log("variance:" + diff + " diffDlib:" + diffDlib);
+            if (diff > diffDlib)
+            {
+#if NET_STANDARD_2_1
+                srcPoints.CopyTo(dstPoints);
+#else
+                Array.Copy(srcPoints, dstPoints, _numberOfElements);
+#endif
+
+                if (IsDebugMode)
+                {
+                    Debug.Log("DLIB");
+                    for (int i = 0; i < _numberOfElements; i++)
+                    {
+                        Imgproc.circle(img, (srcPoints[i].Item1, srcPoints[i].Item2), 2, DEBUG_COLOR_DLIB, -1);
+                    }
+                }
+
+                _flag = false;
+            }
             else
             {
-                return dstPoints == null ? srcPoints : dstPoints;
+                if (!_flag)
+                {
+                    // Set initial state estimate.
+                    _statePreMat_32FC2.put(0, 0, srcPoints);
+                    _statePostMat_32FC2.put(0, 0, srcPoints);
+
+                    _flag = true;
+                }
+
+                // Kalman Prediction
+                _kf.predict();
+
+                // Update Measurement
+                _measurement_32FC2.put(0, 0, srcPoints);
+
+                // Correct Measurement
+                using (Mat estimated = _kf.correct(_measurement))
+                using (Mat estimated_32FC2 = estimated.reshape(2))
+                {
+                    estimated_32FC2.get(0, 0, dstPoints);
+                }
+
+                if (IsDebugMode)
+                {
+                    Debug.Log("Kalman Filter");
+                    for (int i = 0; i < _numberOfElements; i++)
+                    {
+                        Imgproc.circle(img, (dstPoints[i].Item1, dstPoints[i].Item2), 2, DEBUG_COLOR_KALMAN, -1);
+                    }
+                }
             }
+
+            // Update last points for next iteration
+            // Note: _lastPoints is used for diff calculation, not for Kalman state
+#if NET_STANDARD_2_1
+            dstPoints.CopyTo(_lastPoints);
+#else
+            Array.Copy(dstPoints, _lastPoints, _numberOfElements);
+#endif
+
+            return dstPoints;
         }
+
+#if NET_STANDARD_2_1
+        /// <summary>
+        /// Processes points by filter.
+        /// </summary>
+        /// <param name="img">Image mat for processing (used for optical flow, debug drawing, etc.).</param>
+        /// <param name="srcPoints">Input points. Can be null when no detection is available (will use previous state for prediction).</param>
+        /// <param name="dstPoints">Output points. If null, a new array will be created.</param>
+        /// <returns>Output points. Returns predicted points from previous state when srcPoints is null.</returns>
+        public override Vec2f[] Process(Mat img, Vec2f[] srcPoints, Vec2f[] dstPoints = null)
+        {
+            ThrowIfDisposed();
+
+            if (dstPoints == null)
+            {
+                dstPoints = new Vec2f[_numberOfElements];
+                for (int i = 0; i < _numberOfElements; i++)
+                {
+                    dstPoints[i] = new Vec2f();
+                }
+            }
+            Process(img, srcPoints.AsSpan(), dstPoints.AsSpan());
+
+            return dstPoints;
+        }
+#endif
 
         /// <summary>
         /// Resets filter.
         /// </summary>
         public override void Reset()
         {
-            flag = false;
+            ThrowIfDisposed();
 
             // Reset Kalman Filter
-            for (int i = 0; i < numberOfElements; i++)
-            {
-                predict_points[i].x = 0.0;
-                predict_points[i].y = 0.0;
-            }
+            _flag = false;
         }
 
-        /// <summary>
-        /// To release the resources for the initialized method.
-        /// </summary>
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (src_points != null)
-                src_points.Clear();
+            if (_disposed) return;
 
-            DisposeKalmanFilter();
+            if (disposing)
+            {
+                DisposeKalmanFilter();
 
-            if (prevTrackPtsMat != null)
-                prevTrackPtsMat.Dispose();
+                _prevTrackPtsMat?.Dispose(); _prevTrackPtsMat = null;
+            }
+
+            base.Dispose(disposing);
         }
 
+        // Private Methods
         protected virtual void InitializeKalmanFilter()
         {
-            predict_points = new List<Point>();
-            for (int i = 0; i < numberOfElements; i++)
-            {
-                predict_points.Add(new Point(0.0, 0.0));
-            }
+            _kf = new KalmanFilter(_stateNum, _measureNum, 0, CvType.CV_32F);
 
-            KF = new KalmanFilter(stateNum, measureNum, 0, CvType.CV_32F);
-            measurement = Mat.zeros(measureNum, 1, CvType.CV_32F);
+            _statePreMat = _kf.get_statePre();
+            _statePreMat_32FC2 = _statePreMat.reshape(2);
+            _statePostMat = _kf.get_statePost();
+            _statePostMat_32FC2 = _statePostMat.reshape(2);
+
+            _measurement = Mat.zeros(_measureNum, 1, CvType.CV_32F);
+            _measurement_32FC2 = _measurement.reshape(2);
 
             // Generate the Measurement Matrix
-            KF.set_transitionMatrix(Mat.zeros(stateNum, stateNum, CvType.CV_32F));
-            for (int i = 0; i < stateNum; i++)
+            _kf.set_transitionMatrix(Mat.zeros(_stateNum, _stateNum, CvType.CV_32F));
+            for (int i = 0; i < _stateNum; i++)
             {
-                for (int j = 0; j < stateNum; j++)
+                for (int j = 0; j < _stateNum; j++)
                 {
-                    if (i == j || (j - measureNum) == i)
+                    if (i == j || (j - _measureNum) == i)
                     {
-                        KF.get_transitionMatrix().put(i, j, new float[] { 1.0f });
+                        _kf.get_transitionMatrix().put(i, j, new float[] { 1.0f });
                     }
                     else
                     {
-                        KF.get_transitionMatrix().put(i, j, new float[] { 0.0f });
+                        _kf.get_transitionMatrix().put(i, j, new float[] { 0.0f });
                     }
                 }
             }
 
             // measurement matrix (H)
-            Core.setIdentity(KF.get_measurementMatrix());
+            Core.setIdentity(_kf.get_measurementMatrix());
             // process noise covariance matrix (Q)
-            Core.setIdentity(KF.get_processNoiseCov(), Scalar.all(1e-5));
+            Core.setIdentity(_kf.get_processNoiseCov(), Scalar.all(1e-5));
             // measurement noise covariance matrix (R)
-            Core.setIdentity(KF.get_measurementNoiseCov(), Scalar.all(1e-1));
+            Core.setIdentity(_kf.get_measurementNoiseCov(), Scalar.all(1e-1));
             // posteriori error estimate covariance matrix (P(k)): P(k)=(I-K(k)*H)*P'(k)
-            Core.setIdentity(KF.get_errorCovPost(), Scalar.all(0.1));
+            Core.setIdentity(_kf.get_errorCovPost(), Scalar.all(0.1));
         }
 
         protected virtual void DisposeKalmanFilter()
         {
-            if (predict_points != null)
-                predict_points.Clear();
-            if (KF != null)
-                KF.Dispose();
-            if (measurement != null)
-                measurement.Dispose();
+            _lastPoints = null;
+            _kf?.Dispose(); _kf = null;
+            _statePreMat?.Dispose(); _statePreMat = null;
+            _statePreMat_32FC2?.Dispose(); _statePreMat_32FC2 = null;
+            _statePostMat?.Dispose(); _statePostMat = null;
+            _statePostMat_32FC2?.Dispose(); _statePostMat_32FC2 = null;
+            _measurement?.Dispose(); _measurement = null;
+            _measurement_32FC2?.Dispose(); _measurement_32FC2 = null;
+        }
+
+        /// <summary>
+        /// Calculates adaptive threshold based on number of elements.
+        /// </summary>
+        /// <param name="numberOfElements">Number of landmark points.</param>
+        /// <returns>Adaptive threshold value.</returns>
+        private double CalculateAdaptiveThreshold(int numberOfElements)
+        {
+            // Base threshold adjusted for point density
+            double baseThreshold = BASE_DIFF_THRESHOLD;
+
+            // Compensate for different point densities
+            double pointDensityCompensation = Math.Sqrt(68.0 / numberOfElements) * POINT_DENSITY_FACTOR;
+
+            return baseThreshold * pointDensityCompensation;
+        }
+
+        /// <summary>
+        /// Calculates adaptive diff threshold based on face area and sensitivity.
+        /// </summary>
+        /// <param name="rect">Bounding rectangle of face points.</param>
+        /// <param name="sensitivity">Sensitivity multiplier.</param>
+        /// <returns>Adaptive diff threshold.</returns>
+        private double CalculateAdaptiveDiffThreshold((float x, float y, float width, float height) rect, double sensitivity)
+        {
+            // Calculate face area
+            double faceArea = rect.width * rect.height;
+
+            // Normalize area factor (clamp between MIN and MAX)
+            // Use smaller normalization factor for more reasonable thresholds
+            double areaFactor = Math.Max(MIN_AREA_FACTOR, Math.Min(MAX_AREA_FACTOR, faceArea / 100000.0));
+
+            // Calculate adaptive threshold
+            double adaptiveThreshold = _diffDlib * areaFactor * sensitivity;
+
+            // Apply point density compensation
+            double pointDensityCompensation = Math.Sqrt(68.0 / _numberOfElements) * POINT_DENSITY_FACTOR;
+
+            return adaptiveThreshold * pointDensityCompensation;
         }
     }
 }

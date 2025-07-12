@@ -1,10 +1,14 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using DlibFaceLandmarkDetector;
+using DlibFaceLandmarkDetector.UnityIntegration;
 using OpenCVForUnity.CoreModule;
 using OpenCVForUnity.ImgprocModule;
 using OpenCVForUnity.ObjdetectModule;
-using OpenCVForUnity.UnityUtils.Helper;
-using System.Collections.Generic;
-using System.Threading;
+using OpenCVForUnity.UnityIntegration;
+using OpenCVForUnity.UnityIntegration.Helper.Optimization;
+using OpenCVForUnity.UnityIntegration.Helper.Source2Mat;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -19,152 +23,232 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
     [RequireComponent(typeof(MultiSource2MatHelper), typeof(ImageOptimizationHelper))]
     public class FrameOptimizationExample : MonoBehaviour
     {
+        // Public Fields
         [Header("Output")]
         /// <summary>
         /// The RawImage for previewing the result.
         /// </summary>
-        public RawImage resultPreview;
+        public RawImage ResultPreview;
 
         [Space(10)]
 
         /// <summary>
         /// Determines if enable downscale.
         /// </summary>
-        public bool enableDownScale;
+        public bool EnableDownScale;
 
         /// <summary>
         /// The enable downscale toggle.
         /// </summary>
-        public Toggle enableDownScaleToggle;
+        public Toggle EnableDownScaleToggle;
 
         /// <summary>
         /// Determines if enable skipframe.
         /// </summary>
-        public bool enableSkipFrame;
+        public bool EnableSkipFrame;
 
         /// <summary>
         /// The enable skipframe toggle.
         /// </summary>
-        public Toggle enableSkipFrameToggle;
+        public Toggle EnableSkipFrameToggle;
 
         /// <summary>
         /// Determines if use OpenCV FaceDetector for face detection.
         /// </summary>
-        public bool useOpenCVFaceDetector;
+        public bool UseOpenCVFaceDetector;
 
         /// <summary>
         /// The use OpenCV FaceDetector toggle.
         /// </summary>
-        public Toggle useOpenCVFaceDetectorToggle;
+        public Toggle UseOpenCVFaceDetectorToggle;
 
+        // Private Fields
         /// <summary>
         /// The gray mat.
         /// </summary>
-        Mat grayMat;
+        private Mat _grayMat;
 
         /// <summary>
         /// The texture.
         /// </summary>
-        Texture2D texture;
+        private Texture2D _texture;
 
         /// <summary>
         /// The cascade.
         /// </summary>
-        CascadeClassifier cascade;
+        private CascadeClassifier _cascade;
 
         /// <summary>
         /// The multi source to mat helper.
         /// </summary>
-        MultiSource2MatHelper multiSource2MatHelper;
+        private MultiSource2MatHelper _multiSource2MatHelper;
 
         /// <summary>
         /// The image optimization helper.
         /// </summary>
-        ImageOptimizationHelper imageOptimizationHelper;
+        private ImageOptimizationHelper _imageOptimizationHelper;
 
         /// <summary>
         /// The face landmark detector.
         /// </summary>
-        FaceLandmarkDetector faceLandmarkDetector;
+        private FaceLandmarkDetector _faceLandmarkDetector;
 
         /// <summary>
         /// The FPS monitor.
         /// </summary>
-        FpsMonitor fpsMonitor;
+        private FpsMonitor _fpsMonitor;
 
         /// <summary>
         /// The detection result.
         /// </summary>
-        (double x, double y, double width, double height)[] detectionResult;
+        private List<(double x, double y, double width, double height)> _detectionResult;
 
         /// <summary>
         /// The haarcascade_frontalface_alt_xml_filepath.
         /// </summary>
-        string haarcascade_frontalface_alt_xml_filepath;
+        private string _haarcascadeFrontalfaceAltXmlFilepath;
 
         /// <summary>
         /// The dlib shape predictor file name.
         /// </summary>
-        string dlibShapePredictorFileName = "DlibFaceLandmarkDetector/sp_human_face_68.dat";
+        private string _dlibShapePredictorFileName = "DlibFaceLandmarkDetector/sp_human_face_68.dat";
 
         /// <summary>
         /// The dlib shape predictor file path.
         /// </summary>
-        string dlibShapePredictorFilePath;
+        private string _dlibShapePredictorFilePath;
 
         /// <summary>
         /// The CancellationTokenSource.
         /// </summary>
-        CancellationTokenSource cts = new CancellationTokenSource();
+        private CancellationTokenSource _cts = new CancellationTokenSource();
 
-        // Use this for initialization
-        async void Start()
+        // Unity Lifecycle Methods
+        private async void Start()
         {
-            fpsMonitor = GetComponent<FpsMonitor>();
+            _fpsMonitor = GetComponent<FpsMonitor>();
 
-            enableDownScaleToggle.isOn = enableDownScale;
-            enableSkipFrameToggle.isOn = enableSkipFrame;
-            useOpenCVFaceDetectorToggle.isOn = useOpenCVFaceDetector;
+            EnableDownScaleToggle.isOn = EnableDownScale;
+            EnableSkipFrameToggle.isOn = EnableSkipFrame;
+            UseOpenCVFaceDetectorToggle.isOn = UseOpenCVFaceDetector;
 
-            imageOptimizationHelper = gameObject.GetComponent<ImageOptimizationHelper>();
-            multiSource2MatHelper = gameObject.GetComponent<MultiSource2MatHelper>();
-            multiSource2MatHelper.outputColorFormat = Source2MatHelperColorFormat.RGBA;
+            _imageOptimizationHelper = gameObject.GetComponent<ImageOptimizationHelper>();
+            _multiSource2MatHelper = gameObject.GetComponent<MultiSource2MatHelper>();
+            _multiSource2MatHelper.OutputColorFormat = Source2MatHelperColorFormat.RGBA;
 
-            dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
+            _dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.DlibFaceLandmarkDetectorExample.DlibShapePredictorFileName;
 
             // Asynchronously retrieves the readable file path from the StreamingAssets directory.
-            if (fpsMonitor != null)
-                fpsMonitor.consoleText = "Preparing file access...";
+            if (_fpsMonitor != null)
+                _fpsMonitor.ConsoleText = "Preparing file access...";
 
-            haarcascade_frontalface_alt_xml_filepath = await DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsyncTask("DlibFaceLandmarkDetector/haarcascade_frontalface_alt.xml", cancellationToken: cts.Token);
-            dlibShapePredictorFilePath = await DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsyncTask(dlibShapePredictorFileName, cancellationToken: cts.Token);
+            _haarcascadeFrontalfaceAltXmlFilepath = await DlibEnv.GetFilePathTaskAsync("DlibFaceLandmarkDetector/haarcascade_frontalface_alt.xml", cancellationToken: _cts.Token);
+            _dlibShapePredictorFilePath = await DlibEnv.GetFilePathTaskAsync(_dlibShapePredictorFileName, cancellationToken: _cts.Token);
 
-            if (fpsMonitor != null)
-                fpsMonitor.consoleText = "";
+            if (_fpsMonitor != null)
+                _fpsMonitor.ConsoleText = "";
 
             Run();
         }
 
-        private void Run()
+        private void Update()
         {
-            if (string.IsNullOrEmpty(dlibShapePredictorFilePath))
+            if (_multiSource2MatHelper.IsPlaying() && _multiSource2MatHelper.DidUpdateThisFrame())
             {
-                Debug.LogError("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/DlibFaceLandmarkDetector/” to “Assets/StreamingAssets/DlibFaceLandmarkDetector/” folder. ");
+
+                Mat rgbaMat = _multiSource2MatHelper.GetMat();
+
+                // detect faces on the downscale image
+                if (!EnableSkipFrame || !_imageOptimizationHelper.IsCurrentFrameSkipped())
+                {
+
+                    Mat downScaleRgbaMat = null;
+                    float DOWNSCALE_RATIO = 1.0f;
+                    if (EnableDownScale)
+                    {
+                        downScaleRgbaMat = _imageOptimizationHelper.GetDownScaleMat(rgbaMat);
+                        DOWNSCALE_RATIO = _imageOptimizationHelper.DownscaleRatio;
+                    }
+                    else
+                    {
+                        downScaleRgbaMat = rgbaMat;
+                        DOWNSCALE_RATIO = 1.0f;
+                    }
+
+                    // set the downscale mat
+                    DlibOpenCVUtils.SetImage(_faceLandmarkDetector, downScaleRgbaMat);
+
+                    //detect face rects
+                    if (UseOpenCVFaceDetector)
+                    {
+                        // convert image to greyscale.
+                        Imgproc.cvtColor(downScaleRgbaMat, _grayMat, Imgproc.COLOR_RGBA2GRAY);
+
+                        using (Mat equalizeHistMat = new Mat())
+                        using (MatOfRect faces = new MatOfRect())
+                        {
+                            Imgproc.equalizeHist(_grayMat, equalizeHistMat);
+
+                            _cascade.detectMultiScale(equalizeHistMat, faces, 1.1f, 2, 0 | Objdetect.CASCADE_SCALE_IMAGE, (equalizeHistMat.cols() * 0.15, equalizeHistMat.cols() * 0.15), (0, 0));
+
+                            _detectionResult = faces.toValueTupleArrayAsDouble().ToList();
+                        }
+                    }
+                    else
+                    {
+                        // Dlib's face detection processing time increases in proportion to image size.
+                        _detectionResult = _faceLandmarkDetector.DetectValueTuple();
+                    }
+
+                    if (EnableDownScale && _detectionResult != null)
+                    {
+                        for (int i = 0; i < _detectionResult.Count; ++i)
+                        {
+                            _detectionResult[i] = (
+                                _detectionResult[i].x * DOWNSCALE_RATIO,
+                                _detectionResult[i].y * DOWNSCALE_RATIO,
+                                _detectionResult[i].width * DOWNSCALE_RATIO,
+                                _detectionResult[i].height * DOWNSCALE_RATIO
+                            );
+                        }
+                    }
+                }
+
+
+                if (_detectionResult != null)
+                {
+                    // set the original scale image
+                    DlibOpenCVUtils.SetImage(_faceLandmarkDetector, rgbaMat);
+                    // detect face landmarks on the original image
+                    foreach (var rect in _detectionResult)
+                    {
+
+                        //detect landmark points
+                        List<(double x, double y)> points = _faceLandmarkDetector.DetectLandmark(rect);
+
+                        //draw landmark points
+                        DlibOpenCVUtils.DrawFaceLandmark(rgbaMat, points, (0, 255, 0, 255), 2);
+                        //draw face rect
+                        DlibOpenCVUtils.DrawFaceRect(rgbaMat, rect, (255, 0, 0, 255), 2);
+                    }
+                }
+
+                Imgproc.putText(rgbaMat, "Original:(" + rgbaMat.width() + "," + rgbaMat.height() + ") DownScale:(" + rgbaMat.width() / _imageOptimizationHelper.DownscaleRatio + "," + rgbaMat.height() / _imageOptimizationHelper.DownscaleRatio + ") FrameSkipping: " + _imageOptimizationHelper.FrameSkippingRatio, (5, rgbaMat.rows() - 10), Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
+
+                OpenCVMatUtils.MatToTexture2D(rgbaMat, _texture);
             }
-
-            cascade = new CascadeClassifier(haarcascade_frontalface_alt_xml_filepath);
-#if !UNITY_WSA_10_0
-            if (cascade.empty())
-            {
-                Debug.LogError("cascade file is not loaded. Please copy from “OpenCVForUnity/StreamingAssets/DlibFaceLandmarkDetector/” to “Assets/StreamingAssets/DlibFaceLandmarkDetector/” folder. ");
-            }
-#endif
-
-            faceLandmarkDetector = new FaceLandmarkDetector(dlibShapePredictorFilePath);
-
-            multiSource2MatHelper.Initialize();
         }
 
+        private void OnDestroy()
+        {
+            _multiSource2MatHelper?.Dispose();
+            _imageOptimizationHelper?.Dispose();
+            _faceLandmarkDetector?.Dispose();
+            _cascade?.Dispose();
+            _cts?.Dispose();
+        }
+
+        // Public Methods
         /// <summary>
         /// Raises the source to mat helper initialized event.
         /// </summary>
@@ -172,29 +256,29 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         {
             Debug.Log("OnSourceToMatHelperInitialized");
 
-            Mat rgbaMat = multiSource2MatHelper.GetMat();
-            Mat downscaleMat = imageOptimizationHelper.GetDownScaleMat(rgbaMat);
+            Mat rgbaMat = _multiSource2MatHelper.GetMat();
+            Mat downscaleMat = _imageOptimizationHelper.GetDownScaleMat(rgbaMat);
 
-            texture = new Texture2D(rgbaMat.cols(), rgbaMat.rows(), TextureFormat.RGBA32, false);
-            OpenCVForUnity.UnityUtils.Utils.matToTexture2D(rgbaMat, texture);
+            _texture = new Texture2D(rgbaMat.cols(), rgbaMat.rows(), TextureFormat.RGBA32, false);
+            OpenCVMatUtils.MatToTexture2D(rgbaMat, _texture);
 
-            resultPreview.texture = texture;
-            resultPreview.GetComponent<AspectRatioFitter>().aspectRatio = (float)texture.width / texture.height;
+            ResultPreview.texture = _texture;
+            ResultPreview.GetComponent<AspectRatioFitter>().aspectRatio = (float)_texture.width / _texture.height;
 
 
-            if (fpsMonitor != null)
+            if (_fpsMonitor != null)
             {
-                fpsMonitor.Add("dlib shape predictor", dlibShapePredictorFileName);
-                fpsMonitor.Add("original_width", multiSource2MatHelper.GetWidth().ToString());
-                fpsMonitor.Add("original_height", multiSource2MatHelper.GetHeight().ToString());
-                fpsMonitor.Add("downscaleRaito", imageOptimizationHelper.downscaleRatio.ToString());
-                fpsMonitor.Add("frameSkippingRatio", imageOptimizationHelper.frameSkippingRatio.ToString());
-                fpsMonitor.Add("downscale_width", downscaleMat.width().ToString());
-                fpsMonitor.Add("downscale_height", downscaleMat.height().ToString());
-                fpsMonitor.Add("orientation", Screen.orientation.ToString());
+                _fpsMonitor.Add("dlib shape predictor", _dlibShapePredictorFileName);
+                _fpsMonitor.Add("original_width", _multiSource2MatHelper.GetWidth().ToString());
+                _fpsMonitor.Add("original_height", _multiSource2MatHelper.GetHeight().ToString());
+                _fpsMonitor.Add("downscaleRaito", _imageOptimizationHelper.DownscaleRatio.ToString());
+                _fpsMonitor.Add("frameSkippingRatio", _imageOptimizationHelper.FrameSkippingRatio.ToString());
+                _fpsMonitor.Add("downscale_width", downscaleMat.width().ToString());
+                _fpsMonitor.Add("downscale_height", downscaleMat.height().ToString());
+                _fpsMonitor.Add("orientation", Screen.orientation.ToString());
             }
 
-            grayMat = new Mat(rgbaMat.rows(), rgbaMat.cols(), CvType.CV_8UC1);
+            _grayMat = new Mat(rgbaMat.rows(), rgbaMat.cols(), CvType.CV_8UC1);
 
         }
 
@@ -205,16 +289,8 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         {
             Debug.Log("OnSourceToMatHelperDisposed");
 
-            if (grayMat != null)
-            {
-                grayMat.Dispose();
-                grayMat = null;
-            }
-            if (texture != null)
-            {
-                Texture2D.Destroy(texture);
-                texture = null;
-            }
+            _grayMat?.Dispose(); _grayMat = null;
+            if (_texture != null) Texture2D.Destroy(_texture); _texture = null;
         }
 
         /// <summary>
@@ -226,118 +302,10 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         {
             Debug.Log("OnSourceToMatHelperErrorOccurred " + errorCode + ":" + message);
 
-            if (fpsMonitor != null)
+            if (_fpsMonitor != null)
             {
-                fpsMonitor.consoleText = "ErrorCode: " + errorCode + ":" + message;
+                _fpsMonitor.ConsoleText = "ErrorCode: " + errorCode + ":" + message;
             }
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            if (multiSource2MatHelper.IsPlaying() && multiSource2MatHelper.DidUpdateThisFrame())
-            {
-
-                Mat rgbaMat = multiSource2MatHelper.GetMat();
-
-                // detect faces on the downscale image
-                if (!enableSkipFrame || !imageOptimizationHelper.IsCurrentFrameSkipped())
-                {
-
-                    Mat downScaleRgbaMat = null;
-                    float DOWNSCALE_RATIO = 1.0f;
-                    if (enableDownScale)
-                    {
-                        downScaleRgbaMat = imageOptimizationHelper.GetDownScaleMat(rgbaMat);
-                        DOWNSCALE_RATIO = imageOptimizationHelper.downscaleRatio;
-                    }
-                    else
-                    {
-                        downScaleRgbaMat = rgbaMat;
-                        DOWNSCALE_RATIO = 1.0f;
-                    }
-
-                    // set the downscale mat
-                    OpenCVForUnityUtils.SetImage(faceLandmarkDetector, downScaleRgbaMat);
-
-                    //detect face rects
-                    if (useOpenCVFaceDetector)
-                    {
-                        // convert image to greyscale.
-                        Imgproc.cvtColor(downScaleRgbaMat, grayMat, Imgproc.COLOR_RGBA2GRAY);
-
-                        using (Mat equalizeHistMat = new Mat())
-                        using (MatOfRect faces = new MatOfRect())
-                        {
-                            Imgproc.equalizeHist(grayMat, equalizeHistMat);
-
-                            cascade.detectMultiScale(equalizeHistMat, faces, 1.1f, 2, 0 | Objdetect.CASCADE_SCALE_IMAGE, (equalizeHistMat.cols() * 0.15, equalizeHistMat.cols() * 0.15), (0, 0));
-
-                            detectionResult = faces.toValueTupleArrayAsDouble();
-                        }
-                    }
-                    else
-                    {
-                        // Dlib's face detection processing time increases in proportion to image size.
-                        detectionResult = faceLandmarkDetector.DetectValueTuple();
-                    }
-
-                    if (enableDownScale && detectionResult != null)
-                    {
-                        for (int i = 0; i < detectionResult.Length; ++i)
-                        {
-                            detectionResult[i].x *= DOWNSCALE_RATIO;
-                            detectionResult[i].y *= DOWNSCALE_RATIO;
-                            detectionResult[i].width *= DOWNSCALE_RATIO;
-                            detectionResult[i].height *= DOWNSCALE_RATIO;
-                        }
-                    }
-                }
-
-
-                if (detectionResult != null)
-                {
-                    // set the original scale image
-                    OpenCVForUnityUtils.SetImage(faceLandmarkDetector, rgbaMat);
-                    // detect face landmarks on the original image
-                    foreach (var rect in detectionResult)
-                    {
-
-                        //detect landmark points
-                        (double x, double y)[] points = faceLandmarkDetector.DetectLandmark(rect);
-
-                        //draw landmark points
-                        OpenCVForUnityUtils.DrawFaceLandmark(rgbaMat, points, (0, 255, 0, 255), 2);
-                        //draw face rect
-                        OpenCVForUnityUtils.DrawFaceRect(rgbaMat, rect, (255, 0, 0, 255), 2);
-                    }
-                }
-
-                Imgproc.putText(rgbaMat, "Original:(" + rgbaMat.width() + "," + rgbaMat.height() + ") DownScale:(" + rgbaMat.width() / imageOptimizationHelper.downscaleRatio + "," + rgbaMat.height() / imageOptimizationHelper.downscaleRatio + ") FrameSkipping: " + imageOptimizationHelper.frameSkippingRatio, (5, rgbaMat.rows() - 10), Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
-
-                OpenCVForUnity.UnityUtils.Utils.matToTexture2D(rgbaMat, texture);
-            }
-        }
-
-        /// <summary>
-        /// Raises the destroy event.
-        /// </summary>
-        void OnDestroy()
-        {
-            if (multiSource2MatHelper != null)
-                multiSource2MatHelper.Dispose();
-
-            if (imageOptimizationHelper != null)
-                imageOptimizationHelper.Dispose();
-
-            if (faceLandmarkDetector != null)
-                faceLandmarkDetector.Dispose();
-
-            if (cascade != null)
-                cascade.Dispose();
-
-            if (cts != null)
-                cts.Dispose();
         }
 
         /// <summary>
@@ -353,7 +321,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// </summary>
         public void OnPlayButtonClick()
         {
-            multiSource2MatHelper.Play();
+            _multiSource2MatHelper.Play();
         }
 
         /// <summary>
@@ -361,7 +329,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// </summary>
         public void OnPauseButtonClick()
         {
-            multiSource2MatHelper.Pause();
+            _multiSource2MatHelper.Pause();
         }
 
         /// <summary>
@@ -369,7 +337,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// </summary>
         public void OnStopButtonClick()
         {
-            multiSource2MatHelper.Stop();
+            _multiSource2MatHelper.Stop();
         }
 
         /// <summary>
@@ -377,7 +345,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// </summary>
         public void OnChangeCameraButtonClick()
         {
-            multiSource2MatHelper.requestedIsFrontFacing = !multiSource2MatHelper.requestedIsFrontFacing;
+            _multiSource2MatHelper.RequestedIsFrontFacing = !_multiSource2MatHelper.RequestedIsFrontFacing;
         }
 
         /// <summary>
@@ -385,13 +353,13 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// </summary>
         public void OnEnableDownScaleToggleValueChanged()
         {
-            if (enableDownScaleToggle.isOn)
+            if (EnableDownScaleToggle.isOn)
             {
-                enableDownScale = true;
+                EnableDownScale = true;
             }
             else
             {
-                enableDownScale = false;
+                EnableDownScale = false;
             }
         }
 
@@ -400,13 +368,13 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// </summary>
         public void OnEnableSkipFrameToggleValueChanged()
         {
-            if (enableSkipFrameToggle.isOn)
+            if (EnableSkipFrameToggle.isOn)
             {
-                enableSkipFrame = true;
+                EnableSkipFrame = true;
             }
             else
             {
-                enableSkipFrame = false;
+                EnableSkipFrame = false;
             }
         }
 
@@ -415,14 +383,35 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// </summary>
         public void OnUseOpenCVFaceDetectorToggleValueChanged()
         {
-            if (useOpenCVFaceDetectorToggle.isOn)
+            if (UseOpenCVFaceDetectorToggle.isOn)
             {
-                useOpenCVFaceDetector = true;
+                UseOpenCVFaceDetector = true;
             }
             else
             {
-                useOpenCVFaceDetector = false;
+                UseOpenCVFaceDetector = false;
             }
+        }
+
+        // Private Methods
+        private void Run()
+        {
+            if (string.IsNullOrEmpty(_dlibShapePredictorFilePath))
+            {
+                Debug.LogError("shape predictor file does not exist. Please copy from \"DlibFaceLandmarkDetector/StreamingAssets/DlibFaceLandmarkDetector/\" to \"Assets/StreamingAssets/DlibFaceLandmarkDetector/\" folder. ");
+            }
+
+            _cascade = new CascadeClassifier(_haarcascadeFrontalfaceAltXmlFilepath);
+#if !UNITY_WSA_10_0
+            if (_cascade.empty())
+            {
+                Debug.LogError("cascade file is not loaded. Please copy from \"OpenCVForUnity/StreamingAssets/DlibFaceLandmarkDetector/\" to \"Assets/StreamingAssets/DlibFaceLandmarkDetector/\" folder. ");
+            }
+#endif
+
+            _faceLandmarkDetector = new FaceLandmarkDetector(_dlibShapePredictorFilePath);
+
+            _multiSource2MatHelper.Initialize();
         }
     }
 }

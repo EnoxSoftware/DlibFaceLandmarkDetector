@@ -1,4 +1,4 @@
-using DlibFaceLandmarkDetector.UnityUtils;
+using DlibFaceLandmarkDetector.UnityIntegration;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
@@ -8,11 +8,7 @@ namespace DlibFaceLandmarkDetectorExample
 {
     public class DlibFaceLandmarkDetectorExample : MonoBehaviour
     {
-        public Text versionInfo;
-        public ScrollRect scrollRect;
-        static float verticalNormalizedPosition = 1f;
-
-
+        // Enums
         public enum DlibShapePredictorNamePreset : int
         {
             sp_human_face_68,
@@ -22,70 +18,65 @@ namespace DlibFaceLandmarkDetectorExample
             sp_human_face_6,
         }
 
-        public Dropdown dlibShapePredictorNameDropdown;
+        // Constants
+        private static float VERTICAL_NORMALIZED_POSITION = 1f;
+        private static DlibShapePredictorNamePreset _dlibShapePredictorName = DlibShapePredictorNamePreset.sp_human_face_68;
 
-        static DlibShapePredictorNamePreset dlibShapePredictorName = DlibShapePredictorNamePreset.sp_human_face_68;
+        // Public Fields
+        public Text VersionInfo;
+        public ScrollRect ScrollRect;
+        public Dropdown DlibShapePredictorNameDropdown;
 
-        /// <summary>
-        /// The name of dlib shape predictor file to use in the example scenes.
-        /// </summary>
-        public static string dlibShapePredictorFileName
+        // Unity Lifecycle Methods
+        private void Start()
         {
-            get
-            {
-                return "DlibFaceLandmarkDetector/" + dlibShapePredictorName.ToString() + ".dat";
-            }
-        }
-
-        // Use this for initialization
-        void Start()
-        {
-            versionInfo.text = "dlibfacelandmarkdetector" + " " + Utils.getVersion();
-            versionInfo.text += " / UnityEditor " + Application.unityVersion;
-            versionInfo.text += " / ";
+            VersionInfo.text = "dlibfacelandmarkdetector" + " " + DlibEnv.GetVersion();
+            VersionInfo.text += " / UnityEditor " + Application.unityVersion;
+            VersionInfo.text += " / ";
 
 #if UNITY_EDITOR
-            versionInfo.text += "Editor";
+            VersionInfo.text += "Editor";
 #elif UNITY_STANDALONE_WIN
-            versionInfo.text += "Windows";
+            VersionInfo.text += "Windows";
 #elif UNITY_STANDALONE_OSX
-            versionInfo.text += "Mac OSX";
+            VersionInfo.text += "Mac OSX";
 #elif UNITY_STANDALONE_LINUX
-            versionInfo.text += "Linux";
+            VersionInfo.text += "Linux";
 #elif UNITY_ANDROID
-            versionInfo.text += "Android";
+            VersionInfo.text += "Android";
 #elif UNITY_IOS
-            versionInfo.text += "iOS";
+            VersionInfo.text += "iOS";
+#elif UNITY_VISIONOS
+            VersionInfo.text += "VisionOS";
 #elif UNITY_WSA
-            versionInfo.text += "WSA";
+            VersionInfo.text += "WSA";
 #elif UNITY_WEBGL
-            versionInfo.text += "WebGL";
+            VersionInfo.text += "WebGL";
 #endif
-            versionInfo.text += " ";
+            VersionInfo.text += " ";
 #if ENABLE_MONO
-            versionInfo.text += "Mono";
+            VersionInfo.text += "Mono";
 #elif ENABLE_IL2CPP
-            versionInfo.text += "IL2CPP";
+            VersionInfo.text += "IL2CPP";
 #elif ENABLE_DOTNET
-            versionInfo.text += ".NET";
+            VersionInfo.text += ".NET";
 #endif
 
-            scrollRect.verticalNormalizedPosition = verticalNormalizedPosition;
+            ScrollRect.verticalNormalizedPosition = VERTICAL_NORMALIZED_POSITION;
 
-            dlibShapePredictorNameDropdown.value = (int)dlibShapePredictorName;
+            DlibShapePredictorNameDropdown.value = (int)_dlibShapePredictorName;
         }
 
-        // Update is called once per frame
-        void Update()
+        private void Update()
         {
 
         }
 
+        // Public Methods
         public void OnScrollRectValueChanged()
         {
-            verticalNormalizedPosition = scrollRect.verticalNormalizedPosition;
+            VERTICAL_NORMALIZED_POSITION = ScrollRect.verticalNormalizedPosition;
         }
-
 
         public void OnShowSystemInfoButtonClick()
         {
@@ -102,17 +93,10 @@ namespace DlibFaceLandmarkDetectorExample
             SceneManager.LoadScene("WebCamTextureExample");
         }
 
-        public void OnCatDetectionExampleButtonClick()
-        {
-            SceneManager.LoadScene("CatDetectionExample");
-        }
-
         public void OnBenchmarkExampleButtonClick()
         {
             SceneManager.LoadScene("BenchmarkExample");
         }
-
-
 
         public void OnShowLicenseButtonClick()
         {
@@ -173,13 +157,23 @@ namespace DlibFaceLandmarkDetectorExample
             SceneManager.LoadScene("VideoCaptureNoiseFilterExample");
         }
 
-
         /// <summary>
         /// Raises the dlib shape predictor name dropdown value changed event.
         /// </summary>
         public void OnDlibShapePredictorNameDropdownValueChanged(int result)
         {
-            dlibShapePredictorName = (DlibShapePredictorNamePreset)result;
+            _dlibShapePredictorName = (DlibShapePredictorNamePreset)result;
+        }
+
+        /// <summary>
+        /// The name of dlib shape predictor file to use in the example scenes.
+        /// </summary>
+        public static string DlibShapePredictorFileName
+        {
+            get
+            {
+                return "DlibFaceLandmarkDetector/" + _dlibShapePredictorName.ToString() + ".dat";
+            }
         }
     }
 }

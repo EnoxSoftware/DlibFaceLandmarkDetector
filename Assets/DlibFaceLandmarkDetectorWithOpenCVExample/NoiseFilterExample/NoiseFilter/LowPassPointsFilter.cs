@@ -1,125 +1,181 @@
-using OpenCVForUnity.CoreModule;
-using OpenCVForUnity.ImgprocModule;
 using System;
 using System.Collections.Generic;
+using OpenCVForUnity.CoreModule;
+using OpenCVForUnity.ImgprocModule;
+using OpenCVForUnity.UnityIntegration;
 using UnityEngine;
 
 namespace DlibFaceLandmarkDetectorWithOpenCVExample
 {
     /// <summary>
     /// Low Pass Points Filter.
-    /// v 1.0.4
+    /// v 2.0.0
     /// </summary>
     public class LowPassPointsFilter : PointsFilterBase
     {
-        public double diffLawPass = 2;
+        // Constants
+        private const double DEFAULT_DIFF_LOW_PASS = 2;
 
-        bool flag = false;
+        // Color constants for debug drawing
+        private static readonly (double v0, double v1, double v2, double v3) DEBUG_COLOR_FILTERED = new Scalar(0, 255, 0, 255).ToValueTuple();
+        private static readonly (double v0, double v1, double v2, double v3) DEBUG_COLOR_UNFILTERED = new Scalar(255, 0, 0, 255).ToValueTuple();
+        private static readonly (double v0, double v1, double v2, double v3) DEBUG_COLOR_INITIAL = new Scalar(0, 0, 255, 255).ToValueTuple();
 
-        List<Vector2> lastPoints;
+        // Public Fields
+        public double DiffLowPass = DEFAULT_DIFF_LOW_PASS;
+
+        // Private Fields
+        private bool _flag = false;
+        private Vec2f[] _lastPoints;
 
         public LowPassPointsFilter(int numberOfElements) : base(numberOfElements)
         {
-            lastPoints = new List<Vector2>();
+            _lastPoints = new Vec2f[numberOfElements];
             for (int i = 0; i < numberOfElements; i++)
             {
-                lastPoints.Add(new Vector2());
+                _lastPoints[i] = new Vec2f();
             }
         }
 
+#if NET_STANDARD_2_1
         /// <summary>
         /// Processes points by filter.
         /// </summary>
-        /// <param name="img">Image mat.</param>
-        /// <param name="srcPoints">Input points.</param>
-        /// <param name="dstPoints">Output points.</param>
-        /// <param name="drawDebugPoints">if true, draws debug points.</param>
-        /// <returns>Output points.</returns>
-        public override List<Vector2> Process(Mat img, List<Vector2> srcPoints, List<Vector2> dstPoints = null, bool drawDebugPoints = false)
+        /// <param name="img">Image mat for processing (used for optical flow, debug drawing, etc.).</param>
+        /// <param name="srcPoints">Input points. Can be empty when no detection is available (will use previous state for prediction).</param>
+        /// <param name="dstPoints">Output points span.</param>
+        /// <returns>Output points span. Returns predicted points from previous state when srcPoints is empty.</returns>
+        public override Span<Vec2f> Process(Mat img, ReadOnlySpan<Vec2f> srcPoints, Span<Vec2f> dstPoints)
+#else
+        /// <summary>
+        /// Processes points by filter.
+        /// </summary>
+        /// <param name="img">Image mat for processing (used for optical flow, debug drawing, etc.).</param>
+        /// <param name="srcPoints">Input points. Can be null when no detection is available (will use previous state for prediction).</param>
+        /// <param name="dstPoints">Output points. If null, a new array will be created.</param>
+        /// <returns>Output points. Returns predicted points from previous state when srcPoints is null.</returns>
+        public override Vec2f[] Process(Mat img, Vec2f[] srcPoints, Vec2f[] dstPoints = null)
+#endif
         {
-            if (srcPoints != null && srcPoints.Count != numberOfElements)
+            ThrowIfDisposed();
+
+            if (srcPoints == null)
+                return dstPoints == null ? _lastPoints : dstPoints;
+
+            if (srcPoints != null && srcPoints.Length != _numberOfElements)
+                throw new ArgumentException("The number of srcPoints elements is different.");
+
+            if (dstPoints != null && dstPoints.Length != _numberOfElements)
+                throw new ArgumentException("The number of dstPoints elements is different.");
+
+            if (dstPoints == null)
             {
-                throw new ArgumentException("The number of elements is different.");
+                dstPoints = new Vec2f[_numberOfElements];
+                for (int i = 0; i < _numberOfElements; i++)
+                {
+                    dstPoints[i] = new Vec2f();
+                }
             }
 
-            if (srcPoints != null)
+            if (_flag)
             {
-
-                if (dstPoints == null)
+                for (int i = 0; i < _numberOfElements; i++)
                 {
-                    dstPoints = new List<Vector2>();
-                }
-                if (dstPoints != null && dstPoints.Count != numberOfElements)
-                {
-                    dstPoints.Clear();
-                    for (int i = 0; i < numberOfElements; i++)
+                    ref readonly Vec2f srcPoint = ref srcPoints[i];
+                    ref Vec2f lastPoint = ref _lastPoints[i];
+                    double diff = Math.Sqrt(Math.Pow(srcPoint.Item1 - lastPoint.Item1, 2.0) + Math.Pow(srcPoint.Item2 - lastPoint.Item2, 2.0));
+                    if (diff > DiffLowPass)
                     {
-                        dstPoints.Add(new Vector2());
+                        lastPoint.Item1 = srcPoint.Item1;
+                        lastPoint.Item2 = srcPoint.Item2;
+                        if (IsDebugMode)
+                            Imgproc.circle(img, (srcPoint.Item1, srcPoint.Item2), 1, DEBUG_COLOR_FILTERED, -1);
+                    }
+                    else
+                    {
+                        if (IsDebugMode)
+                            Imgproc.circle(img, (lastPoint.Item1, lastPoint.Item2), 1, DEBUG_COLOR_UNFILTERED, -1);
                     }
                 }
-
-                if (flag)
-                {
-                    for (int i = 0; i < numberOfElements; i++)
-                    {
-                        double diff = Math.Sqrt(Math.Pow(srcPoints[i].x - lastPoints[i].x, 2.0) + Math.Pow(srcPoints[i].y - lastPoints[i].y, 2.0));
-                        if (diff > diffLawPass)
-                        {
-                            lastPoints[i] = srcPoints[i];
-                            if (drawDebugPoints)
-                                Imgproc.circle(img, new Point(srcPoints[i].x, srcPoints[i].y), 1, new Scalar(0, 255, 0, 255), -1);
-                        }
-                        else
-                        {
-                            if (drawDebugPoints)
-                                Imgproc.circle(img, new Point(lastPoints[i].x, lastPoints[i].y), 1, new Scalar(255, 0, 0, 255), -1);
-                        }
-                        dstPoints[i] = lastPoints[i];
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < numberOfElements; i++)
-                    {
-                        lastPoints[i] = srcPoints[i];
-                        dstPoints[i] = srcPoints[i];
-                    }
-                    if (drawDebugPoints)
-                    {
-                        for (int i = 0; i < numberOfElements; i++)
-                        {
-                            Imgproc.circle(img, new Point(srcPoints[i].x, srcPoints[i].y), 1, new Scalar(0, 0, 255, 255), -1);
-                        }
-                    }
-                    flag = true;
-                }
-                return dstPoints;
+#if NET_STANDARD_2_1
+                _lastPoints.CopyTo(dstPoints);
+#else
+                Array.Copy(_lastPoints, dstPoints, _numberOfElements);
+#endif
             }
             else
             {
-                return dstPoints == null ? srcPoints : dstPoints;
+#if NET_STANDARD_2_1
+                srcPoints.CopyTo(_lastPoints);
+                srcPoints.CopyTo(dstPoints);
+#else
+                Array.Copy(srcPoints, _lastPoints, _numberOfElements);
+                Array.Copy(srcPoints, dstPoints, _numberOfElements);
+#endif
+
+                if (IsDebugMode)
+                {
+                    for (int i = 0; i < _numberOfElements; i++)
+                    {
+                        Vec2f srcPoint = srcPoints[i];
+                        Imgproc.circle(img, (srcPoint.Item1, srcPoint.Item2), 1, DEBUG_COLOR_INITIAL, -1);
+                    }
+                }
+                _flag = true;
             }
+            return dstPoints;
         }
+
+#if NET_STANDARD_2_1
+        /// <summary>
+        /// Processes points by filter.
+        /// </summary>
+        /// <param name="img">Image mat for processing (used for optical flow, debug drawing, etc.).</param>
+        /// <param name="srcPoints">Input points. Can be null when no detection is available (will use previous state for prediction).</param>
+        /// <param name="dstPoints">Output points. If null, a new array will be created.</param>
+        /// <returns>Output points. Returns predicted points from previous state when srcPoints is null.</returns>
+        public override Vec2f[] Process(Mat img, Vec2f[] srcPoints, Vec2f[] dstPoints = null)
+        {
+            ThrowIfDisposed();
+
+            if (dstPoints == null)
+            {
+                dstPoints = new Vec2f[_numberOfElements];
+                for (int i = 0; i < _numberOfElements; i++)
+                {
+                    dstPoints[i] = new Vec2f();
+                }
+            }
+            Process(img, srcPoints.AsSpan(), dstPoints.AsSpan());
+
+            return dstPoints;
+        }
+#endif
 
         /// <summary>
         /// Resets filter.
         /// </summary>
         public override void Reset()
         {
-            flag = false;
-            for (int i = 0; i < lastPoints.Count; i++)
+            ThrowIfDisposed();
+
+            _flag = false;
+            for (int i = 0; i < _numberOfElements; i++)
             {
-                lastPoints[i] = new Vector2();
+                _lastPoints[i] = new Vec2f();
             }
         }
 
-        /// <summary>
-        /// To release the resources for the initialized method.
-        /// </summary>
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (lastPoints != null)
-                lastPoints.Clear();
+            if (_disposed) return;
+
+            if (disposing)
+            {
+                _lastPoints = null;
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

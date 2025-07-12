@@ -1,7 +1,9 @@
-using DlibFaceLandmarkDetector;
-using OpenCVForUnity.CoreModule;
 using System.Collections.Generic;
 using System.Threading;
+using DlibFaceLandmarkDetector;
+using DlibFaceLandmarkDetector.UnityIntegration;
+using OpenCVForUnity.CoreModule;
+using OpenCVForUnity.UnityIntegration;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -14,75 +16,97 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
     /// </summary>
     public class Texture2DToMatExample : MonoBehaviour
     {
+        // Public Fields
         [Header("Output")]
         /// <summary>
         /// The RawImage for previewing the result.
         /// </summary>
-        public RawImage resultPreview;
+        public RawImage ResultPreview;
 
         [Space(10)]
 
         /// <summary>
         /// The image texture.
         /// </summary>
-        public Texture2D imgTexture;
+        public Texture2D ImgTexture;
 
+        // Private Fields
         /// <summary>
         /// The FPS monitor.
         /// </summary>
-        FpsMonitor fpsMonitor;
+        private FpsMonitor _fpsMonitor;
 
         /// <summary>
         /// The dlib shape predictor file name.
         /// </summary>
-        string dlibShapePredictorFileName = "DlibFaceLandmarkDetector/sp_human_face_68.dat";
+        private string _dlibShapePredictorFileName = "DlibFaceLandmarkDetector/sp_human_face_68.dat";
 
         /// <summary>
         /// The dlib shape predictor file path.
         /// </summary>
-        string dlibShapePredictorFilePath;
+        private string _dlibShapePredictorFilePath;
 
         /// <summary>
         /// The CancellationTokenSource.
         /// </summary>
-        CancellationTokenSource cts = new CancellationTokenSource();
+        private CancellationTokenSource _cts = new CancellationTokenSource();
 
-        // Use this for initialization
-        async void Start()
+        // Unity Lifecycle Methods
+        private async void Start()
         {
-            fpsMonitor = GetComponent<FpsMonitor>();
+            _fpsMonitor = GetComponent<FpsMonitor>();
 
-            dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
+            _dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.DlibFaceLandmarkDetectorExample.DlibShapePredictorFileName;
 
             // Asynchronously retrieves the readable file path from the StreamingAssets directory.
-            if (fpsMonitor != null)
-                fpsMonitor.consoleText = "Preparing file access...";
+            if (_fpsMonitor != null)
+                _fpsMonitor.ConsoleText = "Preparing file access...";
 
-            dlibShapePredictorFilePath = await DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsyncTask(dlibShapePredictorFileName, cancellationToken: cts.Token);
+            _dlibShapePredictorFilePath = await DlibEnv.GetFilePathTaskAsync(_dlibShapePredictorFileName, cancellationToken: _cts.Token);
 
-            if (fpsMonitor != null)
-                fpsMonitor.consoleText = "";
+            if (_fpsMonitor != null)
+                _fpsMonitor.ConsoleText = "";
 
             Run();
         }
 
+        private void Update()
+        {
+
+        }
+
+        private void OnDestroy()
+        {
+            _cts?.Dispose();
+        }
+
+        // Public Methods
+        /// <summary>
+        /// Raises the back button click event.
+        /// </summary>
+        public void OnBackButtonClick()
+        {
+            SceneManager.LoadScene("DlibFaceLandmarkDetectorExample");
+        }
+
+        // Private Methods
         private void Run()
         {
-            if (string.IsNullOrEmpty(dlibShapePredictorFilePath))
+            if (string.IsNullOrEmpty(_dlibShapePredictorFilePath))
             {
-                Debug.LogError("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/DlibFaceLandmarkDetector/” to “Assets/StreamingAssets/DlibFaceLandmarkDetector/” folder. ");
+                Debug.LogError("shape predictor file does not exist. Please copy from \"DlibFaceLandmarkDetector/StreamingAssets/DlibFaceLandmarkDetector/\" to \"Assets/StreamingAssets/DlibFaceLandmarkDetector/\" folder. ");
             }
 
-            Mat imgMat = new Mat(imgTexture.height, imgTexture.width, CvType.CV_8UC4);
+            Mat imgMat = new Mat(ImgTexture.height, ImgTexture.width, CvType.CV_8UC4);
 
             // Convert Unity Texture2D to OpenCV Mat.
-            OpenCVForUnity.UnityUtils.Utils.texture2DToMat(imgTexture, imgMat);
+            OpenCVMatUtils.Texture2DToMat(ImgTexture, imgMat);
             Debug.Log("imgMat dst ToString " + imgMat.ToString());
 
 
-            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector(dlibShapePredictorFilePath);
+            FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector(_dlibShapePredictorFilePath);
 
-            OpenCVForUnityUtils.SetImage(faceLandmarkDetector, imgMat);
+            DlibOpenCVUtils.SetImage(faceLandmarkDetector, imgMat);
 
 
             //detect face rectdetecton
@@ -99,10 +123,10 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
 
                 Debug.Log("face points count : " + points.Count);
                 //draw landmark points
-                OpenCVForUnityUtils.DrawFaceLandmark(imgMat, points, new Scalar(0, 255, 0, 255), 2, true);
+                DlibOpenCVUtils.DrawFaceLandmark(imgMat, points, new Scalar(0, 255, 0, 255), 2, true);
 
                 //draw face rect
-                OpenCVForUnityUtils.DrawFaceRect(imgMat, result, new Scalar(255, 0, 0, 255), 2);
+                DlibOpenCVUtils.DrawFaceRect(imgMat, result, new Scalar(255, 0, 0, 255), 2);
             }
 
             faceLandmarkDetector.Dispose();
@@ -110,42 +134,19 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             Texture2D texture = new Texture2D(imgMat.cols(), imgMat.rows(), TextureFormat.RGBA32, false);
 
             // Convert OpenCV Mat to Unity Texture2D.
-            OpenCVForUnity.UnityUtils.Utils.matToTexture2D(imgMat, texture);
+            OpenCVMatUtils.MatToTexture2D(imgMat, texture);
 
-            resultPreview.texture = texture;
-            resultPreview.GetComponent<AspectRatioFitter>().aspectRatio = (float)texture.width / texture.height;
+            ResultPreview.texture = texture;
+            ResultPreview.GetComponent<AspectRatioFitter>().aspectRatio = (float)texture.width / texture.height;
 
 
-            if (fpsMonitor != null)
+            if (_fpsMonitor != null)
             {
-                fpsMonitor.Add("dlib shape predictor", dlibShapePredictorFileName);
-                fpsMonitor.Add("width", imgMat.width().ToString());
-                fpsMonitor.Add("height", imgMat.height().ToString());
-                fpsMonitor.Add("orientation", Screen.orientation.ToString());
+                _fpsMonitor.Add("dlib shape predictor", _dlibShapePredictorFileName);
+                _fpsMonitor.Add("width", imgMat.width().ToString());
+                _fpsMonitor.Add("height", imgMat.height().ToString());
+                _fpsMonitor.Add("orientation", Screen.orientation.ToString());
             }
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
-        /// <summary>
-        /// Raises the destroy event.
-        /// </summary>
-        void OnDestroy()
-        {
-            if (cts != null)
-                cts.Dispose();
-        }
-
-        /// <summary>
-        /// Raises the back button click event.
-        /// </summary>
-        public void OnBackButtonClick()
-        {
-            SceneManager.LoadScene("DlibFaceLandmarkDetectorExample");
         }
     }
 }

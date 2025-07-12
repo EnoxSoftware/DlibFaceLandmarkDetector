@@ -1,9 +1,9 @@
-using DlibFaceLandmarkDetector;
-using DlibFaceLandmarkDetector.UnityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using DlibFaceLandmarkDetector;
+using DlibFaceLandmarkDetector.UnityIntegration;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,11 +16,15 @@ namespace DlibFaceLandmarkDetectorExample
     /// </summary>
     public class WebCamTextureExample : MonoBehaviour
     {
+        // Constants
+        private static readonly string DLIB_SHAPE_PREDICTOR_FILE_NAME = "DlibFaceLandmarkDetector/sp_human_face_68.dat";
+
+        // Public Fields
         [Header("Output")]
         /// <summary>
         /// The RawImage for previewing the result.
         /// </summary>
-        public RawImage resultPreview;
+        public RawImage ResultPreview;
 
         [Space(10)]
 
@@ -28,154 +32,161 @@ namespace DlibFaceLandmarkDetectorExample
         /// Set the name of the device to use.
         /// </summary>
         [SerializeField, TooltipAttribute("Set the name of the device to use.")]
-        public string requestedDeviceName = null;
+        public string RequestedDeviceName = null;
 
         /// <summary>
         /// Set the width of WebCamTexture.
         /// </summary>
         [SerializeField, TooltipAttribute("Set the width of WebCamTexture.")]
-        public int requestedWidth = 320;
+        public int RequestedWidth = 320;
 
         /// <summary>
         /// Set the height of WebCamTexture.
         /// </summary>
         [SerializeField, TooltipAttribute("Set the height of WebCamTexture.")]
-        public int requestedHeight = 240;
+        public int RequestedHeight = 240;
 
         /// <summary>
         /// Set FPS of WebCamTexture.
         /// </summary>
         [SerializeField, TooltipAttribute("Set FPS of WebCamTexture.")]
-        public int requestedFPS = 30;
+        public int RequestedFPS = 30;
 
         /// <summary>
         /// Set whether to use the front facing camera.
         /// </summary>
         [SerializeField, TooltipAttribute("Set whether to use the front facing camera.")]
-        public bool requestedIsFrontFacing = false;
+        public bool RequestedIsFrontFacing = false;
 
         /// <summary>
         /// The adjust pixels direction toggle.
         /// </summary>
-        public Toggle adjustPixelsDirectionToggle;
+        public Toggle AdjustPixelsDirectionToggle;
 
         /// <summary>
         /// Determines if adjust pixels direction.
         /// </summary>
         [SerializeField, TooltipAttribute("Determines if adjust pixels direction.")]
-        public bool adjustPixelsDirection = false;
+        public bool AdjustPixelsDirection = false;
 
-        /// <summary>
-        /// The webcam texture.
-        /// </summary>
-        WebCamTexture webCamTexture;
+        // Private Fields
+        private WebCamTexture _webCamTexture;
+        private WebCamDevice _webCamDevice;
+        private Color32[] _colors;
+        private Color32[] _rotatedColors;
+        private bool _rotate90Degree = false;
+        private bool _isInitWaiting = false;
+        private bool _hasInitDone = false;
+        private ScreenOrientation _screenOrientation;
+        private int _screenWidth;
+        private int _screenHeight;
+        private FaceLandmarkDetector _faceLandmarkDetector;
+        private Texture2D _texture;
+        private FpsMonitor _fpsMonitor;
+        private string _dlibShapePredictorFileName = DLIB_SHAPE_PREDICTOR_FILE_NAME;
+        private string _dlibShapePredictorFilePath;
+        private CancellationTokenSource _cts = new CancellationTokenSource();
+#if ((UNITY_IOS || UNITY_WEBGL) && UNITY_2018_1_OR_NEWER) || (UNITY_ANDROID && UNITY_2018_3_OR_NEWER)
+        private bool _isUserRequestingPermission;
+#endif
 
-        /// <summary>
-        /// The webcam device.
-        /// </summary>
-        WebCamDevice webCamDevice;
-
-        /// <summary>
-        /// The colors.
-        /// </summary>
-        Color32[] colors;
-
-        /// <summary>
-        /// The rotated colors.
-        /// </summary>
-        Color32[] rotatedColors;
-
-        /// <summary>
-        /// Determines if rotates 90 degree.
-        /// </summary>
-        bool rotate90Degree = false;
-
-        /// <summary>
-        /// Indicates whether this instance is waiting for initialization to complete.
-        /// </summary>
-        bool isInitWaiting = false;
-
-        /// <summary>
-        /// Indicates whether this instance has been initialized.
-        /// </summary>
-        bool hasInitDone = false;
-
-        /// <summary>
-        /// The screenOrientation.
-        /// </summary>
-        ScreenOrientation screenOrientation;
-
-        /// <summary>
-        /// The width of the screen.
-        /// </summary>
-        int screenWidth;
-
-        /// <summary>
-        /// The height of the screen.
-        /// </summary>
-        int screenHeight;
-
-        /// <summary>
-        /// The face landmark detector.
-        /// </summary>
-        FaceLandmarkDetector faceLandmarkDetector;
-
-        /// <summary>
-        /// The texture.
-        /// </summary>
-        Texture2D texture;
-
-        /// <summary>
-        /// The FPS monitor.
-        /// </summary>
-        FpsMonitor fpsMonitor;
-
-        /// <summary>
-        /// The dlib shape predictor file name.
-        /// </summary>
-        string dlibShapePredictorFileName = "DlibFaceLandmarkDetector/sp_human_face_68.dat";
-
-        /// <summary>
-        /// The dlib shape predictor file path.
-        /// </summary>
-        string dlibShapePredictorFilePath;
-
-        /// <summary>
-        /// The CancellationTokenSource.
-        /// </summary>
-        CancellationTokenSource cts = new CancellationTokenSource();
-
-        // Use this for initialization
-        async void Start()
+        // Unity Lifecycle Methods
+        private async void Start()
         {
-            fpsMonitor = GetComponent<FpsMonitor>();
-
-            dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.dlibShapePredictorFileName;
-
-            // Asynchronously retrieves the readable file path from the StreamingAssets directory.
-            if (fpsMonitor != null)
-                fpsMonitor.consoleText = "Preparing file access...";
-
-            dlibShapePredictorFilePath = await Utils.getFilePathAsyncTask(dlibShapePredictorFileName, cancellationToken: cts.Token);
-
-            if (fpsMonitor != null)
-                fpsMonitor.consoleText = "";
-
+            _fpsMonitor = GetComponent<FpsMonitor>();
+            _dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.DlibShapePredictorFileName;
+            if (_fpsMonitor != null)
+                _fpsMonitor.ConsoleText = "Preparing file access...";
+            _dlibShapePredictorFilePath = await DlibEnv.GetFilePathTaskAsync(_dlibShapePredictorFileName, cancellationToken: _cts.Token);
+            if (_fpsMonitor != null)
+                _fpsMonitor.ConsoleText = "";
             Run();
         }
 
+        private void Update()
+        {
+            if (AdjustPixelsDirection)
+            {
+                if (_screenOrientation != Screen.orientation && (_screenWidth != Screen.width || _screenHeight != Screen.height))
+                {
+                    Initialize();
+                }
+                else
+                {
+                    _screenWidth = Screen.width;
+                    _screenHeight = Screen.height;
+                }
+            }
+            if (_hasInitDone && _webCamTexture.isPlaying && _webCamTexture.didUpdateThisFrame)
+            {
+                Color32[] colors = GetColors();
+                if (colors != null)
+                {
+                    _faceLandmarkDetector.SetImage<Color32>(colors, _texture.width, _texture.height, 4, true);
+                    List<Rect> detectResult = _faceLandmarkDetector.Detect();
+                    foreach (var rect in detectResult)
+                    {
+                        _faceLandmarkDetector.DetectLandmark(rect);
+                        _faceLandmarkDetector.DrawDetectLandmarkResult<Color32>(colors, _texture.width, _texture.height, 4, true, 0, 255, 0, 255);
+                    }
+                    _faceLandmarkDetector.DrawDetectResult<Color32>(colors, _texture.width, _texture.height, 4, true, 255, 0, 0, 255, 2);
+                    _texture.SetPixels32(colors);
+                    _texture.Apply(false);
+                }
+            }
+        }
+
+        private void OnDestroy()
+        {
+            Dispose();
+            _faceLandmarkDetector?.Dispose();
+            _cts?.Dispose();
+        }
+
+        // Public Methods
+        /// <summary>
+        /// Raises the back button click event.
+        /// </summary>
+        public void OnBackButtonClick()
+        {
+            SceneManager.LoadScene("DlibFaceLandmarkDetectorExample");
+        }
+
+        /// <summary>
+        /// Raises the change camera button click event.
+        /// </summary>
+        public void OnChangeCameraButtonClick()
+        {
+            if (_hasInitDone)
+            {
+                RequestedDeviceName = null;
+                RequestedIsFrontFacing = !RequestedIsFrontFacing;
+                Initialize();
+            }
+        }
+
+        /// <summary>
+        /// Raises the adjust pixels direction toggle value changed event.
+        /// </summary>
+        public void OnAdjustPixelsDirectionToggleValueChanged()
+        {
+            if (AdjustPixelsDirectionToggle.isOn != AdjustPixelsDirection)
+            {
+                AdjustPixelsDirection = AdjustPixelsDirectionToggle.isOn;
+                Initialize();
+            }
+        }
+
+        // Private Methods
         private void Run()
         {
-            if (string.IsNullOrEmpty(dlibShapePredictorFilePath))
+            if (string.IsNullOrEmpty(_dlibShapePredictorFilePath))
             {
-                Debug.LogError("shape predictor file does not exist. Please copy from “DlibFaceLandmarkDetector/StreamingAssets/DlibFaceLandmarkDetector/” to “Assets/StreamingAssets/DlibFaceLandmarkDetector/” folder. ");
+                Debug.LogError("shape predictor file does not exist. Please copy from \"DlibFaceLandmarkDetector/StreamingAssets/DlibFaceLandmarkDetector/\" to \"Assets/StreamingAssets/DlibFaceLandmarkDetector/\" folder. ");
             }
-
-            faceLandmarkDetector = new FaceLandmarkDetector(dlibShapePredictorFilePath);
-
+            _faceLandmarkDetector = new FaceLandmarkDetector(_dlibShapePredictorFilePath);
             Initialize();
-
-            if (faceLandmarkDetector.GetShapePredictorNumParts() != 68)
+            if (_faceLandmarkDetector.GetShapePredictorNumParts() != 68)
                 Debug.LogWarning("The DrawDetectLandmarkResult method does not support ShapePredictorNumParts sizes other than 68 points, so the drawing will be incorrect."
                     + " If you want to draw the result correctly, we recommend using the OpenCVForUnityUtils.DrawFaceLandmark method.");
         }
@@ -185,19 +196,15 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         private void Initialize()
         {
-            if (isInitWaiting)
+            if (_isInitWaiting)
                 return;
-
 #if UNITY_ANDROID && !UNITY_EDITOR
-            // Set the requestedFPS parameter to avoid the problem of the WebCamTexture image becoming low light on some Android devices. (Pixel, pixel 2)
-            // https://forum.unity.com/threads/android-webcamtexture-in-low-light-only-some-models.520656/
-            // https://forum.unity.com/threads/released-opencv-for-unity.277080/page-33#post-3445178
-            if (requestedIsFrontFacing)
+            if (RequestedIsFrontFacing)
             {
-                int rearCameraFPS = requestedFPS;
-                requestedFPS = 15;
+                int rearCameraFPS = RequestedFPS;
+                RequestedFPS = 15;
                 StartCoroutine(_Initialize());
-                requestedFPS = rearCameraFPS;
+                RequestedFPS = rearCameraFPS;
             }
             else
             {
@@ -213,113 +220,98 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         private IEnumerator _Initialize()
         {
-            if (hasInitDone)
+            if (_hasInitDone)
                 Dispose();
-
-            isInitWaiting = true;
-
-            // Checks camera permission state.
+            _isInitWaiting = true;
 #if (UNITY_IOS || UNITY_WEBGL) && UNITY_2018_1_OR_NEWER
             UserAuthorization mode = UserAuthorization.WebCam;
             if (!Application.HasUserAuthorization(mode))
             {
-                isUserRequestingPermission = true;
+                _isUserRequestingPermission = true;
                 yield return Application.RequestUserAuthorization(mode);
-
                 float timeElapsed = 0;
-                while (isUserRequestingPermission)
+                while (_isUserRequestingPermission)
                 {
                     if (timeElapsed > 0.25f)
                     {
-                        isUserRequestingPermission = false;
+                        _isUserRequestingPermission = false;
                         break;
                     }
                     timeElapsed += Time.deltaTime;
-
                     yield return null;
                 }
             }
-
             if (!Application.HasUserAuthorization(mode))
             {
-                if (fpsMonitor != null)
+                if (_fpsMonitor != null)
                 {
-                    fpsMonitor.consoleText = "Camera permission is denied.";
+                    _fpsMonitor.ConsoleText = "Camera permission is denied.";
                 }
-                isInitWaiting = false;
+                _isInitWaiting = false;
                 yield break;
             }
 #elif UNITY_ANDROID && UNITY_2018_3_OR_NEWER
             string permission = UnityEngine.Android.Permission.Camera;
             if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(permission))
             {
-                isUserRequestingPermission = true;
+                _isUserRequestingPermission = true;
                 UnityEngine.Android.Permission.RequestUserPermission(permission);
-
                 float timeElapsed = 0;
-                while (isUserRequestingPermission)
+                while (_isUserRequestingPermission)
                 {
                     if (timeElapsed > 0.25f)
                     {
-                        isUserRequestingPermission = false;
+                        _isUserRequestingPermission = false;
                         break;
                     }
                     timeElapsed += Time.deltaTime;
-
                     yield return null;
                 }
             }
-
             if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(permission))
             {
-                if (fpsMonitor != null)
+                if (_fpsMonitor != null)
                 {
-                    fpsMonitor.consoleText = "Camera permission is denied.";
+                    _fpsMonitor.ConsoleText = "Camera permission is denied.";
                 }
-                isInitWaiting = false;
+                _isInitWaiting = false;
                 yield break;
             }
 #endif
-
-            // Creates a WebCamTexture with settings closest to the requested name, resolution, and frame rate.
             var devices = WebCamTexture.devices;
             if (devices.Length == 0)
             {
                 Debug.LogError("Camera device does not exist.");
-                isInitWaiting = false;
+                _isInitWaiting = false;
                 yield break;
             }
-
-            if (!String.IsNullOrEmpty(requestedDeviceName))
+            if (!String.IsNullOrEmpty(RequestedDeviceName))
             {
-                // Try to parse requestedDeviceName as an index
                 int requestedDeviceIndex = -1;
-                if (Int32.TryParse(requestedDeviceName, out requestedDeviceIndex))
+                if (Int32.TryParse(RequestedDeviceName, out requestedDeviceIndex))
                 {
                     if (requestedDeviceIndex >= 0 && requestedDeviceIndex < devices.Length)
                     {
-                        webCamDevice = devices[requestedDeviceIndex];
-                        webCamTexture = new WebCamTexture(webCamDevice.name, requestedWidth, requestedHeight, requestedFPS);
+                        _webCamDevice = devices[requestedDeviceIndex];
+                        _webCamTexture = new WebCamTexture(_webCamDevice.name, RequestedWidth, RequestedHeight, RequestedFPS);
                     }
                 }
                 else
                 {
-                    // Search for a device with a matching name
                     for (int cameraIndex = 0; cameraIndex < devices.Length; cameraIndex++)
                     {
-                        if (devices[cameraIndex].name == requestedDeviceName)
+                        if (devices[cameraIndex].name == RequestedDeviceName)
                         {
-                            webCamDevice = devices[cameraIndex];
-                            webCamTexture = new WebCamTexture(webCamDevice.name, requestedWidth, requestedHeight, requestedFPS);
+                            _webCamDevice = devices[cameraIndex];
+                            _webCamTexture = new WebCamTexture(_webCamDevice.name, RequestedWidth, RequestedHeight, RequestedFPS);
                             break;
                         }
                     }
                 }
-                if (webCamTexture == null)
-                    Debug.Log("Cannot find camera device " + requestedDeviceName + ".");
+                if (_webCamTexture == null)
+                    Debug.Log("Cannot find camera device " + RequestedDeviceName + ".");
             }
-
-            if (webCamTexture == null)
+            if (_webCamTexture == null)
             {
                 var prioritizedKinds = new WebCamKind[]
                 {
@@ -328,47 +320,38 @@ namespace DlibFaceLandmarkDetectorExample
                     WebCamKind.UltraWideAngle,
                     WebCamKind.ColorAndDepth
                 };
-
-                // Checks how many and which cameras are available on the device
                 foreach (var kind in prioritizedKinds)
                 {
                     foreach (var device in devices)
                     {
-                        if (device.kind == kind && device.isFrontFacing == requestedIsFrontFacing)
+                        if (device.kind == kind && device.isFrontFacing == RequestedIsFrontFacing)
                         {
-                            webCamDevice = device;
-                            webCamTexture = new WebCamTexture(webCamDevice.name, requestedWidth, requestedHeight, requestedFPS);
+                            _webCamDevice = device;
+                            _webCamTexture = new WebCamTexture(_webCamDevice.name, RequestedWidth, RequestedHeight, RequestedFPS);
                             break;
                         }
                     }
-                    if (webCamTexture != null) break;
+                    if (_webCamTexture != null) break;
                 }
             }
-
-            if (webCamTexture == null)
+            if (_webCamTexture == null)
             {
-                webCamDevice = devices[0];
-                webCamTexture = new WebCamTexture(webCamDevice.name, requestedWidth, requestedHeight, requestedFPS);
+                _webCamDevice = devices[0];
+                _webCamTexture = new WebCamTexture(_webCamDevice.name, RequestedWidth, RequestedHeight, RequestedFPS);
             }
-
-            // Starts the camera
-            webCamTexture.Play();
-
+            _webCamTexture.Play();
             while (true)
             {
-                if (webCamTexture.didUpdateThisFrame)
+                if (_webCamTexture.didUpdateThisFrame)
                 {
-                    Debug.Log("name:" + webCamTexture.deviceName + " width:" + webCamTexture.width + " height:" + webCamTexture.height + " fps:" + webCamTexture.requestedFPS);
-                    Debug.Log("videoRotationAngle:" + webCamTexture.videoRotationAngle + " videoVerticallyMirrored:" + webCamTexture.videoVerticallyMirrored + " isFrongFacing:" + webCamDevice.isFrontFacing);
-
-                    screenOrientation = Screen.orientation;
-                    screenWidth = Screen.width;
-                    screenHeight = Screen.height;
-                    isInitWaiting = false;
-                    hasInitDone = true;
-
+                    Debug.Log("name:" + _webCamTexture.deviceName + " width:" + _webCamTexture.width + " height:" + _webCamTexture.height + " fps:" + _webCamTexture.requestedFPS);
+                    Debug.Log("videoRotationAngle:" + _webCamTexture.videoRotationAngle + " videoVerticallyMirrored:" + _webCamTexture.videoVerticallyMirrored + " isFrongFacing:" + _webCamDevice.isFrontFacing);
+                    _screenOrientation = Screen.orientation;
+                    _screenWidth = Screen.width;
+                    _screenHeight = Screen.height;
+                    _isInitWaiting = false;
+                    _hasInitDone = true;
                     OnInited();
-
                     break;
                 }
                 else
@@ -377,39 +360,29 @@ namespace DlibFaceLandmarkDetectorExample
                 }
             }
         }
-
 #if ((UNITY_IOS || UNITY_WEBGL) && UNITY_2018_1_OR_NEWER) || (UNITY_ANDROID && UNITY_2018_3_OR_NEWER)
-        bool isUserRequestingPermission;
-
-        IEnumerator OnApplicationFocus(bool hasFocus)
+        private IEnumerator OnApplicationFocus(bool hasFocus)
         {
             yield return null;
-
-            if (isUserRequestingPermission && hasFocus)
-                isUserRequestingPermission = false;
+            if (_isUserRequestingPermission && hasFocus)
+                _isUserRequestingPermission = false;
         }
 #endif
-
         /// <summary>
         /// Releases all resource.
         /// </summary>
         private void Dispose()
         {
-            rotate90Degree = false;
-            isInitWaiting = false;
-            hasInitDone = false;
-
-            if (webCamTexture != null)
+            _rotate90Degree = false;
+            _isInitWaiting = false;
+            _hasInitDone = false;
+            if (_webCamTexture != null)
             {
-                webCamTexture.Stop();
-                WebCamTexture.Destroy(webCamTexture);
-                webCamTexture = null;
+                _webCamTexture.Stop();
+                WebCamTexture.Destroy(_webCamTexture);
+                _webCamTexture = null;
             }
-            if (texture != null)
-            {
-                Texture2D.Destroy(texture);
-                texture = null;
-            }
+            if (_texture != null) Texture2D.Destroy(_texture); _texture = null;
         }
 
         /// <summary>
@@ -417,95 +390,40 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         private void OnInited()
         {
-            if (colors == null || colors.Length != webCamTexture.width * webCamTexture.height)
+            if (_colors == null || _colors.Length != _webCamTexture.width * _webCamTexture.height)
             {
-                colors = new Color32[webCamTexture.width * webCamTexture.height];
-                rotatedColors = new Color32[webCamTexture.width * webCamTexture.height];
+                _colors = new Color32[_webCamTexture.width * _webCamTexture.height];
+                _rotatedColors = new Color32[_webCamTexture.width * _webCamTexture.height];
             }
-
-            if (adjustPixelsDirection)
+            if (AdjustPixelsDirection)
             {
 #if !UNITY_EDITOR && !(UNITY_STANDALONE || UNITY_WEBGL)
                 if (Screen.orientation == ScreenOrientation.Portrait || Screen.orientation == ScreenOrientation.PortraitUpsideDown)
                 {
-                    rotate90Degree = true;
+                    _rotate90Degree = true;
                 }
                 else
                 {
-                    rotate90Degree = false;
+                    _rotate90Degree = false;
                 }
 #endif
             }
-            if (rotate90Degree)
+            if (_rotate90Degree)
             {
-                texture = new Texture2D(webCamTexture.height, webCamTexture.width, TextureFormat.RGBA32, false);
+                _texture = new Texture2D(_webCamTexture.height, _webCamTexture.width, TextureFormat.RGBA32, false);
             }
             else
             {
-                texture = new Texture2D(webCamTexture.width, webCamTexture.height, TextureFormat.RGBA32, false);
+                _texture = new Texture2D(_webCamTexture.width, _webCamTexture.height, TextureFormat.RGBA32, false);
             }
-
-            resultPreview.texture = texture;
-            resultPreview.GetComponent<AspectRatioFitter>().aspectRatio = (float)texture.width / texture.height;
-
-
-            if (fpsMonitor != null)
+            ResultPreview.texture = _texture;
+            ResultPreview.GetComponent<AspectRatioFitter>().aspectRatio = (float)_texture.width / _texture.height;
+            if (_fpsMonitor != null)
             {
-                fpsMonitor.Add("dlib shape predictor", dlibShapePredictorFileName);
-                fpsMonitor.Add("width", texture.width.ToString());
-                fpsMonitor.Add("height", texture.height.ToString());
-                fpsMonitor.Add("orientation", Screen.orientation.ToString());
-            }
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            if (adjustPixelsDirection)
-            {
-                // Catch the orientation change of the screen.
-                if (screenOrientation != Screen.orientation && (screenWidth != Screen.width || screenHeight != Screen.height))
-                {
-                    Initialize();
-                }
-                else
-                {
-                    screenWidth = Screen.width;
-                    screenHeight = Screen.height;
-                }
-            }
-
-
-            if (hasInitDone && webCamTexture.isPlaying && webCamTexture.didUpdateThisFrame)
-            {
-
-                Color32[] colors = GetColors();
-
-                if (colors != null)
-                {
-
-                    faceLandmarkDetector.SetImage<Color32>(colors, texture.width, texture.height, 4, true);
-
-                    //detect face rects
-                    List<Rect> detectResult = faceLandmarkDetector.Detect();
-
-                    foreach (var rect in detectResult)
-                    {
-                        //Debug.Log ("face : " + rect);
-
-                        //detect landmark points
-                        faceLandmarkDetector.DetectLandmark(rect);
-
-                        //draw landmark points
-                        faceLandmarkDetector.DrawDetectLandmarkResult<Color32>(colors, texture.width, texture.height, 4, true, 0, 255, 0, 255);
-                    }
-
-                    //draw face rect
-                    faceLandmarkDetector.DrawDetectResult<Color32>(colors, texture.width, texture.height, 4, true, 255, 0, 0, 255, 2);
-
-                    texture.SetPixels32(colors);
-                    texture.Apply(false);
-                }
+                _fpsMonitor.Add("dlib shape predictor", _dlibShapePredictorFileName);
+                _fpsMonitor.Add("width", _texture.width.ToString());
+                _fpsMonitor.Add("height", _texture.height.ToString());
+                _fpsMonitor.Add("orientation", Screen.orientation.ToString());
             }
         }
 
@@ -514,71 +432,22 @@ namespace DlibFaceLandmarkDetectorExample
         /// </summary>
         private Color32[] GetColors()
         {
-            webCamTexture.GetPixels32(colors);
-
-            if (adjustPixelsDirection)
+            _webCamTexture.GetPixels32(_colors);
+            if (AdjustPixelsDirection)
             {
-                //Adjust an array of color pixels according to screen orientation and WebCamDevice parameter.
-                if (rotate90Degree)
+                if (_rotate90Degree)
                 {
-                    Rotate90CW(colors, rotatedColors, webCamTexture.width, webCamTexture.height);
-                    FlipColors(rotatedColors, webCamTexture.width, webCamTexture.height);
-                    return rotatedColors;
+                    Rotate90CW(_colors, _rotatedColors, _webCamTexture.width, _webCamTexture.height);
+                    FlipColors(_rotatedColors, _webCamTexture.width, _webCamTexture.height);
+                    return _rotatedColors;
                 }
                 else
                 {
-                    FlipColors(colors, webCamTexture.width, webCamTexture.height);
-                    return colors;
+                    FlipColors(_colors, _webCamTexture.width, _webCamTexture.height);
+                    return _colors;
                 }
             }
-            return colors;
-        }
-
-        /// <summary>
-        /// Raises the destroy event.
-        /// </summary>
-        void OnDestroy()
-        {
-            Dispose();
-
-            if (faceLandmarkDetector != null)
-                faceLandmarkDetector.Dispose();
-
-            if (cts != null)
-                cts.Dispose();
-        }
-
-        /// <summary>
-        /// Raises the back button click event.
-        /// </summary>
-        public void OnBackButtonClick()
-        {
-            SceneManager.LoadScene("DlibFaceLandmarkDetectorExample");
-        }
-
-        /// <summary>
-        /// Raises the change camera button click event.
-        /// </summary>
-        public void OnChangeCameraButtonClick()
-        {
-            if (hasInitDone)
-            {
-                requestedDeviceName = null;
-                requestedIsFrontFacing = !requestedIsFrontFacing;
-                Initialize();
-            }
-        }
-
-        /// <summary>
-        /// Raises the adjust pixels direction toggle value changed event.
-        /// </summary>
-        public void OnAdjustPixelsDirectionToggleValueChanged()
-        {
-            if (adjustPixelsDirectionToggle.isOn != adjustPixelsDirection)
-            {
-                adjustPixelsDirection = adjustPixelsDirectionToggle.isOn;
-                Initialize();
-            }
+            return _colors;
         }
 
         /// <summary>
@@ -587,71 +456,69 @@ namespace DlibFaceLandmarkDetectorExample
         /// <param name="colors">Colors.</param>
         /// <param name="width">Width.</param>
         /// <param name="height">Height.</param>
-        void FlipColors(Color32[] colors, int width, int height)
+        private void FlipColors(Color32[] colors, int width, int height)
         {
             int flipCode = int.MinValue;
-
-            if (webCamDevice.isFrontFacing)
+            if (_webCamDevice.isFrontFacing)
             {
-                if (webCamTexture.videoRotationAngle == 0)
+                if (_webCamTexture.videoRotationAngle == 0)
                 {
                     flipCode = 1;
                 }
-                else if (webCamTexture.videoRotationAngle == 90)
+                else if (_webCamTexture.videoRotationAngle == 90)
                 {
                     flipCode = 1;
                 }
-                if (webCamTexture.videoRotationAngle == 180)
+                if (_webCamTexture.videoRotationAngle == 180)
                 {
                     flipCode = 0;
                 }
-                else if (webCamTexture.videoRotationAngle == 270)
+                else if (_webCamTexture.videoRotationAngle == 270)
                 {
                     flipCode = 0;
                 }
             }
             else
             {
-                if (webCamTexture.videoRotationAngle == 180)
+                if (_webCamTexture.videoRotationAngle == 180)
                 {
                     flipCode = -1;
                 }
-                else if (webCamTexture.videoRotationAngle == 270)
+                else if (_webCamTexture.videoRotationAngle == 270)
                 {
                     flipCode = -1;
                 }
             }
-
             if (flipCode > int.MinValue)
             {
-                if (rotate90Degree)
+                if (_rotate90Degree)
                 {
                     if (flipCode == 0)
                     {
-                        FlipVertical(colors, colors, height, width);
+                        FlipVertical(colors, colors, _webCamTexture.height, _webCamTexture.width);
                     }
                     else if (flipCode == 1)
                     {
-                        FlipHorizontal(colors, colors, height, width);
+                        FlipHorizontal(colors, colors, _webCamTexture.height, _webCamTexture.width);
                     }
                     else if (flipCode < 0)
                     {
-                        Rotate180(colors, colors, height, width);
+                        Rotate180(colors, colors, _webCamTexture.height, _webCamTexture.width);
                     }
                 }
                 else
                 {
                     if (flipCode == 0)
                     {
-                        FlipVertical(colors, colors, width, height);
+                        FlipVertical(colors, colors, _webCamTexture.width, _webCamTexture.height);
                     }
                     else if (flipCode == 1)
                     {
-                        FlipHorizontal(colors, colors, width, height);
+                        FlipHorizontal(colors, colors, _webCamTexture.width, _webCamTexture.height);
                     }
                     else if (flipCode < 0)
                     {
-                        Rotate180(colors, colors, height, width);
+                        Rotate180(colors, colors, _webCamTexture.height, _webCamTexture.width);
                     }
                 }
             }
@@ -664,7 +531,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// <param name="dst">Dst colors.</param>
         /// <param name="width">Width.</param>
         /// <param name="height">Height.</param>
-        void FlipVertical(Color32[] src, Color32[] dst, int width, int height)
+        private void FlipVertical(Color32[] src, Color32[] dst, int width, int height)
         {
             for (var i = 0; i < height / 2; i++)
             {
@@ -688,7 +555,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// <param name="dst">Dst colors.</param>
         /// <param name="width">Width.</param>
         /// <param name="height">Height.</param>
-        void FlipHorizontal(Color32[] src, Color32[] dst, int width, int height)
+        private void FlipHorizontal(Color32[] src, Color32[] dst, int width, int height)
         {
             for (int i = 0; i < height; i++)
             {
@@ -712,7 +579,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// <param name="dst">Dst colors.</param>
         /// <param name="width">Width.</param>
         /// <param name="height">Height.</param>
-        void Rotate180(Color32[] src, Color32[] dst, int height, int width)
+        private void Rotate180(Color32[] src, Color32[] dst, int height, int width)
         {
             int i = src.Length;
             for (int x = 0; x < i / 2; x++)
@@ -730,7 +597,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// <param name="dst">Dst colors.</param>
         /// <param name="width">Width.</param>
         /// <param name="height">Height.</param>
-        void Rotate90CW(Color32[] src, Color32[] dst, int height, int width)
+        private void Rotate90CW(Color32[] src, Color32[] dst, int height, int width)
         {
             int i = 0;
             for (int x = height - 1; x >= 0; x--)
@@ -750,7 +617,7 @@ namespace DlibFaceLandmarkDetectorExample
         /// <param name="dst">Dst colors.</param>
         /// <param name="height">Height.</param>
         /// <param name="width">Width.</param>
-        void Rotate90CCW(Color32[] src, Color32[] dst, int width, int height)
+        private void Rotate90CCW(Color32[] src, Color32[] dst, int width, int height)
         {
             int i = 0;
             for (int x = 0; x < width; x++)

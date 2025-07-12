@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['throwifdisposed_0',['ThrowIfDisposed',['../d4/dce/classDlibFaceLandmarkDetector_1_1DisposableObject.html#ad9256a96d9d433a1190dbffc716d21af',1,'DlibFaceLandmarkDetector::DisposableObject']]],
-  ['throwifnullintptr_1',['ThrowIfNullIntPtr',['../d4/dce/classDlibFaceLandmarkDetector_1_1DisposableObject.html#ad60cdeff6308dbb09b8d871095734a14',1,'DlibFaceLandmarkDetector::DisposableObject']]]
+  ['weight_5findex_0',['weight_index',['../d3/d98/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector_1_1RectDetection.html#a453009f5d283bce5c07a1688690467ce',1,'DlibFaceLandmarkDetector::FaceLandmarkDetector::RectDetection']]]
 ];

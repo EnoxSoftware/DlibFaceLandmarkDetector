@@ -26,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Dlib FaceLandmark Detector<span id="projectnumber">&#160;1.4.1</span>
+   <div id="projectname">Dlib FaceLandmark Detector<span id="projectnumber">&#160;2.0.0</span>
    </div>
    <div id="projectbrief">Enox Software</div>
   </td>
@@ -93,7 +93,6 @@ $(function(){ initResizable(false); });
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="../../d8/d29/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">DlibFaceLandmarkDetector.FaceLandmarkDetector Class Reference</div></div>
@@ -111,6 +110,9 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:ab295e3d6e5de14161aae6cecb012c80e" id="r_ab295e3d6e5de14161aae6cecb012c80e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab295e3d6e5de14161aae6cecb012c80e">FaceLandmarkDetector</a> ()</td></tr>
+<tr class="memdesc:ab295e3d6e5de14161aae6cecb012c80e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of the <a class="el" href="../../d7/df6/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector.html" title="Face landmark detector.">FaceLandmarkDetector</a> class.  <br /></td></tr>
+<tr class="separator:ab295e3d6e5de14161aae6cecb012c80e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af719ebca6f440b5c3d091095aa3adae3" id="r_af719ebca6f440b5c3d091095aa3adae3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af719ebca6f440b5c3d091095aa3adae3">FaceLandmarkDetector</a> (string objectDetectorFilePath, string shapePredictorFilePath)</td></tr>
 <tr class="memdesc:af719ebca6f440b5c3d091095aa3adae3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of the <a class="el" href="../../d7/df6/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector.html" title="Face landmark detector.">FaceLandmarkDetector</a> class.  <br /></td></tr>
 <tr class="separator:af719ebca6f440b5c3d091095aa3adae3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -129,27 +131,28 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1882850df60c7ff932d5f7bb7fd0ecd3" id="r_a1882850df60c7ff932d5f7bb7fd0ecd3"><td class="memItemLeft" align="right" valign="top">double[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1882850df60c7ff932d5f7bb7fd0ecd3">DetectArray</a> (double adjust_threshold)</td></tr>
 <tr class="memdesc:a1882850df60c7ff932d5f7bb7fd0ecd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detects objects in the image.  <br /></td></tr>
 <tr class="separator:a1882850df60c7ff932d5f7bb7fd0ecd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a6a16fb784830b32663a2bde5bb4ff3" id="r_a0a6a16fb784830b32663a2bde5bb4ff3"><td class="memItemLeft" align="right" valign="top">List&lt; Vector2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0a6a16fb784830b32663a2bde5bb4ff3">DetectLandmark</a> (double left, double top, double <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, double height)</td></tr>
+<tr class="memitem:a0a6a16fb784830b32663a2bde5bb4ff3" id="r_a0a6a16fb784830b32663a2bde5bb4ff3"><td class="memItemLeft" align="right" valign="top">List&lt; Vector2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0a6a16fb784830b32663a2bde5bb4ff3">DetectLandmark</a> (double left, double top, double width, double height)</td></tr>
 <tr class="memdesc:a0a6a16fb784830b32663a2bde5bb4ff3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detects the object landmarks within the specified region.  <br /></td></tr>
 <tr class="separator:a0a6a16fb784830b32663a2bde5bb4ff3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9bd711c29ba17bb4c6a12ad3ae7c387d" id="r_a9bd711c29ba17bb4c6a12ad3ae7c387d"><td class="memItemLeft" align="right" valign="top">double double <a class="el" href="#acbe9c2432033b2f7e821d164aa8df533">y</a>[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9bd711c29ba17bb4c6a12ad3ae7c387d">DetectLandmark</a> (in(double <a class="el" href="#aba04b5d1c50608e72287783c01fab0a6">x</a>, double <a class="el" href="#acbe9c2432033b2f7e821d164aa8df533">y</a>, double <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, double height) rect)</td></tr>
-<tr class="separator:a9bd711c29ba17bb4c6a12ad3ae7c387d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91266e43d4e27217697e35dd9e1c8cd2" id="r_a91266e43d4e27217697e35dd9e1c8cd2"><td class="memItemLeft" align="right" valign="top">List&lt;(double x, double y)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a91266e43d4e27217697e35dd9e1c8cd2">DetectLandmark</a> (in(double x, double y, double width, double height) rect)</td></tr>
+<tr class="memdesc:a91266e43d4e27217697e35dd9e1c8cd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detects the object landmarks within the specified region defined by a rectangle.  <br /></td></tr>
+<tr class="separator:a91266e43d4e27217697e35dd9e1c8cd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3276728abbae49475f933a34f779f260" id="r_a3276728abbae49475f933a34f779f260"><td class="memItemLeft" align="right" valign="top">List&lt; Vector2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3276728abbae49475f933a34f779f260">DetectLandmark</a> (Rect rect)</td></tr>
 <tr class="memdesc:a3276728abbae49475f933a34f779f260"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detects the object landmarks within the specified region defined by a rectangle.  <br /></td></tr>
 <tr class="separator:a3276728abbae49475f933a34f779f260"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae1f99fb8946bdf3714d45e552f742b65" id="r_ae1f99fb8946bdf3714d45e552f742b65"><td class="memItemLeft" align="right" valign="top">double[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae1f99fb8946bdf3714d45e552f742b65">DetectLandmarkArray</a> (double left, double top, double <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, double height)</td></tr>
+<tr class="memitem:ae1f99fb8946bdf3714d45e552f742b65" id="r_ae1f99fb8946bdf3714d45e552f742b65"><td class="memItemLeft" align="right" valign="top">double[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae1f99fb8946bdf3714d45e552f742b65">DetectLandmarkArray</a> (double left, double top, double width, double height)</td></tr>
 <tr class="memdesc:ae1f99fb8946bdf3714d45e552f742b65"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detects the object landmarks within the specified region defined by a rectangle.  <br /></td></tr>
 <tr class="separator:ae1f99fb8946bdf3714d45e552f742b65"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11a1bef39a67dbd56bcbcb9c690276db" id="r_a11a1bef39a67dbd56bcbcb9c690276db"><td class="memItemLeft" align="right" valign="top">double[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a11a1bef39a67dbd56bcbcb9c690276db">DetectLandmarkArray</a> (in(double <a class="el" href="#aba04b5d1c50608e72287783c01fab0a6">x</a>, double <a class="el" href="#acbe9c2432033b2f7e821d164aa8df533">y</a>, double <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, double height) rect)</td></tr>
+<tr class="memitem:a11a1bef39a67dbd56bcbcb9c690276db" id="r_a11a1bef39a67dbd56bcbcb9c690276db"><td class="memItemLeft" align="right" valign="top">double[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a11a1bef39a67dbd56bcbcb9c690276db">DetectLandmarkArray</a> (in(double x, double y, double width, double height) rect)</td></tr>
 <tr class="memdesc:a11a1bef39a67dbd56bcbcb9c690276db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detects the object landmarks within the specified region defined by a rectangle.  <br /></td></tr>
 <tr class="separator:a11a1bef39a67dbd56bcbcb9c690276db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7277fca51981a872a64ff070911169dd" id="r_a7277fca51981a872a64ff070911169dd"><td class="memItemLeft" align="right" valign="top">double[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7277fca51981a872a64ff070911169dd">DetectLandmarkArray</a> (Rect rect)</td></tr>
 <tr class="memdesc:a7277fca51981a872a64ff070911169dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detects the object landmarks within the specified region defined by a rectangle.  <br /></td></tr>
 <tr class="separator:a7277fca51981a872a64ff070911169dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35a843260f5246bdb345a8c6776b8bc6" id="r_a35a843260f5246bdb345a8c6776b8bc6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a35a843260f5246bdb345a8c6776b8bc6">DetectLandmarkOnly</a> (double left, double top, double <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, double height)</td></tr>
+<tr class="memitem:a35a843260f5246bdb345a8c6776b8bc6" id="r_a35a843260f5246bdb345a8c6776b8bc6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a35a843260f5246bdb345a8c6776b8bc6">DetectLandmarkOnly</a> (double left, double top, double width, double height)</td></tr>
 <tr class="memdesc:a35a843260f5246bdb345a8c6776b8bc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detects objects and returns the number of detected object landmarks.  <br /></td></tr>
 <tr class="separator:a35a843260f5246bdb345a8c6776b8bc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a659d74252ad155974dbba7f1919dd4ee" id="r_a659d74252ad155974dbba7f1919dd4ee"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a659d74252ad155974dbba7f1919dd4ee">DetectLandmarkOnly</a> (in(double <a class="el" href="#aba04b5d1c50608e72287783c01fab0a6">x</a>, double <a class="el" href="#acbe9c2432033b2f7e821d164aa8df533">y</a>, double <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, double height) rect)</td></tr>
+<tr class="memitem:a659d74252ad155974dbba7f1919dd4ee" id="r_a659d74252ad155974dbba7f1919dd4ee"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a659d74252ad155974dbba7f1919dd4ee">DetectLandmarkOnly</a> (in(double x, double y, double width, double height) rect)</td></tr>
 <tr class="memdesc:a659d74252ad155974dbba7f1919dd4ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detects objects and returns the number of detected object landmarks within the specified region defined by a rectangle.  <br /></td></tr>
 <tr class="separator:a659d74252ad155974dbba7f1919dd4ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad8df50c827fa5417a8d0adf7a6dfc95" id="r_aad8df50c827fa5417a8d0adf7a6dfc95"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aad8df50c827fa5417a8d0adf7a6dfc95">DetectLandmarkOnly</a> (Rect rect)</td></tr>
@@ -167,32 +170,34 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a902c204f831a7416ec93dd212b34950a" id="r_a902c204f831a7416ec93dd212b34950a"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="../../d3/d98/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector_1_1RectDetection.html">RectDetection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a902c204f831a7416ec93dd212b34950a">DetectRectDetection</a> (double adjust_threshold)</td></tr>
 <tr class="memdesc:a902c204f831a7416ec93dd212b34950a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detects objects in the image.  <br /></td></tr>
 <tr class="separator:a902c204f831a7416ec93dd212b34950a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45055bbaff890c245ec64a752456c40f" id="r_a45055bbaff890c245ec64a752456c40f"><td class="memItemLeft" align="right" valign="top">double double double double height[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a45055bbaff890c245ec64a752456c40f">DetectValueTuple</a> ()</td></tr>
-<tr class="separator:a45055bbaff890c245ec64a752456c40f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65641562f82acf3cef9631612e955cbe" id="r_a65641562f82acf3cef9631612e955cbe"><td class="memItemLeft" align="right" valign="top">double double double double height[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a65641562f82acf3cef9631612e955cbe">DetectValueTuple</a> (double adjust_threshold)</td></tr>
-<tr class="separator:a65641562f82acf3cef9631612e955cbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46b38bdd91c9453f4c46200b95a49cc0" id="r_a46b38bdd91c9453f4c46200b95a49cc0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a46b38bdd91c9453f4c46200b95a49cc0">DrawDetectLandmarkResult</a> (IntPtr intPtr, int <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, int height, int bytesPerPixel, bool flip, int r, int g, int b, int a)</td></tr>
-<tr class="memdesc:a46b38bdd91c9453f4c46200b95a49cc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detected landmark result on the provided image buffer with optional vertical flipping.  <br /></td></tr>
+<tr class="memitem:ada5f695570500929793644bdb536d341" id="r_ada5f695570500929793644bdb536d341"><td class="memItemLeft" align="right" valign="top">List&lt;(double x, double y, double width, double height)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ada5f695570500929793644bdb536d341">DetectValueTuple</a> ()</td></tr>
+<tr class="memdesc:ada5f695570500929793644bdb536d341"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detects objects in the image.  <br /></td></tr>
+<tr class="separator:ada5f695570500929793644bdb536d341"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7393e41af0c3961ce0d7b4583f3d882d" id="r_a7393e41af0c3961ce0d7b4583f3d882d"><td class="memItemLeft" align="right" valign="top">List&lt;(double x, double y, double width, double height)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7393e41af0c3961ce0d7b4583f3d882d">DetectValueTuple</a> (double adjust_threshold)</td></tr>
+<tr class="memdesc:a7393e41af0c3961ce0d7b4583f3d882d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detects objects in the image.  <br /></td></tr>
+<tr class="separator:a7393e41af0c3961ce0d7b4583f3d882d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46b38bdd91c9453f4c46200b95a49cc0" id="r_a46b38bdd91c9453f4c46200b95a49cc0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a46b38bdd91c9453f4c46200b95a49cc0">DrawDetectLandmarkResult</a> (IntPtr intPtr, int width, int height, int bytesPerPixel, bool flip, int r, int g, int b, int a)</td></tr>
+<tr class="memdesc:a46b38bdd91c9453f4c46200b95a49cc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detected landmark result (68 facial landmark points) on the provided image buffer with optional vertical flipping.  <br /></td></tr>
 <tr class="separator:a46b38bdd91c9453f4c46200b95a49cc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ad64022ee18c8d3672d71ff2e9eec1b" id="r_a4ad64022ee18c8d3672d71ff2e9eec1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4ad64022ee18c8d3672d71ff2e9eec1b">DrawDetectLandmarkResult</a> (IntPtr intPtr, int <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, int height, int bytesPerPixel, int r, int g, int b, int a)</td></tr>
-<tr class="memdesc:a4ad64022ee18c8d3672d71ff2e9eec1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detected landmark result on the provided image buffer.  <br /></td></tr>
+<tr class="memitem:a4ad64022ee18c8d3672d71ff2e9eec1b" id="r_a4ad64022ee18c8d3672d71ff2e9eec1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4ad64022ee18c8d3672d71ff2e9eec1b">DrawDetectLandmarkResult</a> (IntPtr intPtr, int width, int height, int bytesPerPixel, int r, int g, int b, int a)</td></tr>
+<tr class="memdesc:a4ad64022ee18c8d3672d71ff2e9eec1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detected landmark result (68 facial landmark points) on the provided image buffer.  <br /></td></tr>
 <tr class="separator:a4ad64022ee18c8d3672d71ff2e9eec1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a409fcf28dff50d37c6f542dba3e51c6e" id="r_a409fcf28dff50d37c6f542dba3e51c6e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a409fcf28dff50d37c6f542dba3e51c6e">DrawDetectLandmarkResult</a> (Texture2D texture2D, int r, int g, int b, int a, bool updateMipmaps=false, bool makeNoLongerReadable=false)</td></tr>
-<tr class="memdesc:a409fcf28dff50d37c6f542dba3e51c6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detected landmark result on the provided texture.  <br /></td></tr>
+<tr class="memdesc:a409fcf28dff50d37c6f542dba3e51c6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detected landmark result (68 facial landmark points) on the provided texture.  <br /></td></tr>
 <tr class="separator:a409fcf28dff50d37c6f542dba3e51c6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39a4d67b59debef724b5d08f10a72999" id="r_a39a4d67b59debef724b5d08f10a72999"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a39a4d67b59debef724b5d08f10a72999">DrawDetectLandmarkResult</a> (Texture2D texture2D, int r, int g, int b, int a, Color32[] pixels32Buffer, byte[] rawTextureDataBuffer=null, bool updateMipmaps=false, bool makeNoLongerReadable=false)</td></tr>
-<tr class="memdesc:a39a4d67b59debef724b5d08f10a72999"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detected landmark result on the provided texture.  <br /></td></tr>
+<tr class="memdesc:a39a4d67b59debef724b5d08f10a72999"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detected landmark result (68 facial landmark points) on the provided texture.  <br /></td></tr>
 <tr class="separator:a39a4d67b59debef724b5d08f10a72999"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a735f7b7b53478d31432d4f4db7b50f01" id="r_a735f7b7b53478d31432d4f4db7b50f01"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a735f7b7b53478d31432d4f4db7b50f01">DrawDetectLandmarkResult&lt; T &gt;</a> (T[] array, int <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, int height, int bytesPerPixel, bool flip, int r, int g, int b, int a)</td></tr>
-<tr class="memdesc:a735f7b7b53478d31432d4f4db7b50f01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detected landmark result on the provided image buffer, with an option to flip the image vertically.  <br /></td></tr>
+<tr class="memitem:a735f7b7b53478d31432d4f4db7b50f01" id="r_a735f7b7b53478d31432d4f4db7b50f01"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a735f7b7b53478d31432d4f4db7b50f01">DrawDetectLandmarkResult&lt; T &gt;</a> (T[] array, int width, int height, int bytesPerPixel, bool flip, int r, int g, int b, int a)</td></tr>
+<tr class="memdesc:a735f7b7b53478d31432d4f4db7b50f01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detected landmark result (68 facial landmark points) on the provided image buffer, with an option to flip the image vertically.  <br /></td></tr>
 <tr class="separator:a735f7b7b53478d31432d4f4db7b50f01"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1db286d79155f0d645d4418fa759cdac" id="r_a1db286d79155f0d645d4418fa759cdac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1db286d79155f0d645d4418fa759cdac">DrawDetectLandmarkResult&lt; T &gt;</a> (T[] array, int <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, int height, int bytesPerPixel, int r, int g, int b, int a)</td></tr>
-<tr class="memdesc:a1db286d79155f0d645d4418fa759cdac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detected landmark result on the provided image buffer.  <br /></td></tr>
+<tr class="memitem:a1db286d79155f0d645d4418fa759cdac" id="r_a1db286d79155f0d645d4418fa759cdac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1db286d79155f0d645d4418fa759cdac">DrawDetectLandmarkResult&lt; T &gt;</a> (T[] array, int width, int height, int bytesPerPixel, int r, int g, int b, int a)</td></tr>
+<tr class="memdesc:a1db286d79155f0d645d4418fa759cdac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detected landmark result (68 facial landmark points) on the provided image buffer.  <br /></td></tr>
 <tr class="separator:a1db286d79155f0d645d4418fa759cdac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa42107c49e8b6335efb90f9371761404" id="r_aa42107c49e8b6335efb90f9371761404"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa42107c49e8b6335efb90f9371761404">DrawDetectResult</a> (IntPtr intPtr, int <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, int height, int bytesPerPixel, bool flip, int r, int g, int b, int a, int thickness)</td></tr>
+<tr class="memitem:aa42107c49e8b6335efb90f9371761404" id="r_aa42107c49e8b6335efb90f9371761404"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa42107c49e8b6335efb90f9371761404">DrawDetectResult</a> (IntPtr intPtr, int width, int height, int bytesPerPixel, bool flip, int r, int g, int b, int a, int thickness)</td></tr>
 <tr class="memdesc:aa42107c49e8b6335efb90f9371761404"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detection result on a memory buffer with optional vertical flipping.  <br /></td></tr>
 <tr class="separator:aa42107c49e8b6335efb90f9371761404"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aebff92d37754fff9c801ef9ef06db922" id="r_aebff92d37754fff9c801ef9ef06db922"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aebff92d37754fff9c801ef9ef06db922">DrawDetectResult</a> (IntPtr intPtr, int <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, int height, int bytesPerPixel, int r, int g, int b, int a, int thickness)</td></tr>
+<tr class="memitem:aebff92d37754fff9c801ef9ef06db922" id="r_aebff92d37754fff9c801ef9ef06db922"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aebff92d37754fff9c801ef9ef06db922">DrawDetectResult</a> (IntPtr intPtr, int width, int height, int bytesPerPixel, int r, int g, int b, int a, int thickness)</td></tr>
 <tr class="memdesc:aebff92d37754fff9c801ef9ef06db922"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detection result on a memory buffer.  <br /></td></tr>
 <tr class="separator:aebff92d37754fff9c801ef9ef06db922"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a544a4ad794bd44d5f00e067178f89014" id="r_a544a4ad794bd44d5f00e067178f89014"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a544a4ad794bd44d5f00e067178f89014">DrawDetectResult</a> (Texture2D texture2D, int r, int g, int b, int a, int thickness, bool updateMipmaps=false, bool makeNoLongerReadable=false)</td></tr>
@@ -201,10 +206,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae9ec7719e0bdec1d7baa0433fee61e85" id="r_ae9ec7719e0bdec1d7baa0433fee61e85"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae9ec7719e0bdec1d7baa0433fee61e85">DrawDetectResult</a> (Texture2D texture2D, int r, int g, int b, int a, int thickness, Color32[] pixels32Buffer, byte[] rawTextureDataBuffer=null, bool updateMipmaps=false, bool makeNoLongerReadable=false)</td></tr>
 <tr class="memdesc:ae9ec7719e0bdec1d7baa0433fee61e85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detection result on the specified texture.  <br /></td></tr>
 <tr class="separator:ae9ec7719e0bdec1d7baa0433fee61e85"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c5f766a00dae867962d0ca4500ad405" id="r_a4c5f766a00dae867962d0ca4500ad405"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c5f766a00dae867962d0ca4500ad405">DrawDetectResult&lt; T &gt;</a> (T[] array, int <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, int height, int bytesPerPixel, bool flip, int r, int g, int b, int a, int thickness)</td></tr>
+<tr class="memitem:a4c5f766a00dae867962d0ca4500ad405" id="r_a4c5f766a00dae867962d0ca4500ad405"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c5f766a00dae867962d0ca4500ad405">DrawDetectResult&lt; T &gt;</a> (T[] array, int width, int height, int bytesPerPixel, bool flip, int r, int g, int b, int a, int thickness)</td></tr>
 <tr class="memdesc:a4c5f766a00dae867962d0ca4500ad405"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detection result on an array representing the image data.  <br /></td></tr>
 <tr class="separator:a4c5f766a00dae867962d0ca4500ad405"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7129dd0bb994e1f3704f9d5a4f8c2ee7" id="r_a7129dd0bb994e1f3704f9d5a4f8c2ee7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7129dd0bb994e1f3704f9d5a4f8c2ee7">DrawDetectResult&lt; T &gt;</a> (T[] array, int <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, int height, int bytesPerPixel, int r, int g, int b, int a, int thickness)</td></tr>
+<tr class="memitem:a7129dd0bb994e1f3704f9d5a4f8c2ee7" id="r_a7129dd0bb994e1f3704f9d5a4f8c2ee7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7129dd0bb994e1f3704f9d5a4f8c2ee7">DrawDetectResult&lt; T &gt;</a> (T[] array, int width, int height, int bytesPerPixel, int r, int g, int b, int a, int thickness)</td></tr>
 <tr class="memdesc:a7129dd0bb994e1f3704f9d5a4f8c2ee7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the detection result on an array representing the image data.  <br /></td></tr>
 <tr class="separator:a7129dd0bb994e1f3704f9d5a4f8c2ee7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a271ce342d2bbd63a73cb9576962b75ca" id="r_a271ce342d2bbd63a73cb9576962b75ca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a271ce342d2bbd63a73cb9576962b75ca">GetDetectLandmarkResult</a> (double[] result)</td></tr>
@@ -228,10 +233,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a96a7d855c300517efccfb697c8d19489" id="r_a96a7d855c300517efccfb697c8d19489"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a96a7d855c300517efccfb697c8d19489">IsAllPartsInRect</a> ()</td></tr>
 <tr class="memdesc:a96a7d855c300517efccfb697c8d19489"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether all of the object parts are contained within the object rectangle.  <br /></td></tr>
 <tr class="separator:a96a7d855c300517efccfb697c8d19489"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a180419f8ab5643c4cf7509ab516f456f" id="r_a180419f8ab5643c4cf7509ab516f456f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a180419f8ab5643c4cf7509ab516f456f">SetImage</a> (IntPtr intPtr, int <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, int height, int bytesPerPixel)</td></tr>
+<tr class="memitem:a180419f8ab5643c4cf7509ab516f456f" id="r_a180419f8ab5643c4cf7509ab516f456f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a180419f8ab5643c4cf7509ab516f456f">SetImage</a> (IntPtr intPtr, int width, int height, int bytesPerPixel)</td></tr>
 <tr class="memdesc:a180419f8ab5643c4cf7509ab516f456f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the image from an IntPtr.  <br /></td></tr>
 <tr class="separator:a180419f8ab5643c4cf7509ab516f456f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45d92bff4700ffebff454654674415ea" id="r_a45d92bff4700ffebff454654674415ea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a45d92bff4700ffebff454654674415ea">SetImage</a> (IntPtr intPtr, int <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, int height, int bytesPerPixel, bool flip)</td></tr>
+<tr class="memitem:a45d92bff4700ffebff454654674415ea" id="r_a45d92bff4700ffebff454654674415ea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a45d92bff4700ffebff454654674415ea">SetImage</a> (IntPtr intPtr, int width, int height, int bytesPerPixel, bool flip)</td></tr>
 <tr class="memdesc:a45d92bff4700ffebff454654674415ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the image from an IntPtr.  <br /></td></tr>
 <tr class="separator:a45d92bff4700ffebff454654674415ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5948c6f8c6a457b74b65c550d386ab57" id="r_a5948c6f8c6a457b74b65c550d386ab57"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5948c6f8c6a457b74b65c550d386ab57">SetImage</a> (Texture2D texture2D)</td></tr>
@@ -243,10 +248,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0584e1edff51ee88f9df3bd7d7a621d6" id="r_a0584e1edff51ee88f9df3bd7d7a621d6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0584e1edff51ee88f9df3bd7d7a621d6">SetImage</a> (WebCamTexture webCamTexture, Color32[] pixels32Buffer)</td></tr>
 <tr class="memdesc:a0584e1edff51ee88f9df3bd7d7a621d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the image from a WebCamTexture.  <br /></td></tr>
 <tr class="separator:a0584e1edff51ee88f9df3bd7d7a621d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae80d63106b696e9bd7b25c4aa900ebd1" id="r_ae80d63106b696e9bd7b25c4aa900ebd1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae80d63106b696e9bd7b25c4aa900ebd1">SetImage&lt; T &gt;</a> (T[] array, int <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, int height, int bytesPerPixel)</td></tr>
+<tr class="memitem:ae80d63106b696e9bd7b25c4aa900ebd1" id="r_ae80d63106b696e9bd7b25c4aa900ebd1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae80d63106b696e9bd7b25c4aa900ebd1">SetImage&lt; T &gt;</a> (T[] array, int width, int height, int bytesPerPixel)</td></tr>
 <tr class="memdesc:ae80d63106b696e9bd7b25c4aa900ebd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the image from a pixel data array.  <br /></td></tr>
 <tr class="separator:ae80d63106b696e9bd7b25c4aa900ebd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39051174dd88c1c84e168b456248192c" id="r_a39051174dd88c1c84e168b456248192c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a39051174dd88c1c84e168b456248192c">SetImage&lt; T &gt;</a> (T[] array, int <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, int height, int bytesPerPixel, bool flip)</td></tr>
+<tr class="memitem:a39051174dd88c1c84e168b456248192c" id="r_a39051174dd88c1c84e168b456248192c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a39051174dd88c1c84e168b456248192c">SetImage&lt; T &gt;</a> (T[] array, int width, int height, int bytesPerPixel, bool flip)</td></tr>
 <tr class="memdesc:a39051174dd88c1c84e168b456248192c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the image from a pixel data array.  <br /></td></tr>
 <tr class="separator:a39051174dd88c1c84e168b456248192c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDlibFaceLandmarkDetector_1_1DisposableObject"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classDlibFaceLandmarkDetector_1_1DisposableObject')"><img src="../../closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="../../d4/dce/classDlibFaceLandmarkDetector_1_1DisposableObject.html">DlibFaceLandmarkDetector.DisposableObject</a></td></tr>
@@ -254,16 +259,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ad5b50045119ea8cec26005356ac03665 inherit pub_methods_classDlibFaceLandmarkDetector_1_1DisposableObject"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9256a96d9d433a1190dbffc716d21af inherit pub_methods_classDlibFaceLandmarkDetector_1_1DisposableObject" id="r_ad9256a96d9d433a1190dbffc716d21af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/dce/classDlibFaceLandmarkDetector_1_1DisposableObject.html#ad9256a96d9d433a1190dbffc716d21af">ThrowIfDisposed</a> ()</td></tr>
 <tr class="separator:ad9256a96d9d433a1190dbffc716d21af inherit pub_methods_classDlibFaceLandmarkDetector_1_1DisposableObject"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:a5ef338da37d5bc6ae33592661269fc29" id="r_a5ef338da37d5bc6ae33592661269fc29"><td class="memItemLeft" align="right" valign="top">double double double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a></td></tr>
-<tr class="separator:a5ef338da37d5bc6ae33592661269fc29"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba04b5d1c50608e72287783c01fab0a6" id="r_aba04b5d1c50608e72287783c01fab0a6"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aba04b5d1c50608e72287783c01fab0a6">x</a></td></tr>
-<tr class="memdesc:aba04b5d1c50608e72287783c01fab0a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detects objects in the image.  <br /></td></tr>
-<tr class="separator:aba04b5d1c50608e72287783c01fab0a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acbe9c2432033b2f7e821d164aa8df533" id="r_acbe9c2432033b2f7e821d164aa8df533"><td class="memItemLeft" align="right" valign="top">double double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acbe9c2432033b2f7e821d164aa8df533">y</a></td></tr>
-<tr class="separator:acbe9c2432033b2f7e821d164aa8df533"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -299,8 +294,38 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Face landmark detector. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="ab295e3d6e5de14161aae6cecb012c80e" name="ab295e3d6e5de14161aae6cecb012c80e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab295e3d6e5de14161aae6cecb012c80e">&#9670;&#160;</a></span>FaceLandmarkDetector() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DlibFaceLandmarkDetector.FaceLandmarkDetector.FaceLandmarkDetector </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initializes a new instance of the <a class="el" href="../../d7/df6/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector.html" title="Face landmark detector.">FaceLandmarkDetector</a> class. </p>
+<p>This instance uses the default frontal face detector. <br  />
+ ObjectDetector is initialized as follows: </p><div class="fragment"><div class="line">frontal_face_detector face_detector;</div>
+<div class="line">face_detector = get_frontal_face_detector();</div>
+</div><!-- fragment --><p> ShapePredictor is initialized as follows: </p><div class="fragment"><div class="line">shape_predictor sp;</div>
+<div class="line">deserialize(shape_predictor_filename) &gt;&gt; sp;</div>
+</div><!-- fragment --> <dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="../../df/d2c/classDlibFaceLandmarkDetector_1_1DlibException.html" title="The exception that is thrown by DlibFaceLandmarkDetector.">DlibException</a></td><td>Thrown when the object detector fails to load.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="aef0e090ff04d7eb7a72ec94aa8cd2cba" name="aef0e090ff04d7eb7a72ec94aa8cd2cba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aef0e090ff04d7eb7a72ec94aa8cd2cba">&#9670;&#160;</a></span>FaceLandmarkDetector() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aef0e090ff04d7eb7a72ec94aa8cd2cba">&#9670;&#160;</a></span>FaceLandmarkDetector() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -326,11 +351,17 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="../../df/d2c/classDlibFaceLandmarkDetector_1_1DlibException.html" title="The exception that is thrown by DlibFaceLandmarkDetector.">DlibException</a></td><td>Thrown when the object detector or shape predictor fails to load.</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
 <a id="af719ebca6f440b5c3d091095aa3adae3" name="af719ebca6f440b5c3d091095aa3adae3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af719ebca6f440b5c3d091095aa3adae3">&#9670;&#160;</a></span>FaceLandmarkDetector() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af719ebca6f440b5c3d091095aa3adae3">&#9670;&#160;</a></span>FaceLandmarkDetector() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -365,6 +396,12 @@ Additional Inherited Members</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">objectDetectorFilePath</td><td>The file path of the object detector.</td></tr>
     <tr><td class="paramname">shapePredictorFilePath</td><td>The file path of the shape predictor.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="../../df/d2c/classDlibFaceLandmarkDetector_1_1DlibException.html" title="The exception that is thrown by DlibFaceLandmarkDetector.">DlibException</a></td><td>Thrown when the object detector or shape predictor fails to load.</td></tr>
   </table>
   </dd>
 </dl>
@@ -523,20 +560,33 @@ left_1, top_1, width_1, height_1, detection_confidence_1, weight_index_1 </li>
 
 </div>
 </div>
-<a id="a9bd711c29ba17bb4c6a12ad3ae7c387d" name="a9bd711c29ba17bb4c6a12ad3ae7c387d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9bd711c29ba17bb4c6a12ad3ae7c387d">&#9670;&#160;</a></span>DetectLandmark() <span class="overload">[2/3]</span></h2>
+<a id="a91266e43d4e27217697e35dd9e1c8cd2" name="a91266e43d4e27217697e35dd9e1c8cd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91266e43d4e27217697e35dd9e1c8cd2">&#9670;&#160;</a></span>DetectLandmark() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">double double <a class="el" href="#acbe9c2432033b2f7e821d164aa8df533">y</a>[] DlibFaceLandmarkDetector.FaceLandmarkDetector.DetectLandmark </td>
+          <td class="memname">List&lt;(double x, double y)&gt; DlibFaceLandmarkDetector.FaceLandmarkDetector.DetectLandmark </td>
           <td>(</td>
-          <td class="paramtype">in(double <a class="el" href="#aba04b5d1c50608e72287783c01fab0a6">x</a>, double <a class="el" href="#acbe9c2432033b2f7e821d164aa8df533">y</a>, double <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, double height)</td>          <td class="paramname"><span class="paramname"><em>rect</em></span></td><td>)</td>
+          <td class="paramtype">in(double x, double y, double width, double height)</td>          <td class="paramname"><span class="paramname"><em>rect</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Detects the object landmarks within the specified region defined by a rectangle. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rect</td><td>A ValueTuple&lt;Double, Double, Double, Double&gt; representing a rectangle. The ValueTuple contains the following values: <ul>
+<li>
+x (left), y (top), width, height </li>
+</ul>
+</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An array of ValueTuple&lt;Double, Double&gt; representing the detected object landmarks. Each ValueTuple contains the x and y coordinates of a detected landmark. If no landmarks are detected, the method returns the default value (null). </dd></dl>
 
 </div>
 </div>
@@ -626,7 +676,7 @@ x_1, y_1 </li>
         <tr>
           <td class="memname">double[] DlibFaceLandmarkDetector.FaceLandmarkDetector.DetectLandmarkArray </td>
           <td>(</td>
-          <td class="paramtype">in(double <a class="el" href="#aba04b5d1c50608e72287783c01fab0a6">x</a>, double <a class="el" href="#acbe9c2432033b2f7e821d164aa8df533">y</a>, double <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, double height)</td>          <td class="paramname"><span class="paramname"><em>rect</em></span></td><td>)</td>
+          <td class="paramtype">in(double x, double y, double width, double height)</td>          <td class="paramname"><span class="paramname"><em>rect</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -741,7 +791,7 @@ x_1, y_1 </li>
         <tr>
           <td class="memname">int DlibFaceLandmarkDetector.FaceLandmarkDetector.DetectLandmarkOnly </td>
           <td>(</td>
-          <td class="paramtype">in(double <a class="el" href="#aba04b5d1c50608e72287783c01fab0a6">x</a>, double <a class="el" href="#acbe9c2432033b2f7e821d164aa8df533">y</a>, double <a class="el" href="#a5ef338da37d5bc6ae33592661269fc29">width</a>, double height)</td>          <td class="paramname"><span class="paramname"><em>rect</em></span></td><td>)</td>
+          <td class="paramtype">in(double x, double y, double width, double height)</td>          <td class="paramname"><span class="paramname"><em>rect</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -880,14 +930,14 @@ x (left), y (top), width, height </li>
 
 </div>
 </div>
-<a id="a45055bbaff890c245ec64a752456c40f" name="a45055bbaff890c245ec64a752456c40f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a45055bbaff890c245ec64a752456c40f">&#9670;&#160;</a></span>DetectValueTuple() <span class="overload">[1/2]</span></h2>
+<a id="ada5f695570500929793644bdb536d341" name="ada5f695570500929793644bdb536d341"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada5f695570500929793644bdb536d341">&#9670;&#160;</a></span>DetectValueTuple() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">double double double double height[] DlibFaceLandmarkDetector.FaceLandmarkDetector.DetectValueTuple </td>
+          <td class="memname">List&lt;(double x, double y, double width, double height)&gt; DlibFaceLandmarkDetector.FaceLandmarkDetector.DetectValueTuple </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
@@ -895,22 +945,50 @@ x (left), y (top), width, height </li>
       </table>
 </div><div class="memdoc">
 
+<p>Detects objects in the image. </p>
+<dl class="section return"><dt>Returns</dt><dd>A list of ValueTuple&lt;Double, Double, Double, Double&gt; representing detected object data. Each ValueTuple contains values in the following order: <ul>
+<li>
+x_0 (left), y_0 (top), width_0, height_0 </li>
+<li>
+x_1 (left), y_1 (top), width_1, height_1 </li>
+<li>
+... </li>
+</ul>
+</dd></dl>
+
 </div>
 </div>
-<a id="a65641562f82acf3cef9631612e955cbe" name="a65641562f82acf3cef9631612e955cbe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a65641562f82acf3cef9631612e955cbe">&#9670;&#160;</a></span>DetectValueTuple() <span class="overload">[2/2]</span></h2>
+<a id="a7393e41af0c3961ce0d7b4583f3d882d" name="a7393e41af0c3961ce0d7b4583f3d882d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7393e41af0c3961ce0d7b4583f3d882d">&#9670;&#160;</a></span>DetectValueTuple() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">double double double double height[] DlibFaceLandmarkDetector.FaceLandmarkDetector.DetectValueTuple </td>
+          <td class="memname">List&lt;(double x, double y, double width, double height)&gt; DlibFaceLandmarkDetector.FaceLandmarkDetector.DetectValueTuple </td>
           <td>(</td>
           <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>adjust_threshold</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Detects objects in the image. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">adjust_threshold</td><td>A parameter to adjust the detection threshold.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A list of ValueTuple&lt;Double, Double, Double, Double&gt; representing detected object data. Each ValueTuple contains values in the following order: <ul>
+<li>
+x_0 (left), y_0 (top), width_0, height_0 </li>
+<li>
+x_1 (left), y_1 (top), width_1, height_1 </li>
+<li>
+... </li>
+</ul>
+</dd></dl>
 
 </div>
 </div>
@@ -995,7 +1073,7 @@ x (left), y (top), width, height </li>
       </table>
 </div><div class="memdoc">
 
-<p>Draws the detected landmark result on the provided image buffer with optional vertical flipping. </p>
+<p>Draws the detected landmark result (68 facial landmark points) on the provided image buffer with optional vertical flipping. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">intPtr</td><td>The pointer to the memory buffer where the detected landmark result will be drawn. </td></tr>
@@ -1062,7 +1140,7 @@ x (left), y (top), width, height </li>
       </table>
 </div><div class="memdoc">
 
-<p>Draws the detected landmark result on the provided image buffer. </p>
+<p>Draws the detected landmark result (68 facial landmark points) on the provided image buffer. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">intPtr</td><td>The pointer to the memory buffer where the detected landmark result will be drawn. </td></tr>
@@ -1123,7 +1201,7 @@ x (left), y (top), width, height </li>
       </table>
 </div><div class="memdoc">
 
-<p>Draws the detected landmark result on the provided texture. </p>
+<p>Draws the detected landmark result (68 facial landmark points) on the provided texture. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">texture2D</td><td>The Texture2D on where the detected landmark result will be drawn. Processing speed is fastest when the texture format is TextureFormat.RGBA32, TextureFormat.RGB24, or TextureFormat.Alpha8. </td></tr>
@@ -1193,7 +1271,7 @@ x (left), y (top), width, height </li>
       </table>
 </div><div class="memdoc">
 
-<p>Draws the detected landmark result on the provided texture. </p>
+<p>Draws the detected landmark result (68 facial landmark points) on the provided texture. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">texture2D</td><td>The Texture2D on where the detected landmark result will be drawn. Processing speed is fastest when the texture format is TextureFormat.RGBA32, TextureFormat.RGB24, or TextureFormat.Alpha8. </td></tr>
@@ -1265,7 +1343,7 @@ x (left), y (top), width, height </li>
       </table>
 </div><div class="memdoc">
 
-<p>Draws the detected landmark result on the provided image buffer, with an option to flip the image vertically. </p>
+<p>Draws the detected landmark result (68 facial landmark points) on the provided image buffer, with an option to flip the image vertically. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">array</td><td>The array representing the image data where the detected landmark result will be drawn. The array should contain pixel data in the format corresponding to <em>bytesPerPixel</em> . </td></tr>
@@ -1340,7 +1418,7 @@ x (left), y (top), width, height </li>
       </table>
 </div><div class="memdoc">
 
-<p>Draws the detected landmark result on the provided image buffer. </p>
+<p>Draws the detected landmark result (68 facial landmark points) on the provided image buffer. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">array</td><td>The array representing the image data where the detected landmark result will be drawn. The array should contain pixel data in the format corresponding to <em>bytesPerPixel</em> . </td></tr>
@@ -2290,87 +2368,6 @@ The span is passed by reference to receive the detection result data without all
 </dd>
 </dl>
 </div>
-
-</div>
-</div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a5ef338da37d5bc6ae33592661269fc29" name="a5ef338da37d5bc6ae33592661269fc29"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5ef338da37d5bc6ae33592661269fc29">&#9670;&#160;</a></span>width</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">double double double DlibFaceLandmarkDetector.FaceLandmarkDetector.width</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aba04b5d1c50608e72287783c01fab0a6" name="aba04b5d1c50608e72287783c01fab0a6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aba04b5d1c50608e72287783c01fab0a6">&#9670;&#160;</a></span>x</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">double DlibFaceLandmarkDetector.FaceLandmarkDetector.x</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Detects objects in the image. </p>
-<p>Detects the object landmarks within the specified region defined by a rectangle.</p>
-<dl class="section return"><dt>Returns</dt><dd>An array of ValueTuple&lt;Double, Double, Double, Double&gt; representing detected object data. Each ValueTuple contains values in the following order: <ul>
-<li>
-x_0 (left), y_0 (top), width_0, height_0 </li>
-<li>
-x_1 (left), y_1 (top), width_1, height_1 </li>
-<li>
-... </li>
-</ul>
-</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">adjust_threshold</td><td>A parameter to adjust the detection threshold.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>An array of ValueTuple&lt;Double, Double, Double, Double&gt; representing detected object data. Each ValueTuple contains values in the following order: <ul>
-<li>
-x_0 (left), y_0 (top), width_0, height_0 </li>
-<li>
-x_1 (left), y_1 (top), width_1, height_1 </li>
-<li>
-... </li>
-</ul>
-</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">rect</td><td>A ValueTuple&lt;Double, Double, Double, Double&gt; representing a rectangle. The ValueTuple contains the following values: <ul>
-<li>
-x (left), y (top), width, height </li>
-</ul>
-</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>An array of ValueTuple&lt;Double, Double&gt; representing the detected object landmarks. Each ValueTuple contains the x and y coordinates of a detected landmark. If no landmarks are detected, the method returns the default value (null). </dd></dl>
-
-</div>
-</div>
-<a id="acbe9c2432033b2f7e821d164aa8df533" name="acbe9c2432033b2f7e821d164aa8df533"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acbe9c2432033b2f7e821d164aa8df533">&#9670;&#160;</a></span>y</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">double double DlibFaceLandmarkDetector.FaceLandmarkDetector.y</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
 
 </div>
 </div>

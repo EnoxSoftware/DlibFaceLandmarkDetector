@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['opencvforunityutils_0',['OpenCVForUnityUtils',['../d2/db7/classDlibFaceLandmarkDetectorExample_1_1OpenCVForUnityUtils.html',1,'DlibFaceLandmarkDetectorExample']]]
+  ['rectdetection_0',['RectDetection',['../d3/d98/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector_1_1RectDetection.html',1,'DlibFaceLandmarkDetector::FaceLandmarkDetector']]]
 ];

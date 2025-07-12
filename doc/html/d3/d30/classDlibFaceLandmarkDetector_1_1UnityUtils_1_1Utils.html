@@ -26,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Dlib FaceLandmark Detector<span id="projectnumber">&#160;1.4.1</span>
+   <div id="projectname">Dlib FaceLandmark Detector<span id="projectnumber">&#160;2.0.0</span>
    </div>
    <div id="projectbrief">Enox Software</div>
   </td>
@@ -102,27 +102,46 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aeb0fe52fb6aac503016260eed057d772" id="r_aeb0fe52fb6aac503016260eed057d772"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeb0fe52fb6aac503016260eed057d772">getFilePath</a> (string filepath, bool refresh=false, int timeout=0)</td></tr>
 <tr class="memdesc:aeb0fe52fb6aac503016260eed057d772"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the readable path of a file in the "StreamingAssets" directory.  <br /></td></tr>
 <tr class="separator:aeb0fe52fb6aac503016260eed057d772"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e7593418cab339d25d42b82e337a376" id="r_a7e7593418cab339d25d42b82e337a376"><td class="memItemLeft" align="right" valign="top">static IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7e7593418cab339d25d42b82e337a376">getFilePathAsync</a> (string filepath, Action&lt; string &gt; completed, Action&lt; string, float &gt; progressChanged=null, Action&lt; string, string, long &gt; errorOccurred=null, bool refresh=false, int timeout=0)</td></tr>
-<tr class="memdesc:a7e7593418cab339d25d42b82e337a376"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously retrieves the readable path of a file in the "StreamingAssets" directory using coroutines.  <br /></td></tr>
-<tr class="separator:a7e7593418cab339d25d42b82e337a376"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf97e796f239e91a4de7f6f3cd3f3f72" id="r_acf97e796f239e91a4de7f6f3cd3f3f72"><td class="memItemLeft" align="right" valign="top">static async Awaitable&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acf97e796f239e91a4de7f6f3cd3f3f72">getFilePathAsync</a> (string filepath, Action&lt; string, float &gt; progressChanged=null, Action&lt; string, string, long &gt; errorOccurred=null, bool refresh=false, int timeout=0, CancellationToken cancellationToken=default)</td></tr>
+<tr class="memdesc:acf97e796f239e91a4de7f6f3cd3f3f72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously retrieves the readable path of a file in the "StreamingAssets" directory using Awaitable.  <br /></td></tr>
+<tr class="separator:acf97e796f239e91a4de7f6f3cd3f3f72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5886d192d904742b50ef0eebcabccabe" id="r_a5886d192d904742b50ef0eebcabccabe"><td class="memItemLeft" align="right" valign="top">static async Task&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5886d192d904742b50ef0eebcabccabe">getFilePathAsyncTask</a> (string filepath, Action&lt; string, float &gt; progressChanged=null, Action&lt; string, string, long &gt; errorOccurred=null, bool refresh=false, int timeout=0, CancellationToken cancellationToken=default)</td></tr>
-<tr class="memdesc:a5886d192d904742b50ef0eebcabccabe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously retrieves the readable path of a file in the "StreamingAssets" directory using a Task.  <br /></td></tr>
 <tr class="separator:a5886d192d904742b50ef0eebcabccabe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace1bb9b433f1d34d429c883e057e345c" id="r_ace1bb9b433f1d34d429c883e057e345c"><td class="memItemLeft" align="right" valign="top">static IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ace1bb9b433f1d34d429c883e057e345c">getFilePathCoroutine</a> (string filepath, Action&lt; string &gt; completed, Action&lt; string, float &gt; progressChanged=null, Action&lt; string, string, long &gt; errorOccurred=null, bool refresh=false, int timeout=0)</td></tr>
+<tr class="memdesc:ace1bb9b433f1d34d429c883e057e345c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously retrieves the readable path of a file in the "StreamingAssets" directory using Coroutine.  <br /></td></tr>
+<tr class="separator:ace1bb9b433f1d34d429c883e057e345c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbf7934f72cda3ccb5b5842691c4ea88" id="r_afbf7934f72cda3ccb5b5842691c4ea88"><td class="memItemLeft" align="right" valign="top">static async Task&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afbf7934f72cda3ccb5b5842691c4ea88">getFilePathTaskAsync</a> (string filepath, Action&lt; string, float &gt; progressChanged=null, Action&lt; string, string, long &gt; errorOccurred=null, bool refresh=false, int timeout=0, CancellationToken cancellationToken=default)</td></tr>
+<tr class="memdesc:afbf7934f72cda3ccb5b5842691c4ea88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously retrieves the readable path of a file in the "StreamingAssets" directory using Task.  <br /></td></tr>
+<tr class="separator:afbf7934f72cda3ccb5b5842691c4ea88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac671eef4c9f30dbec961a85587b9c05b" id="r_ac671eef4c9f30dbec961a85587b9c05b"><td class="memItemLeft" align="right" valign="top">static IReadOnlyList&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac671eef4c9f30dbec961a85587b9c05b">getMultipleFilePaths</a> (IReadOnlyList&lt; string &gt; filepaths, bool refresh=false, int timeout=0)</td></tr>
 <tr class="memdesc:ac671eef4c9f30dbec961a85587b9c05b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the multiple readable paths of a file in the "StreamingAssets" directory.  <br /></td></tr>
 <tr class="separator:ac671eef4c9f30dbec961a85587b9c05b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8fff34226fe0bda18e4a66d152f9056" id="r_ae8fff34226fe0bda18e4a66d152f9056"><td class="memItemLeft" align="right" valign="top">static IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae8fff34226fe0bda18e4a66d152f9056">getMultipleFilePathsAsync</a> (IReadOnlyList&lt; string &gt; filepaths, Action&lt; IReadOnlyList&lt; string &gt; &gt; allCompleted, Action&lt; string &gt; completed=null, Action&lt; string, float &gt; progressChanged=null, Action&lt; string, string, long &gt; errorOccurred=null, bool refresh=false, int timeout=0)</td></tr>
-<tr class="memdesc:ae8fff34226fe0bda18e4a66d152f9056"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously retrieves the multiple readable paths of files in the "StreamingAssets" directory using coroutines.  <br /></td></tr>
-<tr class="separator:ae8fff34226fe0bda18e4a66d152f9056"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae01ed8642831ede1c0d500449f0b2e46" id="r_ae01ed8642831ede1c0d500449f0b2e46"><td class="memItemLeft" align="right" valign="top">static async Awaitable&lt; IReadOnlyList&lt; string &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae01ed8642831ede1c0d500449f0b2e46">getMultipleFilePathsAsync</a> (IReadOnlyList&lt; string &gt; filepaths, Action&lt; string &gt; completed=null, Action&lt; string, float &gt; progressChanged=null, Action&lt; string, string, long &gt; errorOccurred=null, bool refresh=false, int timeout=0, CancellationToken cancellationToken=default)</td></tr>
+<tr class="memdesc:ae01ed8642831ede1c0d500449f0b2e46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously retrieves the multiple readable paths of files in the "StreamingAssets" directory using Awaitable.  <br /></td></tr>
+<tr class="separator:ae01ed8642831ede1c0d500449f0b2e46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aabc7e4687a41ae6d5cb1bd491d294939" id="r_aabc7e4687a41ae6d5cb1bd491d294939"><td class="memItemLeft" align="right" valign="top">static async Task&lt; IReadOnlyList&lt; string &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aabc7e4687a41ae6d5cb1bd491d294939">getMultipleFilePathsAsyncTask</a> (IReadOnlyList&lt; string &gt; filepaths, Action&lt; string &gt; completed=null, Action&lt; string, float &gt; progressChanged=null, Action&lt; string, string, long &gt; errorOccurred=null, bool refresh=false, int timeout=0, CancellationToken cancellationToken=default)</td></tr>
-<tr class="memdesc:aabc7e4687a41ae6d5cb1bd491d294939"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously retrieves the multiple readable paths of files in the "StreamingAssets" directory using a Task.  <br /></td></tr>
 <tr class="separator:aabc7e4687a41ae6d5cb1bd491d294939"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aceb66bcb07bcc9f56f9110b2bd1afe6c" id="r_aceb66bcb07bcc9f56f9110b2bd1afe6c"><td class="memItemLeft" align="right" valign="top">static IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aceb66bcb07bcc9f56f9110b2bd1afe6c">getMultipleFilePathsCoroutine</a> (IReadOnlyList&lt; string &gt; filepaths, Action&lt; IReadOnlyList&lt; string &gt; &gt; allCompleted, Action&lt; string &gt; completed=null, Action&lt; string, float &gt; progressChanged=null, Action&lt; string, string, long &gt; errorOccurred=null, bool refresh=false, int timeout=0)</td></tr>
+<tr class="memdesc:aceb66bcb07bcc9f56f9110b2bd1afe6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously retrieves the multiple readable paths of files in the "StreamingAssets" directory using Coroutine.  <br /></td></tr>
+<tr class="separator:aceb66bcb07bcc9f56f9110b2bd1afe6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc0cfeb598ee7a4797685656632b61ea" id="r_acc0cfeb598ee7a4797685656632b61ea"><td class="memItemLeft" align="right" valign="top">static async Task&lt; IReadOnlyList&lt; string &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acc0cfeb598ee7a4797685656632b61ea">getMultipleFilePathsTaskAsync</a> (IReadOnlyList&lt; string &gt; filepaths, Action&lt; string &gt; completed=null, Action&lt; string, float &gt; progressChanged=null, Action&lt; string, string, long &gt; errorOccurred=null, bool refresh=false, int timeout=0, CancellationToken cancellationToken=default)</td></tr>
+<tr class="memdesc:acc0cfeb598ee7a4797685656632b61ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously retrieves the multiple readable paths of files in the "StreamingAssets" directory using Task.  <br /></td></tr>
+<tr class="separator:acc0cfeb598ee7a4797685656632b61ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7321b07577aacc310e45f7adf4287796" id="r_a7321b07577aacc310e45f7adf4287796"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7321b07577aacc310e45f7adf4287796">getVersion</a> ()</td></tr>
 <tr class="memdesc:a7321b07577aacc310e45f7adf4287796"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns this "Dlib FaceLandmark Detector" version number.  <br /></td></tr>
 <tr class="separator:a7321b07577aacc310e45f7adf4287796"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c608edc5cb717a1e445056cde4e00d6" id="r_a8c608edc5cb717a1e445056cde4e00d6"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8c608edc5cb717a1e445056cde4e00d6">setDebugMode</a> (bool debugMode, bool throwException=false, Action&lt; string &gt; callback=null)</td></tr>
-<tr class="memdesc:a8c608edc5cb717a1e445056cde4e00d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the debug mode.  <br /></td></tr>
-<tr class="separator:a8c608edc5cb717a1e445056cde4e00d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad40d1638c23c8cb42b3fb6ab91d0c06e" id="r_ad40d1638c23c8cb42b3fb6ab91d0c06e"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad40d1638c23c8cb42b3fb6ab91d0c06e">isDebugMode</a> ()</td></tr>
+<tr class="memdesc:ad40d1638c23c8cb42b3fb6ab91d0c06e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current debug mode state.  <br /></td></tr>
+<tr class="separator:ad40d1638c23c8cb42b3fb6ab91d0c06e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c5be9edd26d4e657582641ae5cb0836" id="r_a4c5be9edd26d4e657582641ae5cb0836"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c5be9edd26d4e657582641ae5cb0836">isThrowException</a> ()</td></tr>
+<tr class="memdesc:a4c5be9edd26d4e657582641ae5cb0836"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current exception throwing state.  <br /></td></tr>
+<tr class="separator:a4c5be9edd26d4e657582641ae5cb0836"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8778139bc081869f7ed094d50de09475" id="r_a8778139bc081869f7ed094d50de09475"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8778139bc081869f7ed094d50de09475">setDebugMode</a> (bool debugMode, bool throwException, Action&lt; string &gt; callback)</td></tr>
+<tr class="memdesc:a8778139bc081869f7ed094d50de09475"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the debug mode with a callback.  <br /></td></tr>
+<tr class="separator:a8778139bc081869f7ed094d50de09475"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca842de0d85dba68e632a7d8267aaf2a" id="r_aca842de0d85dba68e632a7d8267aaf2a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aca842de0d85dba68e632a7d8267aaf2a">setDebugMode</a> (bool debugMode, bool throwException=false)</td></tr>
+<tr class="memdesc:aca842de0d85dba68e632a7d8267aaf2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the debug mode.  <br /></td></tr>
+<tr class="separator:aca842de0d85dba68e632a7d8267aaf2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="aeb0fe52fb6aac503016260eed057d772" name="aeb0fe52fb6aac503016260eed057d772"></a>
@@ -158,7 +177,7 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Gets the readable path of a file in the "StreamingAssets" directory. </p>
-<p>Provide a relative file path based on the "StreamingAssets" directory. e.g., "foobar.txt" or "hogehoge/foobar.txt". [Android] The target file that exists in the "StreamingAssets" directory is copied to the the Application.persistentDataPath directory. [WebGL] If the target file has not yet been copied to WebGL's virtual filesystem, it is necessary to use <a class="el" href="#a7e7593418cab339d25d42b82e337a376">getFilePathAsync</a> of <a class="el" href="#a5886d192d904742b50ef0eebcabccabe">getFilePathAsyncTask</a> at first. </p>
+<p>Provide a relative file path based on the "StreamingAssets" directory. e.g., "foobar.txt" or "hogehoge/foobar.txt". [Android] The target file that exists in the "StreamingAssets" directory is copied to the the Application.persistentDataPath directory. [WebGL] If the target file has not yet been copied to WebGL's virtual filesystem, it is necessary to use <a class="el" href="#ace1bb9b433f1d34d429c883e057e345c">getFilePathCoroutine</a>, <a class="el" href="#acf97e796f239e91a4de7f6f3cd3f3f72">getFilePathAsync</a> or <a class="el" href="#afbf7934f72cda3ccb5b5842691c4ea88">getFilePathAsyncTask</a> at first. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">filepath</td><td>A file path relative to the "StreamingAssets" directory. </td></tr>
@@ -177,8 +196,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a7e7593418cab339d25d42b82e337a376" name="a7e7593418cab339d25d42b82e337a376"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7e7593418cab339d25d42b82e337a376">&#9670;&#160;</a></span>getFilePathAsync()</h2>
+<a id="acf97e796f239e91a4de7f6f3cd3f3f72" name="acf97e796f239e91a4de7f6f3cd3f3f72"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf97e796f239e91a4de7f6f3cd3f3f72">&#9670;&#160;</a></span>getFilePathAsync()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -187,14 +206,9 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static IEnumerator DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsync </td>
+          <td class="memname">static async Awaitable&lt; string &gt; DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathAsync </td>
           <td>(</td>
           <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>filepath</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Action&lt; string &gt;</td>          <td class="paramname"><span class="paramname"><em>completed</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -214,7 +228,12 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>timeout</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>&#160;)</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>timeout</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">CancellationToken</td>          <td class="paramname"><span class="paramname"><em>cancellationToken</em></span><span class="paramdefsep"> = </span><span class="paramdefval">default</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -224,23 +243,25 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Asynchronously retrieves the readable path of a file in the "StreamingAssets" directory using coroutines. </p>
+<p>Asynchronously retrieves the readable path of a file in the "StreamingAssets" directory using Awaitable. </p>
 <p>Provide a relative file path based on the "StreamingAssets" directory. e.g., "foobar.txt" or "hogehoge/foobar.txt". [Android] The target file that exists in the "StreamingAssets" directory is copied to the the Application.persistentDataPath directory. [WebGL] The target file in the "StreamingAssets" directory is copied to the WebGL's virtual filesystem. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">filepath</td><td>A file path relative to the "StreamingAssets" directory. </td></tr>
-    <tr><td class="paramname">completed</td><td>A callback that is called when the process is completed. Returns a readable file path in case of success and returns <code>string.Empty</code> in case of error. </td></tr>
     <tr><td class="paramname">progressChanged</td><td>An optional callback that is called when the process is the progress. Returns the file path and a progress value (0.0 to 1.0). </td></tr>
     <tr><td class="paramname">errorOccurred</td><td>An optional callback that is called when the process is error occurred. Returns the file path and an error string and an error response code. </td></tr>
     <tr><td class="paramname">refresh</td><td>[Android][WebGL] If false, the file is not copied if it already exists. If true, the file is always copied. </td></tr>
     <tr><td class="paramname">timeout</td><td>[Android][WebGL] Sets the UnityWebRequest to abort after the specified number of seconds. If set to 0, no timeout is applied. The default is 0. </td></tr>
+    <tr><td class="paramname">cancellationToken</td><td>A cancellation token that can be used to cancel the download operation. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Returns an IEnumerator object. Yielding the IEnumerator in a coroutine pauses the coroutine until the UnityWebRequest completes or encounters a system error. <b>Note:</b> that if the IEnumerator is externally stoped, the UnityWebRequest's Abort method will not be called, meaning the download will continue in the background. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A task that represents the asynchronous download operation. The result is a readable file path where the downloaded file was saved, or <code>string.Empty</code> if the download fails. </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">ArgumentNullException</td><td>Thrown if <em>filepath</em>  is null. </td></tr>
+    <tr><td class="paramname">InvalidOperationException</td><td>Thrown if this method is called from a non-main thread. </td></tr>
+    <tr><td class="paramname">OperationCanceledException</td><td>Thrown if the download operation is canceled. </td></tr>
   </table>
   </dd>
 </dl>
@@ -293,8 +314,128 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<dl class="deprecated"><dt><b><a class="el" href="../../da/d58/deprecated.html#_deprecated000001">Deprecated</a></b></dt><dd>Use <a class="el" href="#afbf7934f72cda3ccb5b5842691c4ea88" title="Asynchronously retrieves the readable path of a file in the &quot;StreamingAssets&quot; directory using Task.">Utils.getFilePathTaskAsync</a> </dd></dl>
 
-<p>Asynchronously retrieves the readable path of a file in the "StreamingAssets" directory using a Task. </p>
+</div>
+</div>
+<a id="ace1bb9b433f1d34d429c883e057e345c" name="ace1bb9b433f1d34d429c883e057e345c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace1bb9b433f1d34d429c883e057e345c">&#9670;&#160;</a></span>getFilePathCoroutine()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static IEnumerator DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathCoroutine </td>
+          <td>(</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>filepath</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Action&lt; string &gt;</td>          <td class="paramname"><span class="paramname"><em>completed</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Action&lt; string, float &gt;</td>          <td class="paramname"><span class="paramname"><em>progressChanged</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Action&lt; string, string, long &gt;</td>          <td class="paramname"><span class="paramname"><em>errorOccurred</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>refresh</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>timeout</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Asynchronously retrieves the readable path of a file in the "StreamingAssets" directory using Coroutine. </p>
+<p>Provide a relative file path based on the "StreamingAssets" directory. e.g., "foobar.txt" or "hogehoge/foobar.txt". [Android] The target file that exists in the "StreamingAssets" directory is copied to the the Application.persistentDataPath directory. [WebGL] The target file in the "StreamingAssets" directory is copied to the WebGL's virtual filesystem. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filepath</td><td>A file path relative to the "StreamingAssets" directory. </td></tr>
+    <tr><td class="paramname">completed</td><td>A callback that is called when the process is completed. Returns a readable file path in case of success and returns <code>string.Empty</code> in case of error. </td></tr>
+    <tr><td class="paramname">progressChanged</td><td>An optional callback that is called when the process is the progress. Returns the file path and a progress value (0.0 to 1.0). </td></tr>
+    <tr><td class="paramname">errorOccurred</td><td>An optional callback that is called when the process is error occurred. Returns the file path and an error string and an error response code. </td></tr>
+    <tr><td class="paramname">refresh</td><td>[Android][WebGL] If false, the file is not copied if it already exists. If true, the file is always copied. </td></tr>
+    <tr><td class="paramname">timeout</td><td>[Android][WebGL] Sets the UnityWebRequest to abort after the specified number of seconds. If set to 0, no timeout is applied. The default is 0. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns an IEnumerator object. Yielding the IEnumerator in a coroutine pauses the coroutine until the UnityWebRequest completes or encounters a system error. <b>Note:</b> that if the IEnumerator is externally stoped, the UnityWebRequest's Abort method will not be called, meaning the download will continue in the background. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">ArgumentNullException</td><td>Thrown if <em>filepath</em>  is null. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="afbf7934f72cda3ccb5b5842691c4ea88" name="afbf7934f72cda3ccb5b5842691c4ea88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afbf7934f72cda3ccb5b5842691c4ea88">&#9670;&#160;</a></span>getFilePathTaskAsync()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static async Task&lt; string &gt; DlibFaceLandmarkDetector.UnityUtils.Utils.getFilePathTaskAsync </td>
+          <td>(</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>filepath</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Action&lt; string, float &gt;</td>          <td class="paramname"><span class="paramname"><em>progressChanged</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Action&lt; string, string, long &gt;</td>          <td class="paramname"><span class="paramname"><em>errorOccurred</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>refresh</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>timeout</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">CancellationToken</td>          <td class="paramname"><span class="paramname"><em>cancellationToken</em></span><span class="paramdefsep"> = </span><span class="paramdefval">default</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Asynchronously retrieves the readable path of a file in the "StreamingAssets" directory using Task. </p>
 <p>Provide a relative file path based on the "StreamingAssets" directory. e.g., "foobar.txt" or "hogehoge/foobar.txt". [Android] The target file that exists in the "StreamingAssets" directory is copied to the the Application.persistentDataPath directory. [WebGL] The target file in the "StreamingAssets" directory is copied to the WebGL's virtual filesystem. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -352,7 +493,7 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Gets the multiple readable paths of a file in the "StreamingAssets" directory. </p>
-<p>Provide a relative file path based on the "StreamingAssets" directory. e.g., "foobar.txt" or "hogehoge/foobar.txt". [Android] The target file that exists in the "StreamingAssets" directory is copied to the the Application.persistentDataPath directory. [WebGL] If the target file has not yet been copied to WebGL's virtual filesystem, it is necessary to use <a class="el" href="#ae8fff34226fe0bda18e4a66d152f9056">getMultipleFilePathsAsync</a> of <a class="el" href="#aabc7e4687a41ae6d5cb1bd491d294939">getMultipleFilePathsAsynck</a> at first. </p>
+<p>Provide a relative file path based on the "StreamingAssets" directory. e.g., "foobar.txt" or "hogehoge/foobar.txt". [Android] The target file that exists in the "StreamingAssets" directory is copied to the the Application.persistentDataPath directory. [WebGL] If the target file has not yet been copied to WebGL's virtual filesystem, it is necessary to use <a class="el" href="#ace1bb9b433f1d34d429c883e057e345c">getFilePathCoroutine</a>, <a class="el" href="#acf97e796f239e91a4de7f6f3cd3f3f72">getFilePathAsync</a> or <a class="el" href="#afbf7934f72cda3ccb5b5842691c4ea88">getFilePathAsyncTask</a> at first. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">filepaths</td><td>The list of file paths relative to the "StreamingAssets" directory. </td></tr>
@@ -371,8 +512,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae8fff34226fe0bda18e4a66d152f9056" name="ae8fff34226fe0bda18e4a66d152f9056"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae8fff34226fe0bda18e4a66d152f9056">&#9670;&#160;</a></span>getMultipleFilePathsAsync()</h2>
+<a id="ae01ed8642831ede1c0d500449f0b2e46" name="ae01ed8642831ede1c0d500449f0b2e46"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae01ed8642831ede1c0d500449f0b2e46">&#9670;&#160;</a></span>getMultipleFilePathsAsync()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -381,14 +522,9 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static IEnumerator DlibFaceLandmarkDetector.UnityUtils.Utils.getMultipleFilePathsAsync </td>
+          <td class="memname">static async Awaitable&lt; IReadOnlyList&lt; string &gt; &gt; DlibFaceLandmarkDetector.UnityUtils.Utils.getMultipleFilePathsAsync </td>
           <td>(</td>
           <td class="paramtype">IReadOnlyList&lt; string &gt;</td>          <td class="paramname"><span class="paramname"><em>filepaths</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Action&lt; IReadOnlyList&lt; string &gt; &gt;</td>          <td class="paramname"><span class="paramname"><em>allCompleted</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -413,7 +549,12 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>timeout</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>&#160;)</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>timeout</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">CancellationToken</td>          <td class="paramname"><span class="paramname"><em>cancellationToken</em></span><span class="paramdefsep"> = </span><span class="paramdefval">default</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -423,24 +564,26 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Asynchronously retrieves the multiple readable paths of files in the "StreamingAssets" directory using coroutines. </p>
+<p>Asynchronously retrieves the multiple readable paths of files in the "StreamingAssets" directory using Awaitable. </p>
 <p>Provide a relative file path based on the "StreamingAssets" directory. e.g., "foobar.txt" or "hogehoge/foobar.txt". [Android] The target file that exists in the "StreamingAssets" directory is copied to the the Application.persistentDataPath directory. [WebGL] The target file in the "StreamingAssets" directory is copied to the WebGL's virtual filesystem. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">filepaths</td><td>The list of file paths relative to the "StreamingAssets" directory. </td></tr>
-    <tr><td class="paramname">allCompleted</td><td>A callback that is called when all processes are completed. Returns a list of file paths. Returns a readable file path in case of success and returns <code>string.Empty</code> in case of error. </td></tr>
     <tr><td class="paramname">completed</td><td>An optional callback that is called when one process is completed. Returns a readable file path in case of success and returns empty in case of error. </td></tr>
     <tr><td class="paramname">progressChanged</td><td>An optional callback that is called when one process is the progress. Returns the file path and a progress value (0.0 to 1.0). </td></tr>
     <tr><td class="paramname">errorOccurred</td><td>An optional callback that is called when one process is error occurred. Returns the file path and an error string and an error response code. </td></tr>
     <tr><td class="paramname">refresh</td><td>[Android][WebGL] If false, the file is not copied if it already exists. If true, the file is always copied. </td></tr>
     <tr><td class="paramname">timeout</td><td>[Android][WebGL] Sets the UnityWebRequest to abort after the specified number of seconds. If set to 0, no timeout is applied. The default is 0. </td></tr>
+    <tr><td class="paramname">cancellationToken</td><td>A cancellation token that can be used to cancel the download operation. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Returns an IEnumerator object. Yielding the IEnumerator in a coroutine pauses the coroutine until the UnityWebRequest completes or encounters a system error. <b>Note:</b> that if the IEnumerator is externally stoped, the UnityWebRequest's Abort method will not be called, meaning the download will continue in the background. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A task that represents the asynchronous download operation. The result is a list of readable file paths where the downloaded file was saved, or <code>string.Empty</code> if the download fails. </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">ArgumentNullException</td><td>Thrown if <em>filepath</em>  is null. </td></tr>
+    <tr><td class="paramname">InvalidOperationException</td><td>Thrown if this method is called from a non-main thread. </td></tr>
+    <tr><td class="paramname">OperationCanceledException</td><td>Thrown if the download operation is canceled. </td></tr>
   </table>
   </dd>
 </dl>
@@ -498,8 +641,139 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<dl class="deprecated"><dt><b><a class="el" href="../../da/d58/deprecated.html#_deprecated000002">Deprecated</a></b></dt><dd>Use <a class="el" href="#acc0cfeb598ee7a4797685656632b61ea" title="Asynchronously retrieves the multiple readable paths of files in the &quot;StreamingAssets&quot; directory usin...">Utils.getMultipleFilePathsTaskAsync</a> </dd></dl>
 
-<p>Asynchronously retrieves the multiple readable paths of files in the "StreamingAssets" directory using a Task. </p>
+</div>
+</div>
+<a id="aceb66bcb07bcc9f56f9110b2bd1afe6c" name="aceb66bcb07bcc9f56f9110b2bd1afe6c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aceb66bcb07bcc9f56f9110b2bd1afe6c">&#9670;&#160;</a></span>getMultipleFilePathsCoroutine()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static IEnumerator DlibFaceLandmarkDetector.UnityUtils.Utils.getMultipleFilePathsCoroutine </td>
+          <td>(</td>
+          <td class="paramtype">IReadOnlyList&lt; string &gt;</td>          <td class="paramname"><span class="paramname"><em>filepaths</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Action&lt; IReadOnlyList&lt; string &gt; &gt;</td>          <td class="paramname"><span class="paramname"><em>allCompleted</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Action&lt; string &gt;</td>          <td class="paramname"><span class="paramname"><em>completed</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Action&lt; string, float &gt;</td>          <td class="paramname"><span class="paramname"><em>progressChanged</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Action&lt; string, string, long &gt;</td>          <td class="paramname"><span class="paramname"><em>errorOccurred</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>refresh</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>timeout</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Asynchronously retrieves the multiple readable paths of files in the "StreamingAssets" directory using Coroutine. </p>
+<p>Provide a relative file path based on the "StreamingAssets" directory. e.g., "foobar.txt" or "hogehoge/foobar.txt". [Android] The target file that exists in the "StreamingAssets" directory is copied to the the Application.persistentDataPath directory. [WebGL] The target file in the "StreamingAssets" directory is copied to the WebGL's virtual filesystem. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filepaths</td><td>The list of file paths relative to the "StreamingAssets" directory. </td></tr>
+    <tr><td class="paramname">allCompleted</td><td>A callback that is called when all processes are completed. Returns a list of file paths. Returns a readable file path in case of success and returns <code>string.Empty</code> in case of error. </td></tr>
+    <tr><td class="paramname">completed</td><td>An optional callback that is called when one process is completed. Returns a readable file path in case of success and returns empty in case of error. </td></tr>
+    <tr><td class="paramname">progressChanged</td><td>An optional callback that is called when one process is the progress. Returns the file path and a progress value (0.0 to 1.0). </td></tr>
+    <tr><td class="paramname">errorOccurred</td><td>An optional callback that is called when one process is error occurred. Returns the file path and an error string and an error response code. </td></tr>
+    <tr><td class="paramname">refresh</td><td>[Android][WebGL] If false, the file is not copied if it already exists. If true, the file is always copied. </td></tr>
+    <tr><td class="paramname">timeout</td><td>[Android][WebGL] Sets the UnityWebRequest to abort after the specified number of seconds. If set to 0, no timeout is applied. The default is 0. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns an IEnumerator object. Yielding the IEnumerator in a coroutine pauses the coroutine until the UnityWebRequest completes or encounters a system error. <b>Note:</b> that if the IEnumerator is externally stoped, the UnityWebRequest's Abort method will not be called, meaning the download will continue in the background. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">ArgumentNullException</td><td>Thrown if <em>filepath</em>  is null. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="acc0cfeb598ee7a4797685656632b61ea" name="acc0cfeb598ee7a4797685656632b61ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc0cfeb598ee7a4797685656632b61ea">&#9670;&#160;</a></span>getMultipleFilePathsTaskAsync()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static async Task&lt; IReadOnlyList&lt; string &gt; &gt; DlibFaceLandmarkDetector.UnityUtils.Utils.getMultipleFilePathsTaskAsync </td>
+          <td>(</td>
+          <td class="paramtype">IReadOnlyList&lt; string &gt;</td>          <td class="paramname"><span class="paramname"><em>filepaths</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Action&lt; string &gt;</td>          <td class="paramname"><span class="paramname"><em>completed</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Action&lt; string, float &gt;</td>          <td class="paramname"><span class="paramname"><em>progressChanged</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Action&lt; string, string, long &gt;</td>          <td class="paramname"><span class="paramname"><em>errorOccurred</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>refresh</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>timeout</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">CancellationToken</td>          <td class="paramname"><span class="paramname"><em>cancellationToken</em></span><span class="paramdefsep"> = </span><span class="paramdefval">default</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Asynchronously retrieves the multiple readable paths of files in the "StreamingAssets" directory using Task. </p>
 <p>Provide a relative file path based on the "StreamingAssets" directory. e.g., "foobar.txt" or "hogehoge/foobar.txt". [Android] The target file that exists in the "StreamingAssets" directory is copied to the the Application.persistentDataPath directory. [WebGL] The target file in the "StreamingAssets" directory is copied to the WebGL's virtual filesystem. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -553,8 +827,64 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a8c608edc5cb717a1e445056cde4e00d6" name="a8c608edc5cb717a1e445056cde4e00d6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c608edc5cb717a1e445056cde4e00d6">&#9670;&#160;</a></span>setDebugMode()</h2>
+<a id="ad40d1638c23c8cb42b3fb6ab91d0c06e" name="ad40d1638c23c8cb42b3fb6ab91d0c06e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad40d1638c23c8cb42b3fb6ab91d0c06e">&#9670;&#160;</a></span>isDebugMode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool DlibFaceLandmarkDetector.UnityUtils.Utils.isDebugMode </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the current debug mode state. </p>
+<dl class="section return"><dt>Returns</dt><dd>True if debug mode is enabled, false otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a4c5be9edd26d4e657582641ae5cb0836" name="a4c5be9edd26d4e657582641ae5cb0836"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c5be9edd26d4e657582641ae5cb0836">&#9670;&#160;</a></span>isThrowException()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool DlibFaceLandmarkDetector.UnityUtils.Utils.isThrowException </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the current exception throwing state. </p>
+<dl class="section return"><dt>Returns</dt><dd>True if exceptions are thrown instead of logging errors, false otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a8778139bc081869f7ed094d50de09475" name="a8778139bc081869f7ed094d50de09475"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8778139bc081869f7ed094d50de09475">&#9670;&#160;</a></span>setDebugMode() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -570,12 +900,93 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>throwException</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>, </td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>throwException</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Action&lt; string &gt;</td>          <td class="paramname"><span class="paramname"><em>callback</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
+          <td class="paramtype">Action&lt; string &gt;</td>          <td class="paramname"><span class="paramname"><em>callback</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the debug mode with a callback. </p>
+<p>If debugMode is true, The error log of the Native side Dlib will be displayed on the Unity Editor Console.However, if throwException is true, <a class="el" href="../../df/d2c/classDlibFaceLandmarkDetector_1_1DlibException.html" title="The exception that is thrown by DlibFaceLandmarkDetector.">DlibException</a> is thrown instead of calling Debug.LogError (msg). The callback is maintained even when debug mode is turned off, allowing it to be reused when debug mode is turned on again. To clear the callback, call this method with null as the callback parameter. </p>
+<p>Please use as follows. </p><div class="fragment"><div class="line">{</div>
+<div class="line">    <span class="comment">// DlibException handling</span></div>
+<div class="line">    <span class="comment">// Publish DlibException to Debug.LogError.</span></div>
+<div class="line">    <a class="code hl_class" href="../../d3/d30/classDlibFaceLandmarkDetector_1_1UnityUtils_1_1Utils.html">Utils</a>.<a class="code hl_function" href="#aca842de0d85dba68e632a7d8267aaf2a">setDebugMode</a>(<span class="keyword">true</span>, <span class="keyword">false</span>);</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Code that causes an error.</span></div>
+<div class="line"> </div>
+<div class="line">    <a class="code hl_class" href="../../d3/d30/classDlibFaceLandmarkDetector_1_1UnityUtils_1_1Utils.html">Utils</a>.<a class="code hl_function" href="#aca842de0d85dba68e632a7d8267aaf2a">setDebugMode</a>(<span class="keyword">false</span>);</div>
+<div class="line"> </div>
+<div class="line">@iverbatim </div>
+<div class="line"><span class="comment">// Throw DlibException.</span></div>
+<div class="line"><a class="code hl_class" href="../../d3/d30/classDlibFaceLandmarkDetector_1_1UnityUtils_1_1Utils.html">Utils</a>.<a class="code hl_function" href="#aca842de0d85dba68e632a7d8267aaf2a">setDebugMode</a>(<span class="keyword">true</span>, <span class="keyword">true</span>);</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">try</span></div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">// Code that causes an error.</span></div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">catch</span> (Exception e)</div>
+<div class="line">{</div>
+<div class="line">    Debug.Log(<span class="stringliteral">&quot;DlibException: &quot;</span> + e);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Callback string of DlibException.</span></div>
+<div class="line">Utils.setDebugMode(<span class="keyword">true</span>, <span class="keyword">true</span>, (str) =&gt;</div>
+<div class="line">{</div>
+<div class="line">    Debug.Log(<span class="stringliteral">&quot;DlibException: &quot;</span> + str);</div>
+<div class="line">});</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">try</span></div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">// Code that causes an error.</span></div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">catch</span> (Exception e)</div>
+<div class="line">{</div>
+<div class="line">    Debug.Log(<span class="stringliteral">&quot;DlibException: &quot;</span> + e);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">Utils.setDebugMode(<span class="keyword">false</span>);</div>
+<div class="line"><span class="keyword">@end</span>iverbatim }</div>
+<div class="ttc" id="aclassDlibFaceLandmarkDetector_1_1UnityUtils_1_1Utils_html"><div class="ttname"><a href="../../d3/d30/classDlibFaceLandmarkDetector_1_1UnityUtils_1_1Utils.html">DlibFaceLandmarkDetector.UnityUtils.Utils</a></div><div class="ttdef"><b>Definition</b> Utils.cs:16</div></div>
+<div class="ttc" id="aclassDlibFaceLandmarkDetector_1_1UnityUtils_1_1Utils_html_aca842de0d85dba68e632a7d8267aaf2a"><div class="ttname"><a href="#aca842de0d85dba68e632a7d8267aaf2a">DlibFaceLandmarkDetector.UnityUtils.Utils.setDebugMode</a></div><div class="ttdeci">static void setDebugMode(bool debugMode, bool throwException=false)</div><div class="ttdoc">Sets the debug mode.</div><div class="ttdef"><b>Definition</b> Utils.cs:1118</div></div>
+</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">debugMode</td><td>If true, The error log of the Native side Dlib will be displayed on the Unity Editor Console. </td></tr>
+    <tr><td class="paramname">throwException</td><td>If true, <a class="el" href="../../df/d2c/classDlibFaceLandmarkDetector_1_1DlibException.html" title="The exception that is thrown by DlibFaceLandmarkDetector.">DlibException</a> is thrown instead of calling Debug.LogError (msg). </td></tr>
+    <tr><td class="paramname">callback</td><td>Callback called when an Dlib error occurs on the Native side. The callback is maintained even when debug mode is turned off. To clear the callback, pass null as this parameter. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aca842de0d85dba68e632a7d8267aaf2a" name="aca842de0d85dba68e632a7d8267aaf2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca842de0d85dba68e632a7d8267aaf2a">&#9670;&#160;</a></span>setDebugMode() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void DlibFaceLandmarkDetector.UnityUtils.Utils.setDebugMode </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>debugMode</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>throwException</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -590,34 +1001,31 @@ Static Public Member Functions</h2></td></tr>
 <p>Please use as follows. </p><div class="fragment"><div class="line">{</div>
 <div class="line">    <span class="comment">// DlibException handling</span></div>
 <div class="line">    <span class="comment">// Publish DlibException to Debug.LogError.</span></div>
-<div class="line">    <a class="code hl_class" href="../../d3/d30/classDlibFaceLandmarkDetector_1_1UnityUtils_1_1Utils.html">Utils</a>.<a class="code hl_function" href="#a8c608edc5cb717a1e445056cde4e00d6">setDebugMode</a>(<span class="keyword">true</span>, <span class="keyword">false</span>);</div>
+<div class="line">    <a class="code hl_class" href="../../d3/d30/classDlibFaceLandmarkDetector_1_1UnityUtils_1_1Utils.html">Utils</a>.<a class="code hl_function" href="#aca842de0d85dba68e632a7d8267aaf2a">setDebugMode</a>(<span class="keyword">true</span>, <span class="keyword">false</span>);</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Code that causes an error.</span></div>
 <div class="line"> </div>
-<div class="line">    <a class="code hl_class" href="../../d3/d30/classDlibFaceLandmarkDetector_1_1UnityUtils_1_1Utils.html">Utils</a>.<a class="code hl_function" href="#a8c608edc5cb717a1e445056cde4e00d6">setDebugMode</a>(<span class="keyword">false</span>);</div>
+<div class="line">    <a class="code hl_class" href="../../d3/d30/classDlibFaceLandmarkDetector_1_1UnityUtils_1_1Utils.html">Utils</a>.<a class="code hl_function" href="#aca842de0d85dba68e632a7d8267aaf2a">setDebugMode</a>(<span class="keyword">false</span>);</div>
 <div class="line"> </div>
+<div class="line">@iverbatim </div>
+<div class="line"><span class="comment">// Throw DlibException.</span></div>
+<div class="line"><a class="code hl_class" href="../../d3/d30/classDlibFaceLandmarkDetector_1_1UnityUtils_1_1Utils.html">Utils</a>.<a class="code hl_function" href="#aca842de0d85dba68e632a7d8267aaf2a">setDebugMode</a>(<span class="keyword">true</span>, <span class="keyword">true</span>);</div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// Throw DlibException.</span></div>
-<div class="line">    <a class="code hl_class" href="../../d3/d30/classDlibFaceLandmarkDetector_1_1UnityUtils_1_1Utils.html">Utils</a>.<a class="code hl_function" href="#a8c608edc5cb717a1e445056cde4e00d6">setDebugMode</a>(<span class="keyword">true</span>, <span class="keyword">true</span>);</div>
-<div class="line"> </div>
-<div class="line">    <span class="keywordflow">try</span></div>
-<div class="line">    {</div>
-<div class="line">        <span class="comment">// Code that causes an error.</span></div>
-<div class="line">    }</div>
-<div class="line">    <span class="keywordflow">catch</span> (Exception e)</div>
-<div class="line">    {</div>
-<div class="line">        Debug.Log(<span class="stringliteral">&quot;DlibException: &quot;</span> + e);</div>
-<div class="line">    }</div>
-<div class="line"> </div>
-<div class="line">    Utils.setDebugMode(<span class="keyword">false</span>);</div>
+<div class="line"><span class="keywordflow">try</span></div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">// Code that causes an error.</span></div>
 <div class="line">}</div>
-<div class="ttc" id="aclassDlibFaceLandmarkDetector_1_1UnityUtils_1_1Utils_html"><div class="ttname"><a href="../../d3/d30/classDlibFaceLandmarkDetector_1_1UnityUtils_1_1Utils.html">DlibFaceLandmarkDetector.UnityUtils.Utils</a></div><div class="ttdef"><b>Definition</b> Utils.cs:14</div></div>
-<div class="ttc" id="aclassDlibFaceLandmarkDetector_1_1UnityUtils_1_1Utils_html_a8c608edc5cb717a1e445056cde4e00d6"><div class="ttname"><a href="#a8c608edc5cb717a1e445056cde4e00d6">DlibFaceLandmarkDetector.UnityUtils.Utils.setDebugMode</a></div><div class="ttdeci">static void setDebugMode(bool debugMode, bool throwException=false, Action&lt; string &gt; callback=null)</div><div class="ttdoc">Sets the debug mode.</div><div class="ttdef"><b>Definition</b> Utils.cs:672</div></div>
+<div class="line"><span class="keywordflow">catch</span> (Exception e)</div>
+<div class="line">{</div>
+<div class="line">    Debug.Log(<span class="stringliteral">&quot;DlibException: &quot;</span> + e);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">Utils.setDebugMode(<span class="keyword">false</span>);</div>
+<div class="line"><span class="keyword">@end</span>iverbatim }</div>
 </div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">debugMode</td><td>If true, The error log of the Native side Dlib will be displayed on the Unity Editor Console. </td></tr>
     <tr><td class="paramname">throwException</td><td>If true, <a class="el" href="../../df/d2c/classDlibFaceLandmarkDetector_1_1DlibException.html" title="The exception that is thrown by DlibFaceLandmarkDetector.">DlibException</a> is thrown instead of calling Debug.LogError (msg). </td></tr>
-    <tr><td class="paramname">callback</td><td>Callback called when an Dlib error occurs on the Native side. </td></tr>
   </table>
   </dd>
 </dl>

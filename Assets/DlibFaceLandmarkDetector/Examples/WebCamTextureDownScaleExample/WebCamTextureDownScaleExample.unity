@@ -469,8 +469,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 873185997}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 873186004}
+        m_TargetAssemblyTypeName: DlibFaceLandmarkDetectorExample.WebCamTextureDownScaleExample,
+          EnoxSoftware.DlibFaceLandmarkDetectorExample
         m_MethodName: OnBackButtonClick
         m_Mode: 1
         m_Arguments:
@@ -772,35 +773,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 873186002}
-  - component: {fileID: 873185997}
+  - component: {fileID: 873186004}
   - component: {fileID: 873186003}
   m_Layer: 0
-  m_Name: WebCamTextureExample
+  m_Name: WebCamTextureDownScaleExample
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &873185997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 873185996}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e15358a2c07735e4a961c98ec541c903, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ResultPreview: {fileID: 744008455}
-  RequestedDeviceName: 
-  RequestedWidth: 320
-  RequestedHeight: 240
-  RequestedFPS: 30
-  RequestedIsFrontFacing: 0
-  AdjustPixelsDirectionToggle: {fileID: 1975940900}
-  AdjustPixelsDirection: 1
 --- !u!4 &873186002
 Transform:
   m_ObjectHideFlags: 0
@@ -835,6 +816,27 @@ MonoBehaviour:
   BoxHeight: 300
   Padding: {x: 10, y: 10}
   ConsoleHeight: 100
+--- !u!114 &873186004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 873185996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e4c0ccef59f2a846a9a979865f7f2f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ResultPreview: {fileID: 744008455}
+  RequestedDeviceName: 
+  RequestedWidth: 1920
+  RequestedHeight: 1080
+  RequestedFPS: 30
+  RequestedIsFrontFacing: 0
+  AdjustPixelsDirectionToggle: {fileID: 1975940900}
+  AdjustPixelsDirection: 1
+  DownScaleRate: 0.2
 --- !u!1 &942934164
 GameObject:
   m_ObjectHideFlags: 0
@@ -1127,8 +1129,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 873185997}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 873186004}
+        m_TargetAssemblyTypeName: DlibFaceLandmarkDetectorExample.WebCamTextureDownScaleExample,
+          EnoxSoftware.DlibFaceLandmarkDetectorExample
         m_MethodName: OnChangeCameraButtonClick
         m_Mode: 1
         m_Arguments:
@@ -1453,9 +1456,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 873185997}
-        m_TargetAssemblyTypeName: DlibFaceLandmarkDetectorExample.WebCamTextureExample,
-          EnoxSoftware.DlibFaceLandmarkDetector
+      - m_Target: {fileID: 873186004}
+        m_TargetAssemblyTypeName: DlibFaceLandmarkDetectorExample.WebCamTextureDownScaleExample,
+          EnoxSoftware.DlibFaceLandmarkDetectorExample
         m_MethodName: OnAdjustPixelsDirectionToggleValueChanged
         m_Mode: 1
         m_Arguments:

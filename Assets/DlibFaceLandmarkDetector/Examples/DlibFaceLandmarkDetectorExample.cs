@@ -93,6 +93,11 @@ namespace DlibFaceLandmarkDetectorExample
             SceneManager.LoadScene("WebCamTextureExample");
         }
 
+        public void OnWebCamTextureDownScaleExampleButtonClick()
+        {
+            SceneManager.LoadScene("WebCamTextureDownScaleExample");
+        }
+
         public void OnBenchmarkExampleButtonClick()
         {
             SceneManager.LoadScene("BenchmarkExample");

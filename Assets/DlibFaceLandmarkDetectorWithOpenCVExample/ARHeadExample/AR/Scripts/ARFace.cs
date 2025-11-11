@@ -90,7 +90,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
 
         void OnDisable()
         {
-            //Debug.Log($"{gameObject.name} が無効化されました");
+            //Debug.Log($"{gameObject.name} was disabled");
         }
 
         // Update is called once per frame
@@ -139,43 +139,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                     }
                 }
             }
-
-
-
-            //            if (displayHead)
-            //                head.SetActive(true);
-            //            if (displayAxes)
-            //                axes.SetActive(true);
-
-            //            if (displayEffects)
-            //            {
-            //                rightEye.SetActive(isRightEyeOpen);
-            //                leftEye.SetActive(isLeftEyeOpen);
-
-            //                if (isMouthOpen)
-            //                {
-            //                    mouth.SetActive(true);
-            //                    foreach (ParticleSystem ps in mouthParticleSystem)
-            //                    {
-            //                        var em = ps.emission;
-            //                        em.enabled = true;
-            //#if UNITY_5_5_OR_NEWER
-            //                        var main = ps.main;
-            //                        main.startSizeMultiplier = 20;
-            //#else
-            //                                                                    ps.startSize = 20;
-            //#endif
-            //                    }
-            //                }
-            //                else
-            //                {
-            //                    foreach (ParticleSystem ps in mouthParticleSystem)
-            //                    {
-            //                        var em = ps.emission;
-            //                        em.enabled = false;
-            //                    }
-            //                }
-            //}
         }
 
         /// <summary>
@@ -354,7 +317,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                 obj.transform.localScale = new Vector3(initialScale.x, initialScale.y, Mathf.Lerp(startScaleZ, endScaleZ, t));
                 elapsedTime += Time.deltaTime;
 
-                //// 現在のlocalScaleをデバック表示
+                //// Display current localScale for debugging
                 //Debug.Log($"Current Scale: {obj.transform.localScale}");
 
                 yield return null;

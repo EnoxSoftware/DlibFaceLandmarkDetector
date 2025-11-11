@@ -109,6 +109,16 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// </summary>
         public Toggle EnableLowPassFilterToggle;
 
+        /// <summary>
+        /// Determines if enable smoothing filter.
+        /// </summary>
+        public bool EnableSmoothingFilter;
+
+        /// <summary>
+        /// The enable smoothing filter toggle.
+        /// </summary>
+        public Toggle EnableSmoothingFilterToggle;
+
         // Private Fields
         /// <summary>
         /// The texture.
@@ -188,6 +198,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             EnableDownScaleToggle.isOn = EnableDownScale;
             EnableSkipFrameToggle.isOn = EnableSkipFrame;
             EnableLowPassFilterToggle.isOn = EnableLowPassFilter;
+            EnableSmoothingFilterToggle.isOn = EnableSmoothingFilter;
 
             _imageOptimizationHelper = gameObject.GetComponent<ImageOptimizationHelper>();
             _multiSource2MatHelper = gameObject.GetComponent<MultiSource2MatHelper>();
@@ -746,6 +757,25 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         }
 
         /// <summary>
+        /// Raises the enable smoothing filter toggle value changed event.
+        /// </summary>
+        public void OnEnableSmoothingFilterToggleValueChanged()
+        {
+            if (EnableSmoothingFilterToggle.isOn)
+            {
+                EnableSmoothingFilter = true;
+            }
+            else
+            {
+                EnableSmoothingFilter = false;
+            }
+            foreach (var arGameObject in ArHelper.ARGameObjects)
+            {
+                arGameObject.UseSmoothingFilter = EnableSmoothingFilter;
+            }
+        }
+
+        /// <summary>
         /// Called when an ARGameObject enters the ARCamera viewport.
         /// </summary>
         /// <param name="aRHelper"></param>
@@ -762,6 +792,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                 arFace.DisplayEffects = DisplayEffects;
             }
             arGameObject.UseLowPassFilter = EnableLowPassFilter;
+            arGameObject.UseSmoothingFilter = EnableSmoothingFilter;
 
             arGameObject.gameObject.SetActive(true);
             //StartCoroutine(arGameObject.GetComponent<ARFace>().EnterAnimation(arGameObject.gameObject, 0f, 1f, 1.0f));

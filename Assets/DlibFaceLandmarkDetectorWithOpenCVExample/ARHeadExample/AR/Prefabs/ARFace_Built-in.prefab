@@ -52545,8 +52545,7 @@ MeshRenderer:
 --- !u!1 &7687473922119690555
 GameObject:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 176364, guid: 5491bd2bf635ed244aefb541793ac796,
-    type: 2}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
@@ -52564,8 +52563,7 @@ GameObject:
 --- !u!4 &7687473922119690556
 Transform:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 469646, guid: 5491bd2bf635ed244aefb541793ac796,
-    type: 2}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7687473922119690555}
@@ -52595,15 +52593,23 @@ MonoBehaviour:
   _imagePoints: []
   _leftHandedCoordinates: 0
   _objectPoints: []
-  _solvePnPFlagsMode: 9
-  _useSolvePnPRefineLM: 0
-  _solvePnPRefineLMMovementThreshold: 100
+  _solvePnPFlagsMode: 0
+  _useSOLVEPNP_ITERATIVE: 0
+  _useSolvePnPRansac: 0
+  _iterationsCount: 100
+  _reprojectionError: 8
+  _confidence: 0.99
+  _solvePnPRefinementMethod: 1
+  _solvePnPRefinementRMSThreshold: 1
   _ndcXRange: {x: -1, y: 1}
   _ndcYRange: {x: -1, y: 1}
   _ndcZRange: {x: 0, y: 1}
   _useLowPassFilter: 0
   _positionLowPassParam: 4
   _rotationLowPassParam: 2
+  _useSmoothingFilter: 0
+  _positionSmoothingFactor: 0.2
+  _rotationSmoothingFactor: 0.3
   _applyXaxisInversionToARMatrix: 0
   _applyYaxisInversionToARMatrix: 0
   _applyZaxisInversionToARMatrix: 0
@@ -52615,6 +52621,7 @@ MonoBehaviour:
   _onExitARCameraViewport:
     m_PersistentCalls:
       m_Calls: []
+  _enableDebugOutput: 0
 --- !u!114 &1759514827866907587
 MonoBehaviour:
   m_ObjectHideFlags: 0

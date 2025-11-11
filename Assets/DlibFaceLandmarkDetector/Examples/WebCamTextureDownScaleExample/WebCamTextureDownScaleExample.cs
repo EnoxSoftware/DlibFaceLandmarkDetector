@@ -14,7 +14,7 @@ namespace DlibFaceLandmarkDetectorExample
     /// WebCamTexture Example
     /// An example of detecting face landmarks in WebCamTexture images.
     /// </summary>
-    public class WebCamTextureExample : MonoBehaviour
+    public class WebCamTextureDownScaleExample : MonoBehaviour
     {
         // Constants
         private static readonly string DLIB_SHAPE_PREDICTOR_FILE_NAME = "DlibFaceLandmarkDetector/sp_human_face_68.dat";
@@ -69,11 +69,22 @@ namespace DlibFaceLandmarkDetectorExample
         [SerializeField, TooltipAttribute("Determines if adjust pixels direction.")]
         public bool AdjustPixelsDirection = false;
 
+        /// <summary>
+        /// Down scale rate for Dlib processing (0.1-1.0).
+        /// </summary>
+        [SerializeField, TooltipAttribute("Down scale rate for Dlib processing (0.1-1.0).")]
+        [Range(0.1f, 1.0f)]
+        public float DownScaleRate = 1.0f;
+
         // Private Fields
         private WebCamTexture _webCamTexture;
         private WebCamDevice _webCamDevice;
         private Color32[] _colors;
         private Color32[] _rotatedColors;
+        private Color32[] _downscaledColors;
+        private int _downscaledWidth;
+        private int _downscaledHeight;
+        private float _lastDownScaleRate = 1.0f;
         private bool _rotate90Degree = false;
         private bool _isInitWaiting = false;
         private bool _hasInitDone = false;
@@ -117,17 +128,59 @@ namespace DlibFaceLandmarkDetectorExample
             }
             if (_webCamTexture.isPlaying && _webCamTexture.didUpdateThisFrame)
             {
+                // Check if downscale rate has changed and reinitialize if needed
+                if (_lastDownScaleRate != DownScaleRate)
+                {
+                    _lastDownScaleRate = DownScaleRate;
+                    InitializeDownscaledBuffer();
+                    UpdateFpsMonitorDownscaleInfo();
+                }
+
                 Color32[] colors = GetColors();
                 if (colors != null)
                 {
-                    _faceLandmarkDetector.SetImage<Color32>(colors, _texture.width, _texture.height, 4, true);
-                    List<Rect> detectResult = _faceLandmarkDetector.Detect();
-                    foreach (var rect in detectResult)
+                    if (DownScaleRate < 1.0f && _downscaledColors != null)
                     {
-                        _faceLandmarkDetector.DetectLandmark(rect);
-                        _faceLandmarkDetector.DrawDetectLandmarkResult<Color32>(colors, _texture.width, _texture.height, 4, true, 0, 255, 0, 255);
+                        // Downscale processing path
+                        // 1. Downscale the image
+                        DownscaleImage(colors, _texture.width, _texture.height, _downscaledColors, _downscaledWidth, _downscaledHeight);
+
+                        // 2. Set downscaled image and detect faces
+                        _faceLandmarkDetector.SetImage<Color32>(_downscaledColors, _downscaledWidth, _downscaledHeight, 4, true);
+                        List<Rect> detectResult = _faceLandmarkDetector.Detect();
+
+                        // 3. Detect landmarks on downscaled image and scale up coordinates
+                        List<(Rect scaledRect, List<Vector2> scaledLandmarks)> scaledResults = new List<(Rect, List<Vector2>)>();
+                        foreach (var rect in detectResult)
+                        {
+                            List<Vector2> landmarks = _faceLandmarkDetector.DetectLandmark(rect);
+                            Rect scaledRect = ScaleUpRect(rect);
+                            List<Vector2> scaledLandmarks = ScaleUpLandmarks(landmarks);
+                            scaledResults.Add((scaledRect, scaledLandmarks));
+                        }
+
+                        // 4. Draw on original size image
+                        foreach (var (_, scaledLandmarks) in scaledResults)
+                        {
+                            DrawLandmarksManual(colors, _texture.width, _texture.height, scaledLandmarks, 0, 255, 0, 255, true);
+                        }
+                        foreach (var (scaledRect, _) in scaledResults)
+                        {
+                            DrawRectManual(colors, _texture.width, _texture.height, scaledRect, 255, 0, 0, 255, true);
+                        }
                     }
-                    _faceLandmarkDetector.DrawDetectResult<Color32>(colors, _texture.width, _texture.height, 4, true, 255, 0, 0, 255, 2);
+                    else
+                    {
+                        // Original processing path (no downscale)
+                        _faceLandmarkDetector.SetImage<Color32>(colors, _texture.width, _texture.height, 4, true);
+                        List<Rect> detectResult = _faceLandmarkDetector.Detect();
+                        foreach (var rect in detectResult)
+                        {
+                            _faceLandmarkDetector.DetectLandmark(rect);
+                            _faceLandmarkDetector.DrawDetectLandmarkResult<Color32>(colors, _texture.width, _texture.height, 4, true, 0, 255, 0, 255);
+                        }
+                        _faceLandmarkDetector.DrawDetectResult<Color32>(colors, _texture.width, _texture.height, 4, true, 255, 0, 0, 255, 2);
+                    }
                     _texture.SetPixels32(colors);
                     _texture.Apply(false);
                 }
@@ -188,9 +241,6 @@ namespace DlibFaceLandmarkDetectorExample
             }
             _faceLandmarkDetector = new FaceLandmarkDetector(_dlibShapePredictorFilePath);
             Initialize();
-            if (_faceLandmarkDetector.GetShapePredictorNumParts() != 68)
-                Debug.LogWarning("The DrawDetectLandmarkResult method does not support ShapePredictorNumParts sizes other than 68 points, so the drawing will be incorrect."
-                    + " If you want to draw the result correctly, we recommend using the OpenCVForUnityUtils.DrawFaceLandmark method.");
         }
 
         /// <summary>
@@ -385,6 +435,7 @@ namespace DlibFaceLandmarkDetectorExample
                 _webCamTexture = null;
             }
             if (_texture != null) Texture2D.Destroy(_texture); _texture = null;
+            _downscaledColors = null;
         }
 
         /// <summary>
@@ -420,12 +471,62 @@ namespace DlibFaceLandmarkDetectorExample
             }
             ResultPreview.texture = _texture;
             ResultPreview.GetComponent<AspectRatioFitter>().aspectRatio = (float)_texture.width / _texture.height;
+
+            // Initialize downscaled image buffer
+            _lastDownScaleRate = DownScaleRate;
+            InitializeDownscaledBuffer();
+
             if (_fpsMonitor != null)
             {
                 _fpsMonitor.Add("dlib shape predictor", _dlibShapePredictorFileName);
                 _fpsMonitor.Add("width", _texture.width.ToString());
                 _fpsMonitor.Add("height", _texture.height.ToString());
                 _fpsMonitor.Add("orientation", Screen.orientation.ToString());
+                UpdateFpsMonitorDownscaleInfo();
+            }
+        }
+
+        /// <summary>
+        /// Initializes or reinitializes the downscaled image buffer based on current settings.
+        /// </summary>
+        private void InitializeDownscaledBuffer()
+        {
+            if (!_hasInitDone || _texture == null)
+                return;
+
+            if (DownScaleRate < 1.0f)
+            {
+                _downscaledWidth = Mathf.Max(1, Mathf.RoundToInt(_texture.width * DownScaleRate));
+                _downscaledHeight = Mathf.Max(1, Mathf.RoundToInt(_texture.height * DownScaleRate));
+                if (_downscaledColors == null || _downscaledColors.Length != _downscaledWidth * _downscaledHeight)
+                {
+                    _downscaledColors = new Color32[_downscaledWidth * _downscaledHeight];
+                }
+            }
+            else
+            {
+                _downscaledColors = null;
+            }
+        }
+
+        /// <summary>
+        /// Updates the FpsMonitor display with downscale information.
+        /// </summary>
+        private void UpdateFpsMonitorDownscaleInfo()
+        {
+            if (_fpsMonitor != null)
+            {
+                if (DownScaleRate < 1.0f)
+                {
+                    _fpsMonitor.Add("downscale rate", DownScaleRate.ToString("F2"));
+                    _fpsMonitor.Add("downscaled size", _downscaledWidth.ToString() + "x" + _downscaledHeight.ToString());
+                }
+                else
+                {
+                    // Remove downscale info when not using downscale
+                    _fpsMonitor.Remove("downscale rate");
+                    _fpsMonitor.Remove("downscaled size");
+                }
             }
         }
 
@@ -628,6 +729,396 @@ namespace DlibFaceLandmarkDetectorExample
                 {
                     dst[i] = src[x + y * width];
                     i++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Downscales the image using nearest neighbor interpolation.
+        /// </summary>
+        /// <param name="src">Source color array.</param>
+        /// <param name="srcWidth">Source width.</param>
+        /// <param name="srcHeight">Source height.</param>
+        /// <param name="dst">Destination color array.</param>
+        /// <param name="dstWidth">Destination width.</param>
+        /// <param name="dstHeight">Destination height.</param>
+        private void DownscaleImage(Color32[] src, int srcWidth, int srcHeight, Color32[] dst, int dstWidth, int dstHeight)
+        {
+            float xScale = (float)srcWidth / dstWidth;
+            float yScale = (float)srcHeight / dstHeight;
+
+            for (int y = 0; y < dstHeight; y++)
+            {
+                int srcY = Mathf.FloorToInt(y * yScale);
+                int dstY = y * dstWidth;
+                for (int x = 0; x < dstWidth; x++)
+                {
+                    int srcX = Mathf.FloorToInt(x * xScale);
+                    int srcIndex = srcY * srcWidth + srcX;
+                    int dstIndex = dstY + x;
+                    dst[dstIndex] = src[srcIndex];
+                }
+            }
+        }
+
+        /// <summary>
+        /// Scales up a Rect from downscaled image coordinates to original image coordinates.
+        /// </summary>
+        /// <param name="rect">Rect in downscaled image coordinates.</param>
+        /// <returns>Rect in original image coordinates.</returns>
+        private Rect ScaleUpRect(Rect rect)
+        {
+            float scaleFactor = 1.0f / DownScaleRate;
+            return new Rect(rect.xMin * scaleFactor, rect.yMin * scaleFactor, rect.width * scaleFactor, rect.height * scaleFactor);
+        }
+
+        /// <summary>
+        /// Scales up landmark coordinates from downscaled image to original image.
+        /// </summary>
+        /// <param name="landmarks">Landmark coordinates in downscaled image.</param>
+        /// <returns>Landmark coordinates in original image.</returns>
+        private List<Vector2> ScaleUpLandmarks(List<Vector2> landmarks)
+        {
+            if (landmarks == null || landmarks.Count == 0)
+                return landmarks;
+
+            float scaleFactor = 1.0f / DownScaleRate;
+            List<Vector2> scaledLandmarks = new List<Vector2>(landmarks.Count);
+            for (int i = 0; i < landmarks.Count; i++)
+            {
+                scaledLandmarks.Add(new Vector2(landmarks[i].x * scaleFactor, landmarks[i].y * scaleFactor));
+            }
+            return scaledLandmarks;
+        }
+
+        /// <summary>
+        /// Draws a rectangle on the image buffer.
+        /// </summary>
+        /// <param name="colors">Color array of the image.</param>
+        /// <param name="width">Image width.</param>
+        /// <param name="height">Image height.</param>
+        /// <param name="rect">Rectangle to draw.</param>
+        /// <param name="r">Red component (0-255).</param>
+        /// <param name="g">Green component (0-255).</param>
+        /// <param name="b">Blue component (0-255).</param>
+        /// <param name="a">Alpha component (0-255).</param>
+        /// <param name="flip">If true, the coordinates will be flipped vertically.</param>
+        private void DrawRectManual(Color32[] colors, int width, int height, Rect rect, byte r, byte g, byte b, byte a, bool flip)
+        {
+            // Scale thickness based on image size (base: 320x240, default thickness: 2)
+            const float baseSize = 320f;
+            const int baseThickness = 2;
+            float scaleFactor = Mathf.Max(width, height) / baseSize;
+            int scaledThickness = Mathf.Max(1, Mathf.RoundToInt(baseThickness * scaleFactor));
+
+            int xMin = Mathf.Clamp(Mathf.RoundToInt(rect.xMin), 0, width - 1);
+            int xMax = Mathf.Clamp(Mathf.RoundToInt(rect.xMax), 0, width - 1);
+            int yMin, yMax;
+            if (flip)
+            {
+                // Flip Y coordinates when flip is true
+                yMin = Mathf.Clamp(height - 1 - Mathf.RoundToInt(rect.yMax), 0, height - 1);
+                yMax = Mathf.Clamp(height - 1 - Mathf.RoundToInt(rect.yMin), 0, height - 1);
+            }
+            else
+            {
+                yMin = Mathf.Clamp(Mathf.RoundToInt(rect.yMin), 0, height - 1);
+                yMax = Mathf.Clamp(Mathf.RoundToInt(rect.yMax), 0, height - 1);
+            }
+
+            Color32 color = new Color32(r, g, b, a);
+
+            // Draw top and bottom edges
+            for (int x = xMin; x <= xMax; x++)
+            {
+                for (int t = 0; t < scaledThickness; t++)
+                {
+                    int topY = Mathf.Clamp(yMin + t, 0, height - 1);
+                    int bottomY = Mathf.Clamp(yMax - t, 0, height - 1);
+                    colors[topY * width + x] = color;
+                    colors[bottomY * width + x] = color;
+                }
+            }
+
+            // Draw left and right edges
+            for (int y = yMin; y <= yMax; y++)
+            {
+                for (int t = 0; t < scaledThickness; t++)
+                {
+                    int leftX = Mathf.Clamp(xMin + t, 0, width - 1);
+                    int rightX = Mathf.Clamp(xMax - t, 0, width - 1);
+                    colors[y * width + leftX] = color;
+                    colors[y * width + rightX] = color;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Draws facial landmarks on the image buffer.
+        /// This method supports drawing landmarks for 68, 17, 6, or 5 landmark points.
+        /// The landmarks are drawn by connecting the points with lines.
+        /// </summary>
+        /// <param name="colors">Color array of the image.</param>
+        /// <param name="width">Image width.</param>
+        /// <param name="height">Image height.</param>
+        /// <param name="landmarks">List of landmark coordinates.</param>
+        /// <param name="r">Red component (0-255).</param>
+        /// <param name="g">Green component (0-255).</param>
+        /// <param name="b">Blue component (0-255).</param>
+        /// <param name="a">Alpha component (0-255).</param>
+        /// <param name="flip">If true, the coordinates will be flipped vertically.</param>
+        private void DrawLandmarksManual(Color32[] colors, int width, int height, List<Vector2> landmarks, byte r, byte g, byte b, byte a, bool flip)
+        {
+            if (landmarks == null || landmarks.Count == 0)
+                return;
+
+            Color32 color = new Color32(r, g, b, a);
+
+            // Scale point radius and line thickness based on image size
+            // Base size: 320x240, scale factor based on larger dimension
+            const float baseSize = 320f;
+            float scaleFactor = Mathf.Max(width, height) / baseSize;
+            int pointRadius = Mathf.Max(1, Mathf.RoundToInt(2 * scaleFactor));
+            int lineThickness = Mathf.Max(1, Mathf.RoundToInt(1 * scaleFactor));
+
+            // Draw points
+            for (int i = 0; i < landmarks.Count; i++)
+            {
+                int x = Mathf.RoundToInt(landmarks[i].x);
+                int y = Mathf.RoundToInt(landmarks[i].y);
+                if (flip)
+                {
+                    y = height - 1 - y;
+                }
+                DrawCircle(colors, width, height, x, y, pointRadius, color);
+            }
+
+            // Draw connecting lines based on point count
+            if (landmarks.Count == 5)
+            {
+                var p0 = landmarks[0];
+                var p1 = landmarks[1];
+                var p2 = landmarks[2];
+                var p3 = landmarks[3];
+                var p4 = landmarks[4];
+
+                DrawLine(colors, width, height, p0, p1, color, flip, lineThickness);
+                DrawLine(colors, width, height, p1, p4, color, flip, lineThickness);
+                DrawLine(colors, width, height, p4, p3, color, flip, lineThickness);
+                DrawLine(colors, width, height, p3, p2, color, flip, lineThickness);
+            }
+            else if (landmarks.Count == 6)
+            {
+                var p0 = landmarks[0];
+                var p1 = landmarks[1];
+                var p2 = landmarks[2];
+                var p3 = landmarks[3];
+                var p4 = landmarks[4];
+                var p5 = landmarks[5];
+
+                DrawLine(colors, width, height, p2, p3, color, flip, lineThickness);
+                DrawLine(colors, width, height, p4, p5, color, flip, lineThickness);
+                DrawLine(colors, width, height, p3, p0, color, flip, lineThickness);
+                DrawLine(colors, width, height, p4, p0, color, flip, lineThickness);
+                DrawLine(colors, width, height, p0, p1, color, flip, lineThickness);
+            }
+            else if (landmarks.Count == 17)
+            {
+                var p0 = landmarks[0];
+                var p1 = landmarks[1];
+                var p2 = landmarks[2];
+                var p3 = landmarks[3];
+                var p4 = landmarks[4];
+                var p5 = landmarks[5];
+                var p9 = landmarks[9];
+                var p10 = landmarks[10];
+                var p11 = landmarks[11];
+                var p12 = landmarks[12];
+                var p13 = landmarks[13];
+                var p16 = landmarks[16];
+
+                DrawLine(colors, width, height, p2, p9, color, flip, lineThickness);
+                DrawLine(colors, width, height, p9, p3, color, flip, lineThickness);
+                DrawLine(colors, width, height, p3, p10, color, flip, lineThickness);
+                DrawLine(colors, width, height, p10, p2, color, flip, lineThickness);
+
+                DrawLine(colors, width, height, p4, p11, color, flip, lineThickness);
+                DrawLine(colors, width, height, p11, p5, color, flip, lineThickness);
+                DrawLine(colors, width, height, p5, p12, color, flip, lineThickness);
+                DrawLine(colors, width, height, p12, p4, color, flip, lineThickness);
+
+                DrawLine(colors, width, height, p3, p0, color, flip, lineThickness);
+                DrawLine(colors, width, height, p4, p0, color, flip, lineThickness);
+                DrawLine(colors, width, height, p0, p1, color, flip, lineThickness);
+
+                for (int i = 14; i <= 16; ++i)
+                {
+                    var current = landmarks[i];
+                    var previous = landmarks[i - 1];
+                    DrawLine(colors, width, height, current, previous, color, flip, lineThickness);
+                }
+                DrawLine(colors, width, height, p16, p13, color, flip, lineThickness);
+
+                for (int i = 6; i <= 8; i++)
+                {
+                    var point = landmarks[i];
+                    int x = Mathf.RoundToInt(point.x);
+                    int y = Mathf.RoundToInt(point.y);
+                    if (flip)
+                    {
+                        y = height - 1 - y;
+                    }
+                    DrawCircle(colors, width, height, x, y, pointRadius, color);
+                }
+            }
+            else if (landmarks.Count == 68)
+            {
+                // Face outline (0-16)
+                for (int i = 1; i <= 16; i++)
+                {
+                    DrawLine(colors, width, height, landmarks[i - 1], landmarks[i], color, flip, lineThickness);
+                }
+
+                // Nose bridge (27-30)
+                for (int i = 28; i <= 30; i++)
+                {
+                    DrawLine(colors, width, height, landmarks[i - 1], landmarks[i], color, flip, lineThickness);
+                }
+
+                // Left eyebrow (17-21)
+                for (int i = 18; i <= 21; i++)
+                {
+                    DrawLine(colors, width, height, landmarks[i - 1], landmarks[i], color, flip, lineThickness);
+                }
+
+                // Right eyebrow (22-26)
+                for (int i = 23; i <= 26; i++)
+                {
+                    DrawLine(colors, width, height, landmarks[i - 1], landmarks[i], color, flip, lineThickness);
+                }
+
+                // Nose base (30-35)
+                for (int i = 31; i <= 35; i++)
+                {
+                    DrawLine(colors, width, height, landmarks[i - 1], landmarks[i], color, flip, lineThickness);
+                }
+                DrawLine(colors, width, height, landmarks[30], landmarks[35], color, flip, lineThickness);
+
+                // Left eye (36-41)
+                for (int i = 37; i <= 41; i++)
+                {
+                    DrawLine(colors, width, height, landmarks[i - 1], landmarks[i], color, flip, lineThickness);
+                }
+                DrawLine(colors, width, height, landmarks[36], landmarks[41], color, flip, lineThickness);
+
+                // Right eye (42-47)
+                for (int i = 43; i <= 47; i++)
+                {
+                    DrawLine(colors, width, height, landmarks[i - 1], landmarks[i], color, flip, lineThickness);
+                }
+                DrawLine(colors, width, height, landmarks[42], landmarks[47], color, flip, lineThickness);
+
+                // Mouth outer (48-59)
+                for (int i = 49; i <= 59; i++)
+                {
+                    DrawLine(colors, width, height, landmarks[i - 1], landmarks[i], color, flip, lineThickness);
+                }
+                DrawLine(colors, width, height, landmarks[48], landmarks[59], color, flip, lineThickness);
+
+                // Mouth inner (60-67)
+                for (int i = 61; i <= 67; i++)
+                {
+                    DrawLine(colors, width, height, landmarks[i - 1], landmarks[i], color, flip, lineThickness);
+                }
+                DrawLine(colors, width, height, landmarks[60], landmarks[67], color, flip, lineThickness);
+            }
+            // For other point counts, only points are drawn (already drawn above)
+        }
+
+        /// <summary>
+        /// Draws a line between two points using Bresenham's algorithm with specified thickness.
+        /// </summary>
+        /// <param name="colors">Color array of the image.</param>
+        /// <param name="width">Image width.</param>
+        /// <param name="height">Image height.</param>
+        /// <param name="start">Start point.</param>
+        /// <param name="end">End point.</param>
+        /// <param name="color">Line color.</param>
+        /// <param name="flip">If true, the coordinates will be flipped vertically.</param>
+        /// <param name="thickness">Line thickness in pixels.</param>
+        private void DrawLine(Color32[] colors, int width, int height, Vector2 start, Vector2 end, Color32 color, bool flip, int thickness)
+        {
+            int x0 = Mathf.RoundToInt(start.x);
+            int y0 = Mathf.RoundToInt(start.y);
+            int x1 = Mathf.RoundToInt(end.x);
+            int y1 = Mathf.RoundToInt(end.y);
+
+            if (flip)
+            {
+                y0 = height - 1 - y0;
+                y1 = height - 1 - y1;
+            }
+
+            int dx = Mathf.Abs(x1 - x0);
+            int dy = Mathf.Abs(y1 - y0);
+            int sx = x0 < x1 ? 1 : -1;
+            int sy = y0 < y1 ? 1 : -1;
+            int err = dx - dy;
+
+            int x = x0;
+            int y = y0;
+            int radius = Mathf.Max(0, (thickness - 1) / 2);
+
+            while (true)
+            {
+                if (x >= 0 && x < width && y >= 0 && y < height)
+                {
+                    if (thickness > 1)
+                    {
+                        // Draw thick line by drawing circles at each point
+                        DrawCircle(colors, width, height, x, y, radius, color);
+                    }
+                    else
+                    {
+                        colors[y * width + x] = color;
+                    }
+                }
+
+                if (x == x1 && y == y1)
+                    break;
+
+                int e2 = 2 * err;
+                if (e2 > -dy)
+                {
+                    err -= dy;
+                    x += sx;
+                }
+                if (e2 < dx)
+                {
+                    err += dx;
+                    y += sy;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Draws a filled circle.
+        /// </summary>
+        private void DrawCircle(Color32[] colors, int width, int height, int centerX, int centerY, int radius, Color32 color)
+        {
+            for (int dy = -radius; dy <= radius; dy++)
+            {
+                for (int dx = -radius; dx <= radius; dx++)
+                {
+                    if (dx * dx + dy * dy <= radius * radius)
+                    {
+                        int x = centerX + dx;
+                        int y = centerY + dy;
+                        if (x >= 0 && x < width && y >= 0 && y < height)
+                        {
+                            colors[y * width + x] = color;
+                        }
+                    }
                 }
             }
         }

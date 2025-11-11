@@ -19,6 +19,7 @@
 - **Web**: [Play Demo](https://enoxsoftware.github.io/DlibFaceLandmarkDetector/webgl_example/index.html)
 - **Web** (simd): [Play Demo](https://enoxsoftware.github.io/DlibFaceLandmarkDetector/webgl_example_simd/index.html)
 - **Web** (simd, threads): [Play Demo](https://enoxsoftware.github.io/DlibFaceLandmarkDetector/webgl_example_simd_threads/index.html)
+- **Web** (WebGPU, simd, threads): [Play Demo](https://enoxsoftware.github.io/DlibFaceLandmarkDetector/webgl_example_simd_threads_webgpu/index.html)
 - **Android**: [Download APK](https://github.com/EnoxSoftware/DlibFaceLandmarkDetector/releases)
 
 ## Manual

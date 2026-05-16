@@ -2,7 +2,7 @@
     "name": "EnoxSoftware.DlibFaceLandmarkDetectorExample",
     "rootNamespace": "",
     "references": [
-        "EnoxSoftware.DlibFaceLandmarkDetector",
+        "GUID:7166fda719c99694d9297ead935e2a9d",
         "Unity.InputSystem"
     ],
     "includePlatforms": [],

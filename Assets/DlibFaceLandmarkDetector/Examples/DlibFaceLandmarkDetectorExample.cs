@@ -65,6 +65,15 @@ namespace DlibFaceLandmarkDetectorExample
             ScrollRect.verticalNormalizedPosition = VERTICAL_NORMALIZED_POSITION;
 
             DlibShapePredictorNameDropdown.value = (int)_dlibShapePredictorName;
+
+#if UNITY_6000_0_OR_NEWER
+            // WebCamTextureExample and WebCamTextureDownScaleExample do not work on WebGPU.
+            if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.WebGPU)
+            {
+                GameObject.Find("Canvas/Panel/SceneList/ScrollView/List/BasicGroup/WebCamTextureExampleButton").GetComponent<Button>().interactable = false;
+                GameObject.Find("Canvas/Panel/SceneList/ScrollView/List/BasicGroup/WebCamTextureDownScaleExampleButton").GetComponent<Button>().interactable = false;
+            }
+#endif
         }
 
         private void Update()

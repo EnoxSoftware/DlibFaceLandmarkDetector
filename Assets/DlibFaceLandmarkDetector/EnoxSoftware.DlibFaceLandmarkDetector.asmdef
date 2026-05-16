@@ -2,7 +2,7 @@
     "name": "EnoxSoftware.DlibFaceLandmarkDetector",
     "rootNamespace": "",
     "references": [
-        "EnoxSoftware.OpenCVForUnity"
+        "GUID:cef0e9dabbfe59a4790acbf31c21f33e"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -26,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Dlib FaceLandmark Detector<span id="projectnumber">&#160;2.0.1</span>
+   <div id="projectname">Dlib FaceLandmark Detector<span id="projectnumber">&#160;2.0.3</span>
    </div>
    <div id="projectbrief">Enox Software</div>
   </td>
@@ -99,24 +99,32 @@ $(function(){ initResizable(false); });
   <div class="headertitle"><div class="title">DlibFaceLandmarkDetector.DisposableObject Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Base class for disposable Dlib wrapper types implementing the standard dispose pattern.  
+ <a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ad5b50045119ea8cec26005356ac03665" id="r_ad5b50045119ea8cec26005356ac03665"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad5b50045119ea8cec26005356ac03665">Dispose</a> ()</td></tr>
+<tr class="memdesc:ad5b50045119ea8cec26005356ac03665"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases resources used by this object.  <br /></td></tr>
 <tr class="separator:ad5b50045119ea8cec26005356ac03665"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9256a96d9d433a1190dbffc716d21af" id="r_ad9256a96d9d433a1190dbffc716d21af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad9256a96d9d433a1190dbffc716d21af">ThrowIfDisposed</a> ()</td></tr>
+<tr class="memdesc:ad9256a96d9d433a1190dbffc716d21af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Throws ObjectDisposedException if this object has been disposed.  <br /></td></tr>
 <tr class="separator:ad9256a96d9d433a1190dbffc716d21af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ad60cdeff6308dbb09b8d871095734a14" id="r_ad60cdeff6308dbb09b8d871095734a14"><td class="memItemLeft" align="right" valign="top">static IntPtr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad60cdeff6308dbb09b8d871095734a14">ThrowIfNullIntPtr</a> (IntPtr ptr)</td></tr>
+<tr class="memdesc:ad60cdeff6308dbb09b8d871095734a14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the native pointer, or throws <a class="el" href="../../df/d2c/classDlibFaceLandmarkDetector_1_1DlibException.html" title="The exception that is thrown by DlibFaceLandmarkDetector.">DlibException</a> if it is zero.  <br /></td></tr>
 <tr class="separator:ad60cdeff6308dbb09b8d871095734a14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a795a2a7508c7088095a20a68c80a92b5" id="r_a795a2a7508c7088095a20a68c80a92b5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a795a2a7508c7088095a20a68c80a92b5">DisposableObject</a> ()</td></tr>
+<tr class="memdesc:a795a2a7508c7088095a20a68c80a92b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance with dispose enabled.  <br /></td></tr>
 <tr class="separator:a795a2a7508c7088095a20a68c80a92b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4171647bd0150361d8a6ea73279ed0bb" id="r_a4171647bd0150361d8a6ea73279ed0bb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4171647bd0150361d8a6ea73279ed0bb">DisposableObject</a> (bool isEnabledDispose)</td></tr>
+<tr class="memdesc:a4171647bd0150361d8a6ea73279ed0bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance.  <br /></td></tr>
 <tr class="separator:a4171647bd0150361d8a6ea73279ed0bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9250481f32da78e045eae70874b0e6c0" id="r_a9250481f32da78e045eae70874b0e6c0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9250481f32da78e045eae70874b0e6c0">Dispose</a> (bool disposing)</td></tr>
 <tr class="separator:a9250481f32da78e045eae70874b0e6c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -128,7 +136,9 @@ Properties</h2></td></tr>
 <tr class="memitem:afdbe5ab2b343f4e0622ed181afee55d1" id="r_afdbe5ab2b343f4e0622ed181afee55d1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afdbe5ab2b343f4e0622ed181afee55d1">IsEnabledDispose</a><code> [get, set]</code></td></tr>
 <tr class="separator:afdbe5ab2b343f4e0622ed181afee55d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Base class for disposable Dlib wrapper types implementing the standard dispose pattern. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a795a2a7508c7088095a20a68c80a92b5" name="a795a2a7508c7088095a20a68c80a92b5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a795a2a7508c7088095a20a68c80a92b5">&#9670;&#160;</a></span>DisposableObject() <span class="overload">[1/2]</span></h2>
 
@@ -151,6 +161,8 @@ Properties</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Initializes a new instance with dispose enabled. </p>
 
 </div>
 </div>
@@ -177,6 +189,14 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Initializes a new instance. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">isEnabledDispose</td><td>Whether <a class="el" href="#ad5b50045119ea8cec26005356ac03665" title="Releases resources used by this object.">Dispose</a> releases resources.</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -194,6 +214,8 @@ Properties</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Releases resources used by this object. </p>
 
 </div>
 </div>
@@ -239,6 +261,8 @@ Properties</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Throws ObjectDisposedException if this object has been disposed. </p>
+
 </div>
 </div>
 <a id="ad60cdeff6308dbb09b8d871095734a14" name="ad60cdeff6308dbb09b8d871095734a14"></a>
@@ -263,6 +287,15 @@ Properties</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Returns the native pointer, or throws <a class="el" href="../../df/d2c/classDlibFaceLandmarkDetector_1_1DlibException.html" title="The exception that is thrown by DlibFaceLandmarkDetector.">DlibException</a> if it is zero. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ptr</td><td>Native pointer to validate.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The validated native pointer.</dd></dl>
 
 </div>
 </div>
@@ -312,7 +345,7 @@ Properties</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>DlibFaceLandmarkDetector/Assets/DlibFaceLandmarkDetector/Scripts/<a class="el" href="../../d9/d2f/DisposableObject_8cs.html">DisposableObject.cs</a></li>
+<li>DlibFaceLandmarkDetector/Assets/DlibFaceLandmarkDetector/Scripts/Core/<a class="el" href="../../d9/d2f/DisposableObject_8cs.html">DisposableObject.cs</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

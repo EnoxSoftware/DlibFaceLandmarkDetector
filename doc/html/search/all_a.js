@@ -1,4 +1,13 @@
 var searchData=
 [
-  ['x_0',['x',['../df/d36/classDlibFaceLandmarkDetector_1_1UnityIntegration_1_1DlibOpenCVUtils.html#a7cd14bbd8de5ecf24b139245690bb7b0',1,'DlibFaceLandmarkDetector::UnityIntegration::DlibOpenCVUtils']]]
+  ['left_0',['Left',['../d3/d98/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector_1_1RectDetection.html#a50f186786ef1ea0fe32bf177aa05a8cd',1,'DlibFaceLandmarkDetector::FaceLandmarkDetector::RectDetection']]],
+  ['left_1',['left',['../d3/d98/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector_1_1RectDetection.html#aabc41f7e6de7d89ec661b8827e678e83',1,'DlibFaceLandmarkDetector::FaceLandmarkDetector::RectDetection']]],
+  ['leftbottom_2',['LeftBottom',['../d2/dd9/classDlibFaceLandmarkDetector_1_1UnityIntegration_1_1Helper_1_1UI_1_1FpsMonitor.html#ad29f8f10fa39156142c300dc1fca90a8a54bfdf6fd73d218f5a173337c99f1910',1,'DlibFaceLandmarkDetector::UnityIntegration::Helper::UI::FpsMonitor']]],
+  ['lefttop_3',['LeftTop',['../d2/dd9/classDlibFaceLandmarkDetector_1_1UnityIntegration_1_1Helper_1_1UI_1_1FpsMonitor.html#ad29f8f10fa39156142c300dc1fca90a8afdd5ada0562fbda7863d73fc8403f786',1,'DlibFaceLandmarkDetector::UnityIntegration::Helper::UI::FpsMonitor']]],
+  ['libname_4',['LIBNAME',['../dd/d31/classDlibFaceLandmarkDetector_1_1NativeLibraryName.html#a6c4d1acf861b05cdae2803cb5bf4c4a7',1,'DlibFaceLandmarkDetector::NativeLibraryName']]],
+  ['locategui_5',['LocateGUI',['../d2/dd9/classDlibFaceLandmarkDetector_1_1UnityIntegration_1_1Helper_1_1UI_1_1FpsMonitor.html#a25f3cfb0ab27285f2133eeb80a3d910a',1,'DlibFaceLandmarkDetector::UnityIntegration::Helper::UI::FpsMonitor']]],
+  ['log_6',['Log',['../d0/d34/classDlibFaceLandmarkDetector_1_1EngineLog.html#adaa31b9c4b26849c4614d99c1b67f917',1,'DlibFaceLandmarkDetector.EngineLog.Log()'],['../d6/dc5/interfaceDlibFaceLandmarkDetector_1_1ILogger.html#a91b3b740c83cede6d36317b7c73a5a53',1,'DlibFaceLandmarkDetector.ILogger.Log()']]],
+  ['logerror_7',['LogError',['../d0/d34/classDlibFaceLandmarkDetector_1_1EngineLog.html#a94955f5c3ed03736a21a20473e6ac364',1,'DlibFaceLandmarkDetector.EngineLog.LogError()'],['../d6/dc5/interfaceDlibFaceLandmarkDetector_1_1ILogger.html#a21053d581bd6d1b8a3c7bf8a17a1484d',1,'DlibFaceLandmarkDetector.ILogger.LogError()']]],
+  ['logexception_8',['LogException',['../d0/d34/classDlibFaceLandmarkDetector_1_1EngineLog.html#af7a7e9aeae0bc3b6bd4edcea524120f2',1,'DlibFaceLandmarkDetector.EngineLog.LogException()'],['../d6/dc5/interfaceDlibFaceLandmarkDetector_1_1ILogger.html#af34b2eb651dd50b04d6ab1a6b8b7948e',1,'DlibFaceLandmarkDetector.ILogger.LogException()']]],
+  ['logwarning_9',['LogWarning',['../d0/d34/classDlibFaceLandmarkDetector_1_1EngineLog.html#a0d2481bd6d05d4f0e8ae6e6241988aea',1,'DlibFaceLandmarkDetector.EngineLog.LogWarning()'],['../d6/dc5/interfaceDlibFaceLandmarkDetector_1_1ILogger.html#a757e84a0f7d3caccce6a35728bbe0d51',1,'DlibFaceLandmarkDetector.ILogger.LogWarning()']]]
 ];

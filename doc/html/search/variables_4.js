@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['y_0',['y',['../d7/df6/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector.html#acbe9c2432033b2f7e821d164aa8df533',1,'DlibFaceLandmarkDetector::FaceLandmarkDetector']]]
+  ['libname_0',['LIBNAME',['../dd/d31/classDlibFaceLandmarkDetector_1_1NativeLibraryName.html#a6c4d1acf861b05cdae2803cb5bf4c4a7',1,'DlibFaceLandmarkDetector::NativeLibraryName']]]
 ];

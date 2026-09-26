@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['detection_5fconfidence_0',['detection_confidence',['../d3/d98/classDlibFaceLandmarkDetector_1_1FaceLandmarkDetector_1_1RectDetection.html#a4b721ef3b7383a3efabb534b694a3876',1,'DlibFaceLandmarkDetector::FaceLandmarkDetector::RectDetection']]]
+  ['_5fconsoletext_0',['_consoleText',['../d2/dd9/classDlibFaceLandmarkDetector_1_1UnityIntegration_1_1Helper_1_1UI_1_1FpsMonitor.html#a227482a376db45f451e992d4d3816602',1,'DlibFaceLandmarkDetector::UnityIntegration::Helper::UI::FpsMonitor']]]
 ];

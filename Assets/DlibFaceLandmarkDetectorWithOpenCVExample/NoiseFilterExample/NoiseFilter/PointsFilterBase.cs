@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using OpenCVForUnity.CoreModule;
-using OpenCVForUnity.UnityIntegration;
+using OpenCVForUnity.Extensions;
 using UnityEngine;
 
 namespace DlibFaceLandmarkDetectorWithOpenCVExample
 {
     /// <summary>
     /// Points Filter Base.
-    /// v 2.0.0
+    /// v 2.0.1
     /// </summary>
     public abstract class PointsFilterBase : IDisposable
     {
@@ -25,7 +25,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
 
         public PointsFilterBase(int numberOfElements)
         {
-            this._numberOfElements = numberOfElements;
+            _numberOfElements = numberOfElements;
         }
 
         /// <summary>
@@ -37,8 +37,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// <returns>Output points. Returns predicted points from previous state when srcPoints is null.</returns>
         public abstract Vec2f[] Process(Mat img, Vec2f[] srcPoints, Vec2f[] dstPoints = null);
 
-#if NET_STANDARD_2_1
-
         /// <summary>
         /// Processes points by filter.
         /// </summary>
@@ -47,8 +45,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// <param name="dstPoints">Output points span.</param>
         /// <returns>Output points span. Returns predicted points from previous state when srcPoints is empty.</returns>
         public abstract Span<Vec2f> Process(Mat img, ReadOnlySpan<Vec2f> srcPoints, Span<Vec2f> dstPoints);
-
-#endif
 
         /// <summary>
         /// Processes points by filter.
@@ -182,7 +178,9 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             ThrowIfDisposed();
 
             if (srcPoints != null && srcPoints.Length % 2 != 0)
+            {
                 throw new ArgumentException("srcPoints.Length must be even", nameof(srcPoints));
+            }
 
             // Convert float[] to Vec2f[]
             Vec2f[] srcVec2f = new Vec2f[srcPoints.Length / 2];
@@ -199,7 +197,9 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             if (dstPoints != null)
             {
                 if (dstPoints.Length % 2 != 0)
+                {
                     throw new ArgumentException("dstPoints.Length must be even", nameof(dstPoints));
+                }
 
                 dstVec2f = new Vec2f[dstPoints.Length / 2];
                 for (int i = 0; i < dstVec2f.Length; i++)
@@ -243,8 +243,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             }
         }
 
-#if NET_STANDARD_2_1
-
         /// <summary>
         /// Processes points by filter.
         /// </summary>
@@ -257,10 +255,14 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             ThrowIfDisposed();
 
             if (srcPoints != null && srcPoints.Length % 2 != 0)
+            {
                 throw new ArgumentException("srcPoints.Length must be even", nameof(srcPoints));
+            }
 
             if (dstPoints != null && dstPoints.Length % 2 != 0)
+            {
                 throw new ArgumentException("dstPoints.Length must be even", nameof(dstPoints));
+            }
 
             // Use MemoryMarshal for optimized conversion
             ReadOnlySpan<Vec2f> srcVec2fSpan = null;
@@ -283,9 +285,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             return resultSpan;
         }
 
-#endif
-
-
         /// <summary>
         /// Processes points by filter.
         /// </summary>
@@ -298,7 +297,9 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             ThrowIfDisposed();
 
             if (srcPoints != null && srcPoints.Length % 2 != 0)
+            {
                 throw new ArgumentException("srcPoints.Length must be even", nameof(srcPoints));
+            }
 
             // Convert double[] to Vec2f[]
             Vec2f[] srcVec2f = new Vec2f[srcPoints.Length / 2];
@@ -315,7 +316,9 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             if (dstPoints != null)
             {
                 if (dstPoints.Length % 2 != 0)
+                {
                     throw new ArgumentException("dstPoints.Length must be even", nameof(dstPoints));
+                }
 
                 dstVec2f = new Vec2f[dstPoints.Length / 2];
                 for (int i = 0; i < dstVec2f.Length; i++)
@@ -359,8 +362,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             }
         }
 
-#if NET_STANDARD_2_1
-
         /// <summary>
         /// Processes points by filter.
         /// </summary>
@@ -373,10 +374,14 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             ThrowIfDisposed();
 
             if (srcPoints != null && srcPoints.Length % 2 != 0)
+            {
                 throw new ArgumentException("srcPoints.Length must be even", nameof(srcPoints));
+            }
 
             if (dstPoints != null && dstPoints.Length % 2 != 0)
+            {
                 throw new ArgumentException("dstPoints.Length must be even", nameof(dstPoints));
+            }
 
             // Convert ReadOnlySpan<double> to Vec2f[]
             Vec2f[] srcVec2f = new Vec2f[srcPoints.Length / 2];
@@ -426,8 +431,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                 return result;
             }
         }
-
-#endif
 
         /// <summary>
         /// Resets filter.
@@ -510,7 +513,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             return variance;
         }
 
-#if NET_STANDARD_2_1
         // This function is to calculate the variance
         protected virtual double CalDistanceDiff(ReadOnlySpan<Vec2f> curPoints, ReadOnlySpan<Vec2f> lastPoints)
         {
@@ -536,7 +538,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             }
             return variance;
         }
-#endif
 
         protected virtual void Swap<T>(ref T a, ref T b)
         {
@@ -554,7 +555,9 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         protected virtual (float x, float y, float width, float height) CalculateBoundingRect(Vec2f[] points)
         {
             if (points == null || points.Length == 0)
+            {
                 return (0, 0, 0, 0);
+            }
 
             float minX = points[0].Item1;
             float maxX = points[0].Item1;
@@ -566,17 +569,30 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                 float x = points[i].Item1;
                 float y = points[i].Item2;
 
-                if (x < minX) minX = x;
-                if (x > maxX) maxX = x;
-                if (y < minY) minY = y;
-                if (y > maxY) maxY = y;
+                if (x < minX)
+                {
+                    minX = x;
+                }
+
+                if (x > maxX)
+                {
+                    maxX = x;
+                }
+
+                if (y < minY)
+                {
+                    minY = y;
+                }
+
+                if (y > maxY)
+                {
+                    maxY = y;
+                }
             }
 
             return (minX, minY, maxX - minX, maxY - minY);
         }
 
-
-#if NET_STANDARD_2_1
         /// <summary>
         /// Calculates the bounding rectangle for a set of Vec2f points using ReadOnlySpan.
         /// This is equivalent to Imgproc.boundingRect but works with Vec2f instead of Vec2i.
@@ -586,7 +602,9 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         protected virtual (float x, float y, float width, float height) CalculateBoundingRect(ReadOnlySpan<Vec2f> points)
         {
             if (points.Length == 0)
+            {
                 return (0, 0, 0, 0);
+            }
 
             float minX = points[0].Item1;
             float maxX = points[0].Item1;
@@ -598,14 +616,28 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                 float x = points[i].Item1;
                 float y = points[i].Item2;
 
-                if (x < minX) minX = x;
-                if (x > maxX) maxX = x;
-                if (y < minY) minY = y;
-                if (y > maxY) maxY = y;
+                if (x < minX)
+                {
+                    minX = x;
+                }
+
+                if (x > maxX)
+                {
+                    maxX = x;
+                }
+
+                if (y < minY)
+                {
+                    minY = y;
+                }
+
+                if (y > maxY)
+                {
+                    maxY = y;
+                }
             }
 
             return (minX, minY, maxX - minX, maxY - minY);
         }
-#endif
     }
 }

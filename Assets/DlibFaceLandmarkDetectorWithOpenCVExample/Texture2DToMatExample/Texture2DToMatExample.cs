@@ -2,20 +2,38 @@ using System.Collections.Generic;
 using System.Threading;
 using DlibFaceLandmarkDetector;
 using DlibFaceLandmarkDetector.UnityIntegration;
+using DlibFaceLandmarkDetector.UnityIntegration.Helper.UI;
 using OpenCVForUnity.CoreModule;
 using OpenCVForUnity.UnityIntegration;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using DlibOpenCVUtils = DlibFaceLandmarkDetector.Extensions.DlibOpenCVUtils;
 
 namespace DlibFaceLandmarkDetectorWithOpenCVExample
 {
     /// <summary>
     /// Texture2DToMat Example
-    /// An example of using "Dlib FaceLandmark Detector" together with "OpenCV for Unity".
+    /// Loads a Unity <see cref="Texture2D"/>, converts it to an OpenCV <see cref="Mat"/>, and detects Dlib face landmarks.
+    ///
+    /// Demonstrates:
+    /// - Creating a Mat with a matching element type (<see cref="CvType.CV_8UC4"/>)
+    /// - Round-trip conversion with <see cref="OpenCVMatUnityUtils.Texture2DToMat"/> and MatToTexture2D
+    /// - Face detection and landmark drawing via <see cref="FaceLandmarkDetector"/> and <see cref="DlibOpenCVUtils"/>
+    ///
+    /// OpenCV classes and APIs used:
+    /// - <see cref="Mat"/>, <see cref="CvType"/>
+    /// - <see cref="OpenCVMatUnityUtils"/>: Texture2DToMat, MatToTexture2D
+    ///
+    /// Dlib classes and APIs used:
+    /// - <see cref="FaceLandmarkDetector"/>: DetectRectDetection, DetectLandmark
+    /// - <see cref="DlibOpenCVUtils"/>: SetImage, DrawFaceLandmark, DrawFaceRect
     /// </summary>
     public class Texture2DToMatExample : MonoBehaviour
     {
+        // Constants
+        private static readonly string DLIB_SHAPE_PREDICTOR_FILE_NAME = "DlibFaceLandmarkDetector/sp_human_face_68.dat";
+
         // Public Fields
         [Header("Output")]
         /// <summary>
@@ -31,24 +49,9 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         public Texture2D ImgTexture;
 
         // Private Fields
-        /// <summary>
-        /// The FPS monitor.
-        /// </summary>
         private FpsMonitor _fpsMonitor;
-
-        /// <summary>
-        /// The dlib shape predictor file name.
-        /// </summary>
-        private string _dlibShapePredictorFileName = "DlibFaceLandmarkDetector/sp_human_face_68.dat";
-
-        /// <summary>
-        /// The dlib shape predictor file path.
-        /// </summary>
+        private string _dlibShapePredictorFileName = DLIB_SHAPE_PREDICTOR_FILE_NAME;
         private string _dlibShapePredictorFilePath;
-
-        /// <summary>
-        /// The CancellationTokenSource.
-        /// </summary>
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
         // Unity Lifecycle Methods
@@ -56,16 +59,21 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         {
             _fpsMonitor = GetComponent<FpsMonitor>();
 
+            // Uses the dlib shape predictor file name selected on the main menu scene.
             _dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.DlibFaceLandmarkDetectorExample.DlibShapePredictorFileName;
 
             // Asynchronously retrieves the readable file path from the StreamingAssets directory.
             if (_fpsMonitor != null)
+            {
                 _fpsMonitor.ConsoleText = "Preparing file access...";
+            }
 
-            _dlibShapePredictorFilePath = await DlibEnv.GetFilePathTaskAsync(_dlibShapePredictorFileName, cancellationToken: _cts.Token);
+            _dlibShapePredictorFilePath = await DlibEnv.GetFilePathAsync(_dlibShapePredictorFileName, cancellationToken: _cts.Token);
 
             if (_fpsMonitor != null)
+            {
                 _fpsMonitor.ConsoleText = "";
+            }
 
             Run();
         }
@@ -77,7 +85,9 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
 
         private void OnDestroy()
         {
+            _cts?.Cancel();
             _cts?.Dispose();
+            _cts = null;
         }
 
         // Public Methods
@@ -100,26 +110,24 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             Mat imgMat = new Mat(ImgTexture.height, ImgTexture.width, CvType.CV_8UC4);
 
             // Convert Unity Texture2D to OpenCV Mat.
-            OpenCVMatUtils.Texture2DToMat(ImgTexture, imgMat);
+            OpenCVMatUnityUtils.Texture2DToMat(ImgTexture, imgMat);
             Debug.Log("imgMat dst ToString " + imgMat.ToString());
-
 
             FaceLandmarkDetector faceLandmarkDetector = new FaceLandmarkDetector(_dlibShapePredictorFilePath);
 
             DlibOpenCVUtils.SetImage(faceLandmarkDetector, imgMat);
-
 
             //detect face rectdetecton
             List<FaceLandmarkDetector.RectDetection> detectResult = faceLandmarkDetector.DetectRectDetection();
 
             foreach (var result in detectResult)
             {
-                Debug.Log("rect : " + result.rect);
-                Debug.Log("detection_confidence : " + result.detection_confidence);
-                Debug.Log("weight_index : " + result.weight_index);
+                Debug.Log("rect : " + result.Rect);
+                Debug.Log("detection_confidence : " + result.DetectionConfidence);
+                Debug.Log("weight_index : " + result.WeightIndex);
 
                 //detect landmark points
-                List<Vector2> points = faceLandmarkDetector.DetectLandmark(result.rect);
+                List<Vector2> points = faceLandmarkDetector.DetectLandmark(result.Rect);
 
                 Debug.Log("face points count : " + points.Count);
                 //draw landmark points
@@ -134,15 +142,14 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             Texture2D texture = new Texture2D(imgMat.cols(), imgMat.rows(), TextureFormat.RGBA32, false);
 
             // Convert OpenCV Mat to Unity Texture2D.
-            OpenCVMatUtils.MatToTexture2D(imgMat, texture);
+            OpenCVMatUnityUtils.MatToTexture2D(imgMat, texture);
 
             ResultPreview.texture = texture;
             ResultPreview.GetComponent<AspectRatioFitter>().aspectRatio = (float)texture.width / texture.height;
 
-
             if (_fpsMonitor != null)
             {
-                _fpsMonitor.Add("dlib shape predictor", _dlibShapePredictorFileName);
+                _fpsMonitor.Add("dlib shape predictor", "\n" + _dlibShapePredictorFileName);
                 _fpsMonitor.Add("width", imgMat.width().ToString());
                 _fpsMonitor.Add("height", imgMat.height().ToString());
                 _fpsMonitor.Add("orientation", Screen.orientation.ToString());

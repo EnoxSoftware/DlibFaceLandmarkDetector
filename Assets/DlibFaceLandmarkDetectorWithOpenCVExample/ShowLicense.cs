@@ -3,6 +3,10 @@ using UnityEngine.SceneManagement;
 
 namespace DlibFaceLandmarkDetectorWithOpenCVExample
 {
+    /// <summary>
+    /// Show License
+    /// A scene that displays the DlibFaceLandmarkDetector license text.
+    /// </summary>
     public class ShowLicense : MonoBehaviour
     {
         // Unity Lifecycle Methods
@@ -17,9 +21,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         }
 
         // Public Methods
-        /// <summary>
-        /// Raises the back button click event.
-        /// </summary>
         public void OnBackButtonClick()
         {
             SceneManager.LoadScene("DlibFaceLandmarkDetectorExample");

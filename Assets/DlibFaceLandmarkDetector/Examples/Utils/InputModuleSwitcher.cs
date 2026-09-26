@@ -23,7 +23,9 @@ namespace DlibFaceLandmarkDetectorExample
         {
             var eventSystem = GetComponent<EventSystem>();
             if (eventSystem == null)
+            {
                 return;
+            }
 
 #if ENABLE_INPUT_SYSTEM
             // Remove old Input Module if it exists

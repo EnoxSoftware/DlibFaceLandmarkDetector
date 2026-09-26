@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using DlibFaceLandmarkDetector;
+using DlibFaceLandmarkDetector.Extensions;
 using DlibFaceLandmarkDetector.UnityIntegration;
+using DlibFaceLandmarkDetector.UnityIntegration.Helper.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,7 +12,17 @@ namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
     /// Texture2D Example
-    /// An example of detecting face landmarks in a Texture2D image.
+    /// Detects Dlib face landmarks in a static <see cref="Texture2D"/> image and previews the annotated result.
+    ///
+    /// Demonstrates:
+    /// - Loading a shape predictor from StreamingAssets via <see cref="DlibEnv.GetFilePathAsync"/>
+    /// - Running face detection and landmark inference on a single image
+    /// - Drawing rects and landmarks directly on a copied <see cref="Texture2D"/>
+    ///
+    /// Dlib classes and APIs used:
+    /// - <see cref="FaceLandmarkDetector"/>: SetImage, Detect, DetectLandmark
+    /// - <see cref="FaceLandmarkDetector"/>: DrawDetectLandmarkResult, DrawDetectResult
+    /// - <see cref="DlibDebug"/>: SetDebugMode
     /// </summary>
     public class Texture2DExample : MonoBehaviour
     {
@@ -32,24 +44,9 @@ namespace DlibFaceLandmarkDetectorExample
         public Texture2D Texture2D;
 
         // Private Fields
-        /// <summary>
-        /// The FPS monitor.
-        /// </summary>
         private FpsMonitor _fpsMonitor;
-
-        /// <summary>
-        /// The dlib shape predictor file name.
-        /// </summary>
         private string _dlibShapePredictorFileName = DLIB_SHAPE_PREDICTOR_FILE_NAME;
-
-        /// <summary>
-        /// The dlib shape predictor file path.
-        /// </summary>
         private string _dlibShapePredictorFilePath;
-
-        /// <summary>
-        /// The CancellationTokenSource.
-        /// </summary>
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
         // Unity Lifecycle Methods
@@ -57,16 +54,21 @@ namespace DlibFaceLandmarkDetectorExample
         {
             _fpsMonitor = GetComponent<FpsMonitor>();
 
+            // Uses the dlib shape predictor file name selected on the main menu scene.
             _dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.DlibShapePredictorFileName;
 
             // Asynchronously retrieves the readable file path from the StreamingAssets directory.
             if (_fpsMonitor != null)
+            {
                 _fpsMonitor.ConsoleText = "Preparing file access...";
+            }
 
-            _dlibShapePredictorFilePath = await DlibEnv.GetFilePathTaskAsync(_dlibShapePredictorFileName, cancellationToken: _cts.Token);
+            _dlibShapePredictorFilePath = await DlibEnv.GetFilePathAsync(_dlibShapePredictorFileName, cancellationToken: _cts.Token);
 
             if (_fpsMonitor != null)
+            {
                 _fpsMonitor.ConsoleText = "";
+            }
 
             Run();
         }
@@ -76,9 +78,6 @@ namespace DlibFaceLandmarkDetectorExample
 
         }
 
-        /// <summary>
-        /// Raises the disable event.
-        /// </summary>
         private void OnDisable()
         {
             _cts?.Dispose();
@@ -132,8 +131,10 @@ namespace DlibFaceLandmarkDetectorExample
             }
 
             if (faceLandmarkDetector.GetShapePredictorNumParts() != 68)
+            {
                 Debug.LogWarning("The DrawDetectLandmarkResult method does not support ShapePredictorNumParts sizes other than 68 points, so the drawing will be incorrect."
                     + " If you want to draw the result correctly, we recommend using the OpenCVForUnityUtils.DrawFaceLandmark method.");
+            }
 
             //draw face rect
             faceLandmarkDetector.DrawDetectResult(dstTexture2D, 255, 0, 0, 255, 2);
@@ -147,7 +148,7 @@ namespace DlibFaceLandmarkDetectorExample
 
             if (_fpsMonitor != null)
             {
-                _fpsMonitor.Add("dlib shape predictor", _dlibShapePredictorFileName);
+                _fpsMonitor.Add("dlib shape predictor", "\n" + _dlibShapePredictorFileName);
                 _fpsMonitor.Add("width", dstTexture2D.width.ToString());
                 _fpsMonitor.Add("height", dstTexture2D.height.ToString());
                 _fpsMonitor.Add("orientation", Screen.orientation.ToString());

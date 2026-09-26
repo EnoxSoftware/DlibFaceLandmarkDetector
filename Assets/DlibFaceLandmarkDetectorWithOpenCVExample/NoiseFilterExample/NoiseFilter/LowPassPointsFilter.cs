@@ -1,15 +1,13 @@
 using System;
-using System.Collections.Generic;
 using OpenCVForUnity.CoreModule;
+using OpenCVForUnity.Extensions;
 using OpenCVForUnity.ImgprocModule;
-using OpenCVForUnity.UnityIntegration;
-using UnityEngine;
 
 namespace DlibFaceLandmarkDetectorWithOpenCVExample
 {
     /// <summary>
     /// Low Pass Points Filter.
-    /// v 2.0.0
+    /// v 2.0.1
     /// </summary>
     public class LowPassPointsFilter : PointsFilterBase
     {
@@ -37,7 +35,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             }
         }
 
-#if NET_STANDARD_2_1
         /// <summary>
         /// Processes points by filter.
         /// </summary>
@@ -46,27 +43,23 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// <param name="dstPoints">Output points span.</param>
         /// <returns>Output points span. Returns predicted points from previous state when srcPoints is empty.</returns>
         public override Span<Vec2f> Process(Mat img, ReadOnlySpan<Vec2f> srcPoints, Span<Vec2f> dstPoints)
-#else
-        /// <summary>
-        /// Processes points by filter.
-        /// </summary>
-        /// <param name="img">Image mat for processing (used for optical flow, debug drawing, etc.).</param>
-        /// <param name="srcPoints">Input points. Can be null when no detection is available (will use previous state for prediction).</param>
-        /// <param name="dstPoints">Output points. If null, a new array will be created.</param>
-        /// <returns>Output points. Returns predicted points from previous state when srcPoints is null.</returns>
-        public override Vec2f[] Process(Mat img, Vec2f[] srcPoints, Vec2f[] dstPoints = null)
-#endif
         {
             ThrowIfDisposed();
 
             if (srcPoints == null)
+            {
                 return dstPoints == null ? _lastPoints : dstPoints;
+            }
 
             if (srcPoints != null && srcPoints.Length != _numberOfElements)
+            {
                 throw new ArgumentException("The number of srcPoints elements is different.");
+            }
 
             if (dstPoints != null && dstPoints.Length != _numberOfElements)
+            {
                 throw new ArgumentException("The number of dstPoints elements is different.");
+            }
 
             if (dstPoints == null)
             {
@@ -89,29 +82,24 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                         lastPoint.Item1 = srcPoint.Item1;
                         lastPoint.Item2 = srcPoint.Item2;
                         if (IsDebugMode)
+                        {
                             Imgproc.circle(img, (srcPoint.Item1, srcPoint.Item2), 1, DEBUG_COLOR_FILTERED, -1);
+                        }
                     }
                     else
                     {
                         if (IsDebugMode)
+                        {
                             Imgproc.circle(img, (lastPoint.Item1, lastPoint.Item2), 1, DEBUG_COLOR_UNFILTERED, -1);
+                        }
                     }
                 }
-#if NET_STANDARD_2_1
                 _lastPoints.CopyTo(dstPoints);
-#else
-                Array.Copy(_lastPoints, dstPoints, _numberOfElements);
-#endif
             }
             else
             {
-#if NET_STANDARD_2_1
                 srcPoints.CopyTo(_lastPoints);
                 srcPoints.CopyTo(dstPoints);
-#else
-                Array.Copy(srcPoints, _lastPoints, _numberOfElements);
-                Array.Copy(srcPoints, dstPoints, _numberOfElements);
-#endif
 
                 if (IsDebugMode)
                 {
@@ -126,7 +114,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             return dstPoints;
         }
 
-#if NET_STANDARD_2_1
         /// <summary>
         /// Processes points by filter.
         /// </summary>
@@ -150,7 +137,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
 
             return dstPoints;
         }
-#endif
 
         /// <summary>
         /// Resets filter.
@@ -168,7 +154,10 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
 
         protected override void Dispose(bool disposing)
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
 
             if (disposing)
             {

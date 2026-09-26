@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using DlibFaceLandmarkDetector;
 using DlibFaceLandmarkDetector.UnityIntegration;
+using DlibFaceLandmarkDetector.UnityIntegration.Helper.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,6 +12,16 @@ namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
     /// Benchmark Example
+    /// Measures <see cref="FaceLandmarkDetector"/> detection and landmark inference performance on static images.
+    ///
+    /// Demonstrates:
+    /// - Benchmarking the standard <see cref="FaceLandmarkDetector.Detect"/> and DetectLandmark APIs
+    /// - Comparing ValueTuple and no-GC-allocation code paths
+    /// - Previewing the last benchmark result on a <see cref="RawImage"/>
+    ///
+    /// Dlib classes and APIs used:
+    /// - <see cref="FaceLandmarkDetector"/>: SetImage, Detect, DetectLandmark, DetectValueTuple
+    /// - <see cref="FaceLandmarkDetector"/>: DetectOnly, DetectLandmarkOnly, GetDetectResult, GetDetectLandmarkResult
     /// </summary>
     public class BenchmarkExample : MonoBehaviour
     {
@@ -45,30 +56,10 @@ namespace DlibFaceLandmarkDetectorExample
 
         // Private Fields
         private Texture2D _dstTexture2D;
-
-        /// <summary>
-        /// The face landmark detector.
-        /// </summary>
         private FaceLandmarkDetector _faceLandmarkDetector;
-
-        /// <summary>
-        /// The dlib shape predictor file name.
-        /// </summary>
         private string _dlibShapePredictorFileName = DLIB_SHAPE_PREDICTOR_FILE_NAME;
-
-        /// <summary>
-        /// The dlib shape predictor file path.
-        /// </summary>
         private string _dlibShapePredictorFilePath;
-
-        /// <summary>
-        /// The FPS monitor.
-        /// </summary>
         private FpsMonitor _fpsMonitor;
-
-        /// <summary>
-        /// The CancellationTokenSource.
-        /// </summary>
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
         // Unity Lifecycle Methods
@@ -76,16 +67,21 @@ namespace DlibFaceLandmarkDetectorExample
         {
             _fpsMonitor = GetComponent<FpsMonitor>();
 
+            // Uses the dlib shape predictor file name selected on the main menu scene.
             _dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.DlibShapePredictorFileName;
 
             // Asynchronously retrieves the readable file path from the StreamingAssets directory.
             if (_fpsMonitor != null)
+            {
                 _fpsMonitor.ConsoleText = "Preparing file access...";
+            }
 
-            _dlibShapePredictorFilePath = await DlibEnv.GetFilePathTaskAsync(_dlibShapePredictorFileName, cancellationToken: _cts.Token);
+            _dlibShapePredictorFilePath = await DlibEnv.GetFilePathAsync(_dlibShapePredictorFileName, cancellationToken: _cts.Token);
 
             if (_fpsMonitor != null)
+            {
                 _fpsMonitor.ConsoleText = "";
+            }
 
             Run();
         }
@@ -95,12 +91,14 @@ namespace DlibFaceLandmarkDetectorExample
 
         }
 
-        /// <summary>
-        /// Raises the disable event.
-        /// </summary>
         private void OnDisable()
         {
-            if (_dstTexture2D != null) Texture2D.Destroy(_dstTexture2D); _dstTexture2D = null;
+            if (_dstTexture2D != null)
+            {
+                Texture2D.Destroy(_dstTexture2D);
+            }
+
+            _dstTexture2D = null;
             _faceLandmarkDetector?.Dispose();
             _cts?.Dispose();
         }
@@ -112,7 +110,9 @@ namespace DlibFaceLandmarkDetectorExample
         public void OnBenchmarkSmallImageButtonClick()
         {
             if (_faceLandmarkDetector == null)
+            {
                 return;
+            }
 
             StartBenchmark(SmallImage, _faceLandmarkDetector, Times);
         }
@@ -123,7 +123,9 @@ namespace DlibFaceLandmarkDetectorExample
         public void OnBenchmarkLargeImageButtonClick()
         {
             if (_faceLandmarkDetector == null)
+            {
                 return;
+            }
 
             StartBenchmark(LargeImage, _faceLandmarkDetector, Times);
         }
@@ -134,7 +136,9 @@ namespace DlibFaceLandmarkDetectorExample
         public void OnBenchmarkValueTupleSmallImageButtonClick()
         {
             if (_faceLandmarkDetector == null)
+            {
                 return;
+            }
 
             StartBenchmark(SmallImage, _faceLandmarkDetector, Times, DetectMode.ValueTuple);
         }
@@ -145,7 +149,9 @@ namespace DlibFaceLandmarkDetectorExample
         public void OnBenchmarkValueTupleLargeImageButtonClick()
         {
             if (_faceLandmarkDetector == null)
+            {
                 return;
+            }
 
             StartBenchmark(LargeImage, _faceLandmarkDetector, Times, DetectMode.ValueTuple);
         }
@@ -156,7 +162,9 @@ namespace DlibFaceLandmarkDetectorExample
         public void OnBenchmarkNoGCAllocSmallImageButtonClick()
         {
             if (_faceLandmarkDetector == null)
+            {
                 return;
+            }
 
             StartBenchmark(SmallImage, _faceLandmarkDetector, Times, DetectMode.NoAlloc);
         }
@@ -167,7 +175,9 @@ namespace DlibFaceLandmarkDetectorExample
         public void OnBenchmarkNoGCAllocLargeImageButtonClick()
         {
             if (_faceLandmarkDetector == null)
+            {
                 return;
+            }
 
             StartBenchmark(LargeImage, _faceLandmarkDetector, Times, DetectMode.NoAlloc);
         }
@@ -191,8 +201,10 @@ namespace DlibFaceLandmarkDetectorExample
             _faceLandmarkDetector = new FaceLandmarkDetector(_dlibShapePredictorFilePath);
 
             if (_faceLandmarkDetector.GetShapePredictorNumParts() != 68)
+            {
                 Debug.LogWarning("The DrawDetectLandmarkResult method does not support ShapePredictorNumParts sizes other than 68 points, so the drawing will be incorrect."
                     + " If you want to draw the result correctly, we recommend using the OpenCVForUnityUtils.DrawFaceLandmark method.");
+            }
         }
 
         private void StartBenchmark(Texture2D targetImg, FaceLandmarkDetector detector, int times = 100, DetectMode detectMode = DetectMode.None)
@@ -245,7 +257,6 @@ namespace DlibFaceLandmarkDetectorExample
             sw.Stop();
             result += " Detect(): " + sw.ElapsedMilliseconds + "ms" + " Avg:" + sw.ElapsedMilliseconds / times + "ms" + "\n";
 
-
             // FaceLandmarkDetector.DetectLandmark() benchmark.
             List<Rect> detectResult = detector.Detect();
             sw.Reset();
@@ -285,7 +296,6 @@ namespace DlibFaceLandmarkDetectorExample
             sw.Stop();
             result += " Detect(): " + sw.ElapsedMilliseconds + "ms" + " Avg:" + sw.ElapsedMilliseconds / times + "ms" + "\n";
 
-
             // FaceLandmarkDetector.DetectLandmark() benchmark.
             List<(double x, double y, double width, double height)> detectResult = detector.DetectValueTuple();
             sw.Reset();
@@ -315,11 +325,7 @@ namespace DlibFaceLandmarkDetectorExample
             detector.SetImage(targetImg);
 
             int detectCount = detector.DetectOnly();
-#if NET_STANDARD_2_1
             Span<double> detectResult = stackalloc double[detectCount * 6];
-#else
-            double[] detectResult = new double[detectCount * 6];
-#endif
 
             // FaceLandmarkDetector.Detect() benchmark.
             sw.Start();
@@ -333,14 +339,9 @@ namespace DlibFaceLandmarkDetectorExample
             sw.Stop();
             result += " Detect(): " + sw.ElapsedMilliseconds + "ms" + " Avg:" + sw.ElapsedMilliseconds / times + "ms" + "\n";
 
-
             // FaceLandmarkDetector.DetectLandmark() benchmark.
             int detectLandmarkCount = detector.DetectLandmarkOnly(detectResult[0], detectResult[1], detectResult[2], detectResult[3]);
-#if NET_STANDARD_2_1
             Span<double> detectLandmarkResult = stackalloc double[detectLandmarkCount * 2];
-#else
-            double[] detectLandmarkResult = new double[detectLandmarkCount * 2];
-#endif
 
             sw.Reset();
             sw.Start();
@@ -363,7 +364,10 @@ namespace DlibFaceLandmarkDetectorExample
         private void ShowImage(Texture2D texture2D)
         {
             if (_dstTexture2D != null)
+            {
                 Texture2D.Destroy(_dstTexture2D);
+            }
+
             _dstTexture2D = new Texture2D(texture2D.width, texture2D.height, texture2D.format, false);
             _dstTexture2D.SetPixels32(texture2D.GetPixels32());
             _dstTexture2D.Apply();
@@ -391,7 +395,10 @@ namespace DlibFaceLandmarkDetectorExample
         private void ShowImageValueTuple(Texture2D texture2D)
         {
             if (_dstTexture2D != null)
+            {
                 Texture2D.Destroy(_dstTexture2D);
+            }
+
             _dstTexture2D = new Texture2D(texture2D.width, texture2D.height, texture2D.format, false);
             _dstTexture2D.SetPixels32(texture2D.GetPixels32());
             _dstTexture2D.Apply();
@@ -419,7 +426,10 @@ namespace DlibFaceLandmarkDetectorExample
         private void ShowImageNoGCAlloc(Texture2D texture2D)
         {
             if (_dstTexture2D != null)
+            {
                 Texture2D.Destroy(_dstTexture2D);
+            }
+
             _dstTexture2D = new Texture2D(texture2D.width, texture2D.height, texture2D.format, false);
             _dstTexture2D.SetPixels32(texture2D.GetPixels32());
             _dstTexture2D.Apply();
@@ -428,18 +438,10 @@ namespace DlibFaceLandmarkDetectorExample
 
             //detect face rects
             int detectCount = _faceLandmarkDetector.DetectOnly();
-#if NET_STANDARD_2_1
             Span<double> detectResult = stackalloc double[detectCount * 6];
-#else
-            double[] detectResult = new double[detectCount * 6];
-#endif
             _faceLandmarkDetector.GetDetectResult(detectResult);
 
-#if NET_STANDARD_2_1
             Span<double> detectLandmarkResult = stackalloc double[(int)_faceLandmarkDetector.GetShapePredictorNumParts() * 2];
-#else
-            double[] detectLandmarkResult = new double[(int)_faceLandmarkDetector.GetShapePredictorNumParts() * 2];
-#endif
 
             for (int i = 0; i < detectCount; i++)
             {

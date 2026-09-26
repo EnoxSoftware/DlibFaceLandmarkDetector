@@ -6,6 +6,12 @@ using UnityEngine.UI;
 
 namespace DlibFaceLandmarkDetectorExample
 {
+    /// <summary>
+    /// DlibFaceLandmarkDetector Example
+    /// The main menu scene that lists all sample scenes and displays DlibFaceLandmarkDetector and Unity version information.
+    /// Lets the user select the dlib shape predictor file name via <see cref="DlibShapePredictorNameDropdown"/> for use in example scenes.
+    /// Disables example buttons that are not supported on the current platform or graphics device.
+    /// </summary>
     public class DlibFaceLandmarkDetectorExample : MonoBehaviour
     {
         // Enums
@@ -19,7 +25,14 @@ namespace DlibFaceLandmarkDetectorExample
         }
 
         // Constants
-        private static float VERTICAL_NORMALIZED_POSITION = 1f;
+        private const string NATIVE_LIBRARY_NAME = "dlibfacelandmarkdetector";
+#if UNITY_6000_5_OR_NEWER
+        [Unity.Scripting.LifecycleManagement.NoAutoStaticsCleanup]
+#endif
+        private static float _verticalNormalizedPosition = 1f;
+#if UNITY_6000_5_OR_NEWER
+        [Unity.Scripting.LifecycleManagement.NoAutoStaticsCleanup]
+#endif
         private static DlibShapePredictorNamePreset _dlibShapePredictorName = DlibShapePredictorNamePreset.sp_human_face_68;
 
         // Public Fields
@@ -27,10 +40,22 @@ namespace DlibFaceLandmarkDetectorExample
         public ScrollRect ScrollRect;
         public Dropdown DlibShapePredictorNameDropdown;
 
+        // Public Properties
+        /// <summary>
+        /// The name of dlib shape predictor file to use in the example scenes.
+        /// </summary>
+        public static string DlibShapePredictorFileName
+        {
+            get
+            {
+                return "DlibFaceLandmarkDetector/" + _dlibShapePredictorName.ToString() + ".dat";
+            }
+        }
+
         // Unity Lifecycle Methods
         private void Start()
         {
-            VersionInfo.text = "dlibfacelandmarkdetector" + " " + DlibEnv.GetVersion();
+            VersionInfo.text = NATIVE_LIBRARY_NAME + " " + DlibEnv.GetVersion();
             VersionInfo.text += " / UnityEditor " + Application.unityVersion;
             VersionInfo.text += " / ";
 
@@ -62,7 +87,7 @@ namespace DlibFaceLandmarkDetectorExample
             VersionInfo.text += ".NET";
 #endif
 
-            ScrollRect.verticalNormalizedPosition = VERTICAL_NORMALIZED_POSITION;
+            ScrollRect.verticalNormalizedPosition = _verticalNormalizedPosition;
 
             DlibShapePredictorNameDropdown.value = (int)_dlibShapePredictorName;
 
@@ -84,7 +109,7 @@ namespace DlibFaceLandmarkDetectorExample
         // Public Methods
         public void OnScrollRectValueChanged()
         {
-            VERTICAL_NORMALIZED_POSITION = ScrollRect.verticalNormalizedPosition;
+            _verticalNormalizedPosition = ScrollRect.verticalNormalizedPosition;
         }
 
         public void OnShowSystemInfoButtonClick()
@@ -122,37 +147,20 @@ namespace DlibFaceLandmarkDetectorExample
             SceneManager.LoadScene("Texture2DToMatExample");
         }
 
-        public void OnWebCamTexture2MatHelperExampleButtonClick()
+        public void OnMultiSourceToMatHelperExampleButtonClick()
         {
-            SceneManager.LoadScene("WebCamTexture2MatHelperExample");
+            SceneManager.LoadScene("MultiSourceToMatHelperExample");
         }
 
-        public void OnVideoCapture2MatHelperExampleButtonClick()
+        public void OnARHeadExampleButtonClick()
         {
-            SceneManager.LoadScene("VideoCapture2MatHelperExample");
-        }
-
-        public void OnWebCamTextureARHeadExampleButtonClick()
-        {
-            if (GraphicsSettings.defaultRenderPipeline == null)
+            if (GraphicsSettings.currentRenderPipeline == null)
             {
-                SceneManager.LoadScene("WebCamTextureARHeadExample_Built-in");
+                SceneManager.LoadScene("ARHeadExample_Built-in");
             }
             else
             {
-                SceneManager.LoadScene("WebCamTextureARHeadExample_SRP");
-            }
-        }
-
-        public void OnVideoCaptureARHeadExampleButtonClick()
-        {
-            if (GraphicsSettings.defaultRenderPipeline == null)
-            {
-                SceneManager.LoadScene("VideoCaptureARHeadExample_Built-in");
-            }
-            else
-            {
-                SceneManager.LoadScene("VideoCaptureARHeadExample_SRP");
+                SceneManager.LoadScene("ARHeadExample_SRP");
             }
         }
 
@@ -161,14 +169,9 @@ namespace DlibFaceLandmarkDetectorExample
             SceneManager.LoadScene("FrameOptimizationExample");
         }
 
-        public void OnWebCamTextureNoiseFilterExampleButtonClick()
+        public void OnNoiseFilterExampleButtonClick()
         {
-            SceneManager.LoadScene("WebCamTextureNoiseFilterExample");
-        }
-
-        public void OnVideoCaptureNoiseFilterExampleButtonClick()
-        {
-            SceneManager.LoadScene("VideoCaptureNoiseFilterExample");
+            SceneManager.LoadScene("NoiseFilterExample");
         }
 
         /// <summary>
@@ -177,17 +180,6 @@ namespace DlibFaceLandmarkDetectorExample
         public void OnDlibShapePredictorNameDropdownValueChanged(int result)
         {
             _dlibShapePredictorName = (DlibShapePredictorNamePreset)result;
-        }
-
-        /// <summary>
-        /// The name of dlib shape predictor file to use in the example scenes.
-        /// </summary>
-        public static string DlibShapePredictorFileName
-        {
-            get
-            {
-                return "DlibFaceLandmarkDetector/" + _dlibShapePredictorName.ToString() + ".dat";
-            }
         }
     }
 }

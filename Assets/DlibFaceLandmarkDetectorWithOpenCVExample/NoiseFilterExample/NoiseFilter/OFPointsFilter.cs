@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
 using OpenCVForUnity.CoreModule;
+using OpenCVForUnity.Extensions;
 using OpenCVForUnity.ImgprocModule;
-using OpenCVForUnity.UnityIntegration;
 using OpenCVForUnity.VideoModule;
 using UnityEngine;
 
@@ -10,7 +9,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
 {
     /// <summary>
     /// Optical Flow Points Filter.
-    /// v 2.0.0
+    /// v 2.0.1
     /// </summary>
     public class OFPointsFilter : PointsFilterBase
     {
@@ -55,7 +54,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             InitializeOpticalFlow();
         }
 
-#if NET_STANDARD_2_1
         /// <summary>
         /// Processes points by filter.
         /// </summary>
@@ -64,24 +62,18 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// <param name="dstPoints">Output points span.</param>
         /// <returns>Output points span. Returns predicted points from previous state when srcPoints is empty.</returns>
         public override Span<Vec2f> Process(Mat img, ReadOnlySpan<Vec2f> srcPoints, Span<Vec2f> dstPoints)
-#else
-        /// <summary>
-        /// Processes points by filter.
-        /// </summary>
-        /// <param name="img">Image mat for processing (used for optical flow, debug drawing, etc.).</param>
-        /// <param name="srcPoints">Input points. Can be null when no detection is available (will use previous state for prediction).</param>
-        /// <param name="dstPoints">Output points. If null, a new array will be created.</param>
-        /// <returns>Output points. Returns predicted points from previous state when srcPoints is null.</returns>
-        public override Vec2f[] Process(Mat img, Vec2f[] srcPoints, Vec2f[] dstPoints = null)
-#endif
         {
             ThrowIfDisposed();
 
             if (srcPoints != null && srcPoints.Length != _numberOfElements)
+            {
                 throw new ArgumentException("The number of srcPoints elements is different.");
+            }
 
             if (dstPoints != null && dstPoints.Length != _numberOfElements)
+            {
                 throw new ArgumentException("The number of dstPoints elements is different.");
+            }
 
             if (dstPoints == null)
             {
@@ -138,7 +130,9 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                     {
                         // If optical flow failed, use previous prediction for failed points
                         if (IsDebugMode)
+                        {
                             Debug.Log("Optical Flow failed, using previous prediction");
+                        }
 
                         // Replace failed points with previous prediction
                         for (int i = 0; i < statusArray.Length; i++)
@@ -150,11 +144,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                         }
                     }
 
-#if NET_STANDARD_2_1
                     _nextTrackPts.CopyTo(dstPoints);
-#else
-                    Array.Copy(_nextTrackPts, dstPoints, _numberOfElements);
-#endif
 
                     if (IsDebugMode)
                     {
@@ -171,11 +161,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                 else
                 {
                     // If not initialized, return previous result
-#if NET_STANDARD_2_1
                     _prevTrackPts.CopyTo(dstPoints);
-#else
-                    Array.Copy(_prevTrackPts, dstPoints, _numberOfElements);
-#endif
                 }
 
                 return dstPoints;
@@ -203,11 +189,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                     }
                 }
 
-#if NET_STANDARD_2_1
                 srcPoints.CopyTo(_prevTrackPts);
-#else
-                Array.Copy(srcPoints, _prevTrackPts, _numberOfElements);
-#endif
 
                 _flag = true;
             }
@@ -254,7 +236,9 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                 {
                     // If optical flow failed, use previous prediction for failed points
                     if (IsDebugMode)
+                    {
                         Debug.Log("Optical Flow failed, using previous prediction");
+                    }
 
                     // Replace failed points with previous prediction
                     for (int i = 0; i < statusArray.Length; i++)
@@ -273,16 +257,14 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                 // if the face is moving so fast, use dlib to detect the face
                 double diff = CalDistanceDiff(_prevTrackPts, _nextTrackPts);
                 if (IsDebugMode)
+                {
                     Debug.Log("variance:" + diff + " diffDlib:" + diffDlib);
+                }
+
                 if (diff > diffDlib)
                 {
-#if NET_STANDARD_2_1
                     srcPoints.CopyTo(_nextTrackPts);
                     srcPoints.CopyTo(dstPoints);
-#else
-                    Array.Copy(srcPoints, _nextTrackPts, _numberOfElements);
-                    Array.Copy(srcPoints, dstPoints, _numberOfElements);
-#endif
 
                     if (IsDebugMode)
                     {
@@ -296,11 +278,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                 else
                 {
                     // In this case, use Optical Flow
-#if NET_STANDARD_2_1
                     _nextTrackPts.CopyTo(dstPoints);
-#else
-                    Array.Copy(_nextTrackPts, dstPoints, _numberOfElements);
-#endif
 
                     if (IsDebugMode)
                     {
@@ -318,7 +296,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             return dstPoints;
         }
 
-#if NET_STANDARD_2_1
         /// <summary>
         /// Processes points by filter.
         /// </summary>
@@ -342,7 +319,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
 
             return dstPoints;
         }
-#endif
 
         /// <summary>
         /// Resets filter.
@@ -371,7 +347,10 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
 
         protected override void Dispose(bool disposing)
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
 
             if (disposing)
             {

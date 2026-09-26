@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
 using OpenCVForUnity.CoreModule;
+using OpenCVForUnity.Extensions;
 using OpenCVForUnity.ImgprocModule;
-using OpenCVForUnity.UnityIntegration;
 using OpenCVForUnity.VideoModule;
 using UnityEngine;
 
@@ -10,7 +9,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
 {
     /// <summary>
     /// Kalman Filter Points Filter.
-    /// v 2.0.0
+    /// v 2.0.1
     /// </summary>
     public class KFPointsFilter : PointsFilterBase
     {
@@ -68,7 +67,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             InitializeKalmanFilter();
         }
 
-#if NET_STANDARD_2_1
         /// <summary>
         /// Processes points by filter.
         /// </summary>
@@ -77,24 +75,18 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// <param name="dstPoints">Output points span.</param>
         /// <returns>Output points span. Returns predicted points from previous state when srcPoints is empty.</returns>
         public override Span<Vec2f> Process(Mat img, ReadOnlySpan<Vec2f> srcPoints, Span<Vec2f> dstPoints)
-#else
-        /// <summary>
-        /// Processes points by filter.
-        /// </summary>
-        /// <param name="img">Image mat for processing (used for optical flow, debug drawing, etc.).</param>
-        /// <param name="srcPoints">Input points. Can be null when no detection is available (will use previous state for prediction).</param>
-        /// <param name="dstPoints">Output points. If null, a new array will be created.</param>
-        /// <returns>Output points. Returns predicted points from previous state when srcPoints is null.</returns>
-        public override Vec2f[] Process(Mat img, Vec2f[] srcPoints, Vec2f[] dstPoints = null)
-#endif
         {
             ThrowIfDisposed();
 
             if (srcPoints != null && srcPoints.Length != _numberOfElements)
+            {
                 throw new ArgumentException("The number of srcPoints elements is different.");
+            }
 
             if (dstPoints != null && dstPoints.Length != _numberOfElements)
+            {
                 throw new ArgumentException("The number of dstPoints elements is different.");
+            }
 
             if (dstPoints == null)
             {
@@ -131,11 +123,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                 }
                 else
                 {
-#if NET_STANDARD_2_1
                     _lastPoints.CopyTo(dstPoints);
-#else
-                    Array.Copy(_lastPoints, dstPoints, _numberOfElements);
-#endif
                 }
 
                 return dstPoints;
@@ -148,14 +136,13 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             // if the face is moving so fast, use dlib to detect the face
             double diff = CalDistanceDiff(srcPoints, _lastPoints);
             if (IsDebugMode)
+            {
                 Debug.Log("variance:" + diff + " diffDlib:" + diffDlib);
+            }
+
             if (diff > diffDlib)
             {
-#if NET_STANDARD_2_1
                 srcPoints.CopyTo(dstPoints);
-#else
-                Array.Copy(srcPoints, dstPoints, _numberOfElements);
-#endif
 
                 if (IsDebugMode)
                 {
@@ -204,16 +191,11 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
 
             // Update last points for next iteration
             // Note: _lastPoints is used for diff calculation, not for Kalman state
-#if NET_STANDARD_2_1
             dstPoints.CopyTo(_lastPoints);
-#else
-            Array.Copy(dstPoints, _lastPoints, _numberOfElements);
-#endif
 
             return dstPoints;
         }
 
-#if NET_STANDARD_2_1
         /// <summary>
         /// Processes points by filter.
         /// </summary>
@@ -237,7 +219,6 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
 
             return dstPoints;
         }
-#endif
 
         /// <summary>
         /// Resets filter.
@@ -252,7 +233,10 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
 
         protected override void Dispose(bool disposing)
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
 
             if (disposing)
             {

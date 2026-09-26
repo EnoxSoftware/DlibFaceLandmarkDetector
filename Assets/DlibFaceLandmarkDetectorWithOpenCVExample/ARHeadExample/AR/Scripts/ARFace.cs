@@ -69,17 +69,17 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// <summary>
         /// The mouth particle system.
         /// </summary>
-        ParticleSystem[] mouthParticleSystem;
+        private ParticleSystem[] _mouthParticleSystem;
 
-        private Coroutine enterAnimationCoroutine = null;
-        private Coroutine exitAnimationCoroutine = null;
+        private Coroutine _enterAnimationCoroutine = null;
+        private Coroutine _exitAnimationCoroutine = null;
 
-        void Awake()
+        private void Awake()
         {
-            mouthParticleSystem = Mouth.GetComponentsInChildren<ParticleSystem>(true);
+            _mouthParticleSystem = Mouth.GetComponentsInChildren<ParticleSystem>(true);
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
             Axes.SetActive(DisplayAxes);
             Head.SetActive(DisplayHead);
@@ -88,13 +88,13 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
             Mouth.SetActive(IsMouthOpen);
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             //Debug.Log($"{gameObject.name} was disabled");
         }
 
         // Update is called once per frame
-        void Update()
+        private void Update()
         {
             if (Head.activeSelf != DisplayHead)
             {
@@ -121,7 +121,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                 if ((DisplayEffects && IsMouthOpen))
                 {
                     Mouth.SetActive(true);
-                    foreach (ParticleSystem ps in mouthParticleSystem)
+                    foreach (ParticleSystem ps in _mouthParticleSystem)
                     {
                         var em = ps.emission;
                         em.enabled = true;
@@ -132,7 +132,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
                 else
                 {
                     Mouth.SetActive(false);
-                    foreach (ParticleSystem ps in mouthParticleSystem)
+                    foreach (ParticleSystem ps in _mouthParticleSystem)
                     {
                         var em = ps.emission;
                         em.enabled = false;
@@ -147,7 +147,10 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// <param name="arUcoMarkerName">The name of the AR marker</param>
         public void SetInfoPlateTexture(string arUcoMarkerName)
         {
-            if (InfoPlate == null) return;
+            if (InfoPlate == null)
+            {
+                return;
+            }
 
             Texture newTexture = ARFace.CreateInfoPlateTexture(arUcoMarkerName, 200, 200);
 
@@ -232,7 +235,7 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
 
             // Convert Mat to Texture2D
             Texture2D texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
-            OpenCVMatUtils.MatToTexture2D(mat, texture);
+            OpenCVMatUnityUtils.MatToTexture2D(mat, texture);
 
             // Release Mat resources
             mat.Dispose();
@@ -250,22 +253,22 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// <param name="duration">Duration of the animation in seconds</param>
         public IEnumerator EnterAnimation(GameObject obj, float startScaleZ, float endScaleZ, float duration)
         {
-            if (exitAnimationCoroutine != null)
+            if (_exitAnimationCoroutine != null)
             {
-                StopCoroutine(exitAnimationCoroutine);
-                exitAnimationCoroutine = null;
+                StopCoroutine(_exitAnimationCoroutine);
+                _exitAnimationCoroutine = null;
             }
 
-            if (enterAnimationCoroutine != null)
+            if (_enterAnimationCoroutine != null)
             {
-                StopCoroutine(enterAnimationCoroutine);
-                enterAnimationCoroutine = null;
+                StopCoroutine(_enterAnimationCoroutine);
+                _enterAnimationCoroutine = null;
             }
 
             obj.SetActive(true);
-            enterAnimationCoroutine = StartCoroutine(AnimateScale(obj, startScaleZ, endScaleZ, duration));
-            yield return enterAnimationCoroutine;
-            enterAnimationCoroutine = null;
+            _enterAnimationCoroutine = StartCoroutine(AnimateScale(obj, startScaleZ, endScaleZ, duration));
+            yield return _enterAnimationCoroutine;
+            _enterAnimationCoroutine = null;
         }
 
         /// <summary>
@@ -278,24 +281,28 @@ namespace DlibFaceLandmarkDetectorWithOpenCVExample
         /// <param name="duration">Duration of the animation in seconds</param>
         public IEnumerator ExitAnimation(GameObject obj, float startScaleZ, float endScaleZ, float duration)
         {
-            if (enterAnimationCoroutine != null)
+            if (_enterAnimationCoroutine != null)
             {
-                StopCoroutine(enterAnimationCoroutine);
-                enterAnimationCoroutine = null;
+                StopCoroutine(_enterAnimationCoroutine);
+                _enterAnimationCoroutine = null;
             }
 
-            if (exitAnimationCoroutine != null)
+            if (_exitAnimationCoroutine != null)
             {
-                StopCoroutine(exitAnimationCoroutine);
-                exitAnimationCoroutine = null;
+                StopCoroutine(_exitAnimationCoroutine);
+                _exitAnimationCoroutine = null;
             }
 
-            exitAnimationCoroutine = StartCoroutine(AnimateScale(obj, startScaleZ, endScaleZ, duration));
-            yield return exitAnimationCoroutine;
+            _exitAnimationCoroutine = StartCoroutine(AnimateScale(obj, startScaleZ, endScaleZ, duration));
+            yield return _exitAnimationCoroutine;
 
-            if (exitAnimationCoroutine == null) yield return null;
+            if (_exitAnimationCoroutine == null)
+            {
+                yield return null;
+            }
+
             obj.SetActive(false);
-            exitAnimationCoroutine = null;
+            _exitAnimationCoroutine = null;
         }
 
         /// <summary>

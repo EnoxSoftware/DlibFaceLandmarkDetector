@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using DlibFaceLandmarkDetector;
 using DlibFaceLandmarkDetector.UnityIntegration;
+using DlibFaceLandmarkDetector.UnityIntegration.Helper.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,8 +12,18 @@ using UnityEngine.UI;
 namespace DlibFaceLandmarkDetectorExample
 {
     /// <summary>
-    /// WebCamTexture Example
-    /// An example of detecting face landmarks in WebCamTexture images.
+    /// WebCamTexture DownScale Example
+    /// Detects Dlib face landmarks on downscaled <see cref="WebCamTexture"/> frames to reduce processing cost.
+    ///
+    /// Demonstrates:
+    /// - Running detection on a reduced-resolution copy of each camera frame
+    /// - Scaling landmark coordinates back to the original preview resolution
+    /// - Manual drawing of rects and landmarks when using the downscale path
+    /// - Optional pixel rotation and mirroring for portrait capture
+    ///
+    /// Dlib classes and APIs used:
+    /// - <see cref="FaceLandmarkDetector"/>: SetImage, Detect, DetectLandmark
+    /// - <see cref="FaceLandmarkDetector"/>: DrawDetectLandmarkResult, DrawDetectResult
     /// </summary>
     public class WebCamTextureDownScaleExample : MonoBehaviour
     {
@@ -31,31 +42,31 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// Set the name of the device to use.
         /// </summary>
-        [SerializeField, TooltipAttribute("Set the name of the device to use.")]
+        [TooltipAttribute("Set the name of the device to use.")]
         public string RequestedDeviceName = null;
 
         /// <summary>
         /// Set the width of WebCamTexture.
         /// </summary>
-        [SerializeField, TooltipAttribute("Set the width of WebCamTexture.")]
+        [TooltipAttribute("Set the width of WebCamTexture.")]
         public int RequestedWidth = 320;
 
         /// <summary>
         /// Set the height of WebCamTexture.
         /// </summary>
-        [SerializeField, TooltipAttribute("Set the height of WebCamTexture.")]
+        [TooltipAttribute("Set the height of WebCamTexture.")]
         public int RequestedHeight = 240;
 
         /// <summary>
         /// Set FPS of WebCamTexture.
         /// </summary>
-        [SerializeField, TooltipAttribute("Set FPS of WebCamTexture.")]
+        [TooltipAttribute("Set FPS of WebCamTexture.")]
         public int RequestedFPS = 30;
 
         /// <summary>
         /// Set whether to use the front facing camera.
         /// </summary>
-        [SerializeField, TooltipAttribute("Set whether to use the front facing camera.")]
+        [TooltipAttribute("Set whether to use the front facing camera.")]
         public bool RequestedIsFrontFacing = false;
 
         /// <summary>
@@ -66,13 +77,13 @@ namespace DlibFaceLandmarkDetectorExample
         /// <summary>
         /// Determines if adjust pixels direction.
         /// </summary>
-        [SerializeField, TooltipAttribute("Determines if adjust pixels direction.")]
+        [TooltipAttribute("Determines if adjust pixels direction.")]
         public bool AdjustPixelsDirection = false;
 
         /// <summary>
         /// Down scale rate for Dlib processing (0.1-1.0).
         /// </summary>
-        [SerializeField, TooltipAttribute("Down scale rate for Dlib processing (0.1-1.0).")]
+        [TooltipAttribute("Down scale rate for Dlib processing (0.1-1.0).")]
         [Range(0.1f, 1.0f)]
         public float DownScaleRate = 1.0f;
 
@@ -105,19 +116,28 @@ namespace DlibFaceLandmarkDetectorExample
         private async void Start()
         {
             _fpsMonitor = GetComponent<FpsMonitor>();
+            // Uses the dlib shape predictor file name selected on the main menu scene.
             _dlibShapePredictorFileName = DlibFaceLandmarkDetectorExample.DlibShapePredictorFileName;
             if (_fpsMonitor != null)
+            {
                 _fpsMonitor.ConsoleText = "Preparing file access...";
-            _dlibShapePredictorFilePath = await DlibEnv.GetFilePathTaskAsync(_dlibShapePredictorFileName, cancellationToken: _cts.Token);
+            }
+
+            _dlibShapePredictorFilePath = await DlibEnv.GetFilePathAsync(_dlibShapePredictorFileName, cancellationToken: _cts.Token);
             if (_fpsMonitor != null)
+            {
                 _fpsMonitor.ConsoleText = "";
+            }
+
             Run();
         }
 
         private void Update()
         {
             if (!_hasInitDone)
+            {
                 return;
+            }
 
             if (AdjustPixelsDirection)
             {
@@ -249,31 +269,36 @@ namespace DlibFaceLandmarkDetectorExample
         private void Initialize()
         {
             if (_isInitWaiting)
+            {
                 return;
+            }
 #if UNITY_ANDROID && !UNITY_EDITOR
             if (RequestedIsFrontFacing)
             {
                 int rearCameraFPS = RequestedFPS;
                 RequestedFPS = 15;
-                StartCoroutine(_Initialize());
+                StartCoroutine(InitializeCoroutine());
                 RequestedFPS = rearCameraFPS;
             }
             else
             {
-                StartCoroutine(_Initialize());
+                StartCoroutine(InitializeCoroutine());
             }
 #else
-            StartCoroutine(_Initialize());
+            StartCoroutine(InitializeCoroutine());
 #endif
         }
 
         /// <summary>
         /// Initializes webcam texture by coroutine.
         /// </summary>
-        private IEnumerator _Initialize()
+        private IEnumerator InitializeCoroutine()
         {
             if (_hasInitDone)
+            {
                 Dispose();
+            }
+
             _isInitWaiting = true;
 #if (UNITY_IOS || UNITY_WEBGL) && UNITY_2018_1_OR_NEWER
             UserAuthorization mode = UserAuthorization.WebCam;
@@ -337,10 +362,10 @@ namespace DlibFaceLandmarkDetectorExample
                 _isInitWaiting = false;
                 yield break;
             }
-            if (!String.IsNullOrEmpty(RequestedDeviceName))
+            if (!string.IsNullOrEmpty(RequestedDeviceName))
             {
                 int requestedDeviceIndex = -1;
-                if (Int32.TryParse(RequestedDeviceName, out requestedDeviceIndex))
+                if (int.TryParse(RequestedDeviceName, out requestedDeviceIndex))
                 {
                     if (requestedDeviceIndex >= 0 && requestedDeviceIndex < devices.Length)
                     {
@@ -361,7 +386,9 @@ namespace DlibFaceLandmarkDetectorExample
                     }
                 }
                 if (_webCamTexture == null)
+                {
                     Debug.Log("Cannot find camera device " + RequestedDeviceName + ".");
+                }
             }
             if (_webCamTexture == null)
             {
@@ -383,7 +410,10 @@ namespace DlibFaceLandmarkDetectorExample
                             break;
                         }
                     }
-                    if (_webCamTexture != null) break;
+                    if (_webCamTexture != null)
+                    {
+                        break;
+                    }
                 }
             }
             if (_webCamTexture == null)
@@ -434,7 +464,12 @@ namespace DlibFaceLandmarkDetectorExample
                 WebCamTexture.Destroy(_webCamTexture);
                 _webCamTexture = null;
             }
-            if (_texture != null) Texture2D.Destroy(_texture); _texture = null;
+            if (_texture != null)
+            {
+                Texture2D.Destroy(_texture);
+            }
+
+            _texture = null;
             _downscaledColors = null;
         }
 
@@ -478,7 +513,7 @@ namespace DlibFaceLandmarkDetectorExample
 
             if (_fpsMonitor != null)
             {
-                _fpsMonitor.Add("dlib shape predictor", _dlibShapePredictorFileName);
+                _fpsMonitor.Add("dlib shape predictor", "\n" + _dlibShapePredictorFileName);
                 _fpsMonitor.Add("width", _texture.width.ToString());
                 _fpsMonitor.Add("height", _texture.height.ToString());
                 _fpsMonitor.Add("orientation", Screen.orientation.ToString());
@@ -492,7 +527,9 @@ namespace DlibFaceLandmarkDetectorExample
         private void InitializeDownscaledBuffer()
         {
             if (!_hasInitDone || _texture == null)
+            {
                 return;
+            }
 
             if (DownScaleRate < 1.0f)
             {
@@ -780,7 +817,9 @@ namespace DlibFaceLandmarkDetectorExample
         private List<Vector2> ScaleUpLandmarks(List<Vector2> landmarks)
         {
             if (landmarks == null || landmarks.Count == 0)
+            {
                 return landmarks;
+            }
 
             float scaleFactor = 1.0f / DownScaleRate;
             List<Vector2> scaledLandmarks = new List<Vector2>(landmarks.Count);
@@ -806,10 +845,10 @@ namespace DlibFaceLandmarkDetectorExample
         private void DrawRectManual(Color32[] colors, int width, int height, Rect rect, byte r, byte g, byte b, byte a, bool flip)
         {
             // Scale thickness based on image size (base: 320x240, default thickness: 2)
-            const float baseSize = 320f;
-            const int baseThickness = 2;
-            float scaleFactor = Mathf.Max(width, height) / baseSize;
-            int scaledThickness = Mathf.Max(1, Mathf.RoundToInt(baseThickness * scaleFactor));
+            const float BASE_SIZE = 320f;
+            const int BASE_THICKNESS = 2;
+            float scaleFactor = Mathf.Max(width, height) / BASE_SIZE;
+            int scaledThickness = Mathf.Max(1, Mathf.RoundToInt(BASE_THICKNESS * scaleFactor));
 
             int xMin = Mathf.Clamp(Mathf.RoundToInt(rect.xMin), 0, width - 1);
             int xMax = Mathf.Clamp(Mathf.RoundToInt(rect.xMax), 0, width - 1);
@@ -870,14 +909,16 @@ namespace DlibFaceLandmarkDetectorExample
         private void DrawLandmarksManual(Color32[] colors, int width, int height, List<Vector2> landmarks, byte r, byte g, byte b, byte a, bool flip)
         {
             if (landmarks == null || landmarks.Count == 0)
+            {
                 return;
+            }
 
             Color32 color = new Color32(r, g, b, a);
 
             // Scale point radius and line thickness based on image size
             // Base size: 320x240, scale factor based on larger dimension
-            const float baseSize = 320f;
-            float scaleFactor = Mathf.Max(width, height) / baseSize;
+            const float BASE_SIZE = 320f;
+            float scaleFactor = Mathf.Max(width, height) / BASE_SIZE;
             int pointRadius = Mathf.Max(1, Mathf.RoundToInt(2 * scaleFactor));
             int lineThickness = Mathf.Max(1, Mathf.RoundToInt(1 * scaleFactor));
 
@@ -1085,7 +1126,9 @@ namespace DlibFaceLandmarkDetectorExample
                 }
 
                 if (x == x1 && y == y1)
+                {
                     break;
+                }
 
                 int e2 = 2 * err;
                 if (e2 > -dy)
